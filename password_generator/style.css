@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Montserrat", sans-serif;
+}
+
+body {
+    background-color: #84abb3;
+}
+
+.container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid;
+}
+
+h1 {
+    margin: 10px;
+    font-size: 3rem;
+    text-transform: uppercase;
+}
+
+.generator {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.generator button {
+    font-size: 2rem;
+    margin-left: 20px;
+    padding: 8px;
+    cursor: pointer;
+    outline: none;
+    background-color: #07bf73;
+    opacity: 0.7;
+}
+
+.generator button:active {
+    opacity: 1;
+}
+
+.generator #passGenerate {
+    font-size: 2rem;
+    border: none;
+    outline: none;
+    background: transparent;
+    border-bottom: 2px solid #1c1c1c;
+}
+
+.strength {
+    font-size: 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: baseline;
+    margin: 20px;
+}
+
+.slider {
+    margin: 12px;
+    width: 250px;
+    cursor: pointer;
+}
+
+.options {
+    user-select: none;
+    font-size: 2rem;
+}
+
+.options input, .options label {
+    width: 25px;
+    height: 25px;
+    cursor: pointer;
+}
