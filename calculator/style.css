@@ -1,7 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
 
-/* https://www.behance.net/gallery/97787515/Calculator-UI-design-%28Freebie%29 */
-
 * {
     margin: 0;
     padding: 0;
@@ -15,6 +13,12 @@ body {
     align-items: center;
     background-color: #f0f8ff;
     height: 100vh;
+}
+
+h1 {
+    margin-bottom: 1rem;
+    font-weight: 300;
+    text-transform: capitalize;
 }
 
 .calculator {
@@ -37,7 +41,7 @@ body {
 
 .display {
     user-select: none;
-    /* background-color: rgb(70, 159, 129); */
+    background-color: rgb(70, 159, 129);
     width: 200px;
     height: max-content;
     display: flex;
@@ -46,7 +50,7 @@ body {
     justify-content: space-around;
     align-items: flex-end;
     margin-bottom: 35px;
-    /* box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3); */
+    box-shadow: inset 5px 5px 10px rgba(0, 0, 0, 0.3);
 }
 
 .display .result {
@@ -69,7 +73,7 @@ body {
 
 .inputs {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: auto auto auto auto;
     gap: 10px;
     user-select: none;
 }
@@ -87,13 +91,19 @@ body {
     opacity: 0.75;
 }
 
+.inputs button:hover {
+    opacity: 1;
+}
+
 .inputs .operators {
     font-size: 1.3rem;
     color: #adadadae;
 }
 
-.inputs button:hover {
-    opacity: 1;
+.inputs .operators:first-child {
+    width: 100%;
+    grid-column-start: 1;
+    grid-column-end: 3;
 }
 
 #backspace {
@@ -105,4 +115,19 @@ body {
 #backspace img {
     width: 20px;
     height: 20px;
+}
+
+h1, .inspiration {
+    text-align: center;
+}
+
+.inspiration {
+    font-size: 1.3rem;
+    margin-top: 1rem;
+}
+
+.inspiration a {
+    text-decoration: underline;
+    font-style: italic;
+    color: #044abbcf;
 }

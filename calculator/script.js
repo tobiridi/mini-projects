@@ -2,8 +2,7 @@ const resultText = document.querySelector('.result');
 const calculText = document.querySelector('.calcul');
 const btns = document.querySelectorAll('.inputs button');
 
-let currentValue = 0, result = 0;
-let currentOperator = null;
+let lastOperatorPos = null;
 
 //init buttons value
 (() => {
@@ -26,19 +25,7 @@ for (let i = 0; i < btns.length; i++) {
 
 const buttonAction = (btnValue) => {
     if(btnValue >= 0 || btnValue <= 9 || btnValue === '.') {
-        if (calculText.textContent.includes('.') && btnValue === '.') {
-            return;
-        }
-        
         calculText.textContent += btnValue;
-        try {
-            console.log(calculText.textContent);
-            currentValue = Number(result + eval(calculText.textContent));
-            console.log(currentValue);
-        } catch (error) {
-            console.error(error);
-            resetCalcul();
-        }
     }
     else {
         applyOperator(btnValue);
@@ -47,19 +34,19 @@ const buttonAction = (btnValue) => {
 
 const applyOperator = (btnValue) => {
     switch (btnValue) {
-        case 'C': resetCalcul();
+        case 'C':
+            lastOperatorPos = null; 
+            updateResult(0);
             break;
-        case '+/-': alert('Not available');
+        case '%': parsePercent();
             break;
-        case '%': alert('Not available');
+        case '/': updateCalculOperator('/');
             break;
-        case '/': calculText.textContent += '/';
+        case 'x': updateCalculOperator('*');
             break;
-        case 'x': calculText.textContent += '*';
+        case '-': updateCalculOperator('-');
             break;
-        case '-': calculText.textContent += '-';
-            break;
-        case '+': calculText.textContent += '+';
+        case '+': updateCalculOperator('+');
             break;
         case '=': calulateResult();
             break;
@@ -70,30 +57,61 @@ const applyOperator = (btnValue) => {
     }
 };
 
-const removeLastInput = () => {
+const parsePercent = () => {
     let txt = calculText.textContent;
-    txt = txt.slice(0, txt.length -1);
+    let percentNumber = null;
+
+    //get number between last operator and end of string
+    if(lastOperatorPos) {
+        percentNumber = txt.slice(lastOperatorPos, txt.length);
+    }
+    else {
+        percentNumber = txt.slice(0, txt.length);
+    }
+
+    //remove percentNumber to txt
+    txt = txt.slice(0, (txt.length - percentNumber.length));
+    //change to percent number
+    txt = txt + ('' + parseFloat(percentNumber / 100).toFixed(2));
     calculText.textContent = txt;
+};
+
+const updateCalculOperator = (value) => {
+    calculText.textContent += value;
+    lastOperatorPos = calculText.textContent.length;
+};
+
+const removeLastInput = () => {
+    const txt = calculText.textContent;
+    const lastInput = txt.length -1;
+
+    if(txt.length === lastOperatorPos)
+        lastOperatorPos = null;
+
+    calculText.textContent = txt.slice(0, lastInput);
 };
 
 const calulateResult = () => {
     if(calculText.textContent === '') {
-        updateResult(result);
+        return;
     }
     else {
-        updateResult(currentValue);
+        try {
+            const currentResult = eval?.(`"use strict"; (${calculText.textContent})`);
+            lastOperatorPos = null;
+            updateResult(currentResult);
+            
+        } catch (error) {
+            console.log(calculText.textContent);
+            console.error(error);
+            lastOperatorPos = null;
+            updateResult(NaN);
+        }
     }
-};
-
-const resetCalcul = () => {
-    updateResult(0);
-    currentValue = 0;
 };
 
 const updateResult = (newResult) => {
-    result = newResult;
-    resultText.textContent = result;
-    calculText.textContent = '';
+    resultText.textContent = newResult;
+    calculText.textContent = null;
 };
-
 
