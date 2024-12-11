@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Passwordsecurity</string>
+    <string name="nav_home">Accueil</string>
+    <string name="nav_add">Ajouter</string>
+    <string name="nav_help">Aide</string>
 </resources>

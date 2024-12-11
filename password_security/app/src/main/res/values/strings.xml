@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Passwordsecurity</string>
+    <!-- navBar title -->
+    <string name="nav_home">Home</string>
+    <string name="nav_add">Add</string>
+    <string name="nav_options" translatable="false">Options</string>
+    <string name="nav_help">Help</string>
 </resources>

@@ -9,18 +9,5 @@
         <item name="android:fontFamily">@font/roboto_family</item>
     </style>
 
-    <!-- HeadLine -->
-    <style name="HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
-        <item name="android:fontFamily">@font/poppins_family</item>
-    </style>
-
-    <style name="HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="android:fontFamily">@font/poppins_family</item>
-    </style>
-
-    <style name="HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
-        <item name="android:fontFamily">@font/poppins_family</item>
-    </style>
-
     <style name="Theme.Passwordsecurity" parent="Base.Theme.Passwordsecurity" />
 </resources>

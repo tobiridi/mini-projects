@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- HeadLine -->
+    <style name="HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:fontFamily">@font/poppins_family</item>
+    </style>
+
+    <style name="HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:fontFamily">@font/poppins_family</item>
+    </style>
+
+    <style name="HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:fontFamily">@font/poppins_family</item>
+    </style>
+
+    <!-- BottomNavigationView global style -->
+    <style name="BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="backgroundTint">@color/primary</item>
+        <item name="itemIconTint">@color/color_item_bottom_nav</item>
+        <item name="itemTextColor">@color/white</item>
+        <item name="itemIconSize">32dp</item>
+        <item name="itemPaddingBottom">0dp</item>
+        <item name="android:minHeight">70dp</item>
+        <item name="itemRippleColor">#33FFFFFF</item>
+        <item name="itemTextAppearanceActive">?attr/textAppearanceLabelLarge</item>
+        <item name="itemActiveIndicatorStyle">@style/BottomNavigationViewActiveIndicator</item>
+    </style>
+
+    <!-- BottomNavigationView active indicator style -->
+    <style name="BottomNavigationViewActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="shapeAppearance">@style/ShapeAppearance.M3.Sys.Shape.Corner.Full</item>
+        <item name="android:color">#19FFFFFF</item>
+    </style>
+</resources>
