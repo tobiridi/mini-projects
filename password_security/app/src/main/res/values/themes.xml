@@ -2,15 +2,24 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Passwordsecurity" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <item name="colorPrimary">@color/my_light_primary</item>
-        <item name="colorSecondary">@color/my_light_primary</item>
-        <item name="colorTertiary">@color/my_light_primary</item>
-        <item name="android:colorBackground">@color/my_light_primary</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorSecondary">@color/secondary</item>
+        <item name="colorTertiary">@color/tertiary</item>
+        <item name="android:windowBackground">@color/activityBackground</item>
+        <item name="android:fontFamily">@font/roboto_family</item>
     </style>
 
-<!-- TODO: define components style, stop here -->
-    <style name="buttonRounded" parent="Widget.AppCompat.Button">
+    <!-- HeadLine -->
+    <style name="HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
+        <item name="android:fontFamily">@font/poppins_family</item>
+    </style>
 
+    <style name="HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
+        <item name="android:fontFamily">@font/poppins_family</item>
+    </style>
+
+    <style name="HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
+        <item name="android:fontFamily">@font/poppins_family</item>
     </style>
 
     <style name="Theme.Passwordsecurity" parent="Base.Theme.Passwordsecurity" />
