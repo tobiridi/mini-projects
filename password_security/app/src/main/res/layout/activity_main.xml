@@ -10,22 +10,20 @@
     android:paddingTop="20dp"
     tools:context=".MainActivity">
 
-    <SearchView
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragmentContainerView"
+        android:name="be.tobiridi.passwordsecurity.ui.home.HomeFragment"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="16dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="16dp"
         android:layout_weight="1" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
-        style="@style/BottomNavigationView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/bottomNavigationView"
         android:layout_weight="0"
+        style="@style/BottomNavigationView"
         app:menu="@menu/menu_bottom_nav" />
 
 </LinearLayout>
