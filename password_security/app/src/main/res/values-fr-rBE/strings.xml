@@ -3,5 +3,7 @@
     <string name="app_name">Passwordsecurity</string>
     <string name="nav_home">Accueil</string>
     <string name="nav_add">Ajouter</string>
+    <string name="nav_settings">Options</string>
     <string name="nav_help">Aide</string>
+    <string name="search_hint">Recherche...</string>
 </resources>

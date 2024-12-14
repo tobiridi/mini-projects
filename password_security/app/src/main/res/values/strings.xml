@@ -1,8 +1,12 @@
 <resources>
-    <string name="app_name">Passwordsecurity</string>
-    <!-- navBar title -->
+    <string name="app_name">PasswordSecurity</string>
+    <!-- navBar item name -->
     <string name="nav_home">Home</string>
     <string name="nav_add">Add</string>
-    <string name="nav_options" translatable="false">Options</string>
+    <string name="nav_settings">Settings</string>
     <string name="nav_help">Help</string>
+    <!-- hint text -->
+    <string name="search_hint">Search…</string>
+    <!-- button description-->
+    <string name="filter_btn_desc" translatable="false">Filter</string>
 </resources>

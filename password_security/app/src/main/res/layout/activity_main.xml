@@ -6,17 +6,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingHorizontal="20dp"
-    android:paddingTop="20dp"
     tools:context=".MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/fragmentContainerView"
-        android:name="be.tobiridi.passwordsecurity.ui.home.HomeFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="16dp"
-        android:layout_weight="1" />
+        android:layout_margin="16dp"
+        android:layout_weight="1"
+        android:name="be.tobiridi.passwordsecurity.ui.home.HomeFragment"
+        tools:layout="@layout/fragment_home" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:layout_width="match_parent"

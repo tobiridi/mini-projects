@@ -23,8 +23,8 @@ import be.tobiridi.passwordsecurity.ui.settings.SettingsFragment;
 public class MainActivity extends AppCompatActivity {
     private FragmentContainerView fragmentContainer;
     private BottomNavigationView bottomNavigation;
-    private final HashMap<Integer, Fragment> fragments = new HashMap<>();
-    private final FragmentManager manager = getSupportFragmentManager();
+    private final HashMap<Integer, Fragment> _fragments = new HashMap<>();
+    private final FragmentManager _manager = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,16 +42,16 @@ public class MainActivity extends AppCompatActivity {
         this.bottomNavigation = findViewById(R.id.bottomNavigationView);
 
         //set fragments for navigation bar
-        this.fragments.put(R.id.nav_home, HomeFragment.newInstance());
-        this.fragments.put(R.id.nav_add, AddAcountFragment.newInstance());
-        this.fragments.put(R.id.nav_settings, SettingsFragment.newInstance());
-        this.fragments.put(R.id.nav_help, HelpFragment.newInstance());
+        this._fragments.put(R.id.nav_home, HomeFragment.newInstance());
+        this._fragments.put(R.id.nav_add, AddAcountFragment.newInstance());
+        this._fragments.put(R.id.nav_settings, SettingsFragment.newInstance());
+        this._fragments.put(R.id.nav_help, HelpFragment.newInstance());
 
         this.initListener();
     }
 
     private void updateFragment(Fragment fragment) {
-        this.manager.beginTransaction()
+        this._manager.beginTransaction()
                 .replace(R.id.fragmentContainerView, fragment)
                 .addToBackStack(null)
                 .setReorderingAllowed(true)
@@ -60,8 +60,9 @@ public class MainActivity extends AppCompatActivity {
 
     private void initListener() {
         this.bottomNavigation.setOnItemSelectedListener(item -> {
-            this.updateFragment(this.fragments.get(item.getItemId()));
+            this.updateFragment(this._fragments.get(item.getItemId()));
             return true;
         });
+
     }
 }
