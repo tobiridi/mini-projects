@@ -1,14 +1,33 @@
 package be.tobiridi.passwordsecurity.data;
 
+import androidx.annotation.NonNull;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import java.io.Serializable;
 import java.time.LocalDate;
 
+@Entity(tableName = "accounts")
 public class Account implements Serializable {
+    private static final long serialVersionUID = 2765142817316875747L;
+
+    @PrimaryKey(autoGenerate = true)
     private int id;
+
+    @NonNull
     private String name;
+
+    @NonNull
     private String email;
+
+    @NonNull
     private String password;
+
+    @NonNull
     private LocalDate created;
+
+    @NonNull
     private LocalDate updated;
 
     public int getId() {
@@ -63,8 +82,8 @@ public class Account implements Serializable {
         this.updated = LocalDate.now();
     }
 
-    public Account(int id, String name, String email, String password, LocalDate created, LocalDate updated) {
-        this.id = id;
+    @Ignore
+    public Account(@NonNull String name, @NonNull String email, @NonNull String password, @NonNull LocalDate created, @NonNull LocalDate updated) {
         this.name = name;
         this.email = email;
         this.password = password;
