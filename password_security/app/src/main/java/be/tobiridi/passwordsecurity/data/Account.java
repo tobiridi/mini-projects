@@ -6,7 +6,9 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.security.InvalidParameterException;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity(tableName = "accounts")
 public class Account implements Serializable {
@@ -33,8 +35,15 @@ public class Account implements Serializable {
     public int getId() {
         return id;
     }
+
+    /**
+     * Define the new id of this account.
+     * @param id identification of this account, the id must be greater than 0.
+     */
     public void setId(int id) {
-        this.id = id;
+        if (id > 0) {
+            this.id = id;
+        }
     }
 
     public String getName() {
@@ -65,7 +74,10 @@ public class Account implements Serializable {
         return this.created;
     }
 
-    public void setCreated(LocalDate created) {
+    public void setCreated(LocalDate created) throws IllegalArgumentException {
+        if (!created.isEqual(this.created)) {
+            throw new IllegalArgumentException("The parameter is not equal to the current created date.");
+        }
         this.created = created;
     }
 
@@ -73,7 +85,10 @@ public class Account implements Serializable {
         return this.updated;
     }
 
-    public void setUpdated(LocalDate updated) {
+    public void setUpdated(LocalDate updated) throws IllegalArgumentException {
+        if (updated.isBefore(this.updated)) {
+            throw new IllegalArgumentException("The updated date must be after the previous.");
+        }
         this.updated = updated;
     }
 
@@ -102,4 +117,16 @@ public class Account implements Serializable {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Account)) return false;
+        Account account = (Account) o;
+        return this.id == account.id && this.name.equals(account.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.id, this.name, this.email, this.created, this.updated);
+    }
 }
