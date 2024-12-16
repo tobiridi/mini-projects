@@ -6,7 +6,6 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
-import java.security.InvalidParameterException;
 import java.time.LocalDate;
 import java.util.Objects;
 

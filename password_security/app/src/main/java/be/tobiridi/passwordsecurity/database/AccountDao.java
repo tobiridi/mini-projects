@@ -5,6 +5,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public interface AccountDao {
     @Delete
     void deleteAccount(Account account);
 
+    @Transaction
     @Query("SELECT id, name, email, password, created, updated FROM accounts")
     LiveData<List<Account>> getAllAccounts();
 }

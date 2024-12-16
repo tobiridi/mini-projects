@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:shrinkColumns="0,1"
+    android:stretchColumns="0,1"
+    android:padding="16dp"
+    android:background="@color/primary">
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/accountName"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_span="2"
+            android:text="Name"
+            android:textAlignment="center"
+            android:padding="8dp"
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="16dp">
+        <TextView
+            android:id="@+id/accountEmail"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Email"
+            android:textAlignment="center"
+            android:padding="8dp"
+            android:textSize="20sp"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/accountPassword"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="Passsword"
+            android:textAlignment="center"
+            android:padding="8dp"
+            android:textSize="20sp"
+            android:textColor="@color/white" />
+    </TableRow>
+
+</TableLayout>
