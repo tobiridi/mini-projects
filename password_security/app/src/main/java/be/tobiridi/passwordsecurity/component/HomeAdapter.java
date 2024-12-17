@@ -18,7 +18,7 @@ import be.tobiridi.passwordsecurity.data.Account;
 public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
     private List<Account> accounts;
 
-    public HomeAdapter(List<Account> accounts) {
+    public HomeAdapter(@NonNull List<Account> accounts) {
         this.accounts = accounts;
     }
 
@@ -42,8 +42,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
         return this.accounts.size();
     }
 
-    public void initList(List<Account> accounts) {
-        this.accounts = accounts;
-        notifyDataSetChanged();
+    public void replaceCurrentList(List<Account> newList) {
+        this.accounts = newList;
+        this.notifyItemRangeChanged(0, this.getItemCount());
     }
 }

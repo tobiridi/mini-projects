@@ -6,7 +6,6 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
@@ -30,24 +29,30 @@ public class HomeViewModel extends ViewModel {
     );
 
     private final AccountDataSource _accountDataSource;
-    private final MutableLiveData<List<Account>> _mutableAccounts;
+    private LiveData<List<Account>> accountsLiveData;
 
     public HomeViewModel(Context context) {
         this._accountDataSource = new AccountDataSource(context);
-        this._mutableAccounts = new MutableLiveData<>(this.getAllAccountsDao());
+        this.accountsLiveData = this.getAllAccountsDao();
     }
 
-    public LiveData<List<Account>> getAllAccounts() {
-        return this._mutableAccounts;
+    public LiveData<List<Account>> getAccountsLiveData() {
+        return this.accountsLiveData;
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        //free resource memory
+        this._accountDataSource.closeExecutorService();
     }
 
     /***************************/
     /* Data Source Dao methods */
     /***************************/
 
-    private List<Account> getAllAccountsDao() {
-        // change to return "LiveData<List<Account>>" if better
-        return this._accountDataSource.getAllAccounts().getValue();
+    private LiveData<List<Account>> getAllAccountsDao() {
+        return this._accountDataSource.getAllAccounts();
     }
 
 //    private boolean deleteAccountDao(Account account) {

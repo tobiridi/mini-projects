@@ -10,6 +10,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import be.tobiridi.passwordsecurity.database.AccountDao;
 import be.tobiridi.passwordsecurity.database.AppDatabase;
 
 /**
@@ -17,26 +18,26 @@ import be.tobiridi.passwordsecurity.database.AppDatabase;
  */
 public class AccountDataSource {
     private final ExecutorService _service;
-    private final Context _context;
+    private final AccountDao _accountDao;
 
     public AccountDataSource(Context context) {
         this._service = Executors.newSingleThreadExecutor();
-        this._context = context;
+        AppDatabase db = AppDatabase.getInstance(context);
+        this._accountDao = db.getAccountDao();
+    }
+
+    public void closeExecutorService() {
+        this._service.shutdown();
     }
 
     public LiveData<List<Account>> getAllAccounts() {
-        LiveData<List<Account>> accounts;
-
         Callable<LiveData<List<Account>>> callable = () -> {
-            AppDatabase db = AppDatabase.getInstance(this._context);
-            return db.getAccountDao().getAllAccounts();
+            return this._accountDao.getAllAccounts();
         };
 
         try {
             Future<LiveData<List<Account>>> future = this._service.submit(callable);
-            accounts = future.get();
-            this._service.shutdown();
-            return accounts;
+            return future.get();
 
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -47,6 +48,7 @@ public class AccountDataSource {
 //         //TODO : make verification
 ////        for (Account acc: accounts) {
 ////        }
+//        this.service.execute(() -> this.accountDao.insertAccount(accounts));
 //
 //        this.accountDao.insertAccount(accounts);
 //        return true;
@@ -65,6 +67,5 @@ public class AccountDataSource {
 //        this.accountDao.deleteAccount(account);
 //        return true;
 //    }
-
 
 }

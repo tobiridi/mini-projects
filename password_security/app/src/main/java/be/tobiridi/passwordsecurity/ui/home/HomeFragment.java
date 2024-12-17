@@ -1,5 +1,6 @@
 package be.tobiridi.passwordsecurity.ui.home;
 
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.os.Bundle;
@@ -20,6 +21,7 @@ import java.util.List;
 
 import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.component.HomeAdapter;
+import be.tobiridi.passwordsecurity.data.Account;
 
 public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
@@ -51,15 +53,15 @@ public class HomeFragment extends Fragment {
         this.recyclerView.setAdapter(new HomeAdapter(List.of()));
         this.homeViewModel = new ViewModelProvider(this, ViewModelProvider.Factory.from(HomeViewModel.initializer)).get(HomeViewModel.class);
 
-//        this.homeViewModel.getAllAccounts().observe(this.getViewLifecycleOwner(), new Observer<List<Account>>() {
-//            @Override
-//            public void onChanged(List<Account> accounts) {
-//                RecyclerView.Adapter adapter = recyclerView.getAdapter();
-//                if (adapter instanceof HomeAdapter) {
-//                    ((HomeAdapter) adapter).initList(accounts);
-//                }
-//            }
-//        });
+        this.homeViewModel.getAccountsLiveData().observe(this.getViewLifecycleOwner(), new Observer<List<Account>>() {
+            @Override
+            public void onChanged(List<Account> accounts) {
+                RecyclerView.Adapter adapter = recyclerView.getAdapter();
+                if (adapter instanceof HomeAdapter) {
+                    ((HomeAdapter) adapter).replaceCurrentList(accounts);
+                }
+            }
+        });
 
         this.initListener();
     }
