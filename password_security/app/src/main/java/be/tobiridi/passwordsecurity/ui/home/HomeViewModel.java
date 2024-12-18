@@ -6,10 +6,13 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
+import java.time.chrono.ChronoLocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import be.tobiridi.passwordsecurity.data.Account;
 import be.tobiridi.passwordsecurity.data.AccountDataSource;
@@ -38,6 +41,13 @@ public class HomeViewModel extends ViewModel {
 
     public LiveData<List<Account>> getAccountsLiveData() {
         return this.accountsLiveData;
+    }
+
+    public List<Account> accountsSortName() {
+        List<Account> acc = this.accountsLiveData.getValue();
+        return acc.stream()
+                .sorted((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
