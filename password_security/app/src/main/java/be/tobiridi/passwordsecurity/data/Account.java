@@ -74,9 +74,6 @@ public class Account implements Serializable {
     }
 
     public void setCreated(LocalDate created) throws IllegalArgumentException {
-        if (!created.isEqual(this.created)) {
-            throw new IllegalArgumentException("The parameter is not equal to the current created date.");
-        }
         this.created = created;
     }
 
@@ -85,9 +82,6 @@ public class Account implements Serializable {
     }
 
     public void setUpdated(LocalDate updated) throws IllegalArgumentException {
-        if (updated.isBefore(this.updated)) {
-            throw new IllegalArgumentException("The updated date must be after the previous.");
-        }
         this.updated = updated;
     }
 
