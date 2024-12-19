@@ -17,6 +17,7 @@ import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.component.SettingsListAdapter;
 
 public class SettingsFragment extends Fragment {
+    
     private SettingsViewModel settingsViewModel;
     private ListView listView;
 

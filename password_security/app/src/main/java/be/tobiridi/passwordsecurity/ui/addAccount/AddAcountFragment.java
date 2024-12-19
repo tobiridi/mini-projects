@@ -16,7 +16,7 @@ import be.tobiridi.passwordsecurity.R;
 
 public class AddAcountFragment extends Fragment {
 
-    private AddAcountViewModel mViewModel;
+    private AddAcountViewModel addAcountViewModel;
 
     public static AddAcountFragment newInstance() {
         return new AddAcountFragment();
@@ -29,10 +29,11 @@ public class AddAcountFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(AddAcountViewModel.class);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        this.addAcountViewModel = new ViewModelProvider(this).get(AddAcountViewModel.class);
         // TODO: Use the ViewModel
+
     }
 
 }

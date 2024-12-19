@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">PasswordSecurity</string>
+    <string name="cancel">Cancel</string>
+    <string name="reset">Reset</string>
+    <string name="validate">Validate</string>
     <!-- navBar item name -->
     <string name="nav_home">Home</string>
     <string name="nav_add">Add</string>
@@ -7,8 +10,13 @@
     <string name="nav_help">Help</string>
     <!-- hint text -->
     <string name="search_hint">Search…</string>
-    <!-- button description-->
+    <string name="account_name_hint">Account name</string>
+    <string name="email_hint">Example@hotmail.com</string>
+    <string name="password_hint">Password</string>
+    <!-- button description -->
     <string name="filter_btn_desc" translatable="false">Filter</string>
+    <string name="cancel_btn_desc" translatable="false">Cancel</string>
+    <string name="validate_btn_desc" translatable="false">validate</string>
     <!-- settings text -->
     <string name="settings_import">Import</string>
     <string name="settings_export">Export</string>

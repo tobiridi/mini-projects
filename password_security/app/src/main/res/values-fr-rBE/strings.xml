@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Passwordsecurity</string>
+    <string name="reset">Réinitialiser</string>
+    <string name="validate">Valider</string>
     <string name="nav_home">Accueil</string>
     <string name="nav_add">Ajouter</string>
     <string name="nav_settings">Options</string>
@@ -9,4 +11,8 @@
     <string name="settings_import">Importer</string>
     <string name="settings_export">Exporter</string>
     <string name="settings_clear_all">Supprimer tous les comptes</string>
+    <string name="cancel">Annuler</string>
+    <string name="email_hint">Exemple@hotmail.com</string>
+    <string name="password_hint">Mot de passe</string>
+    <string name="account_name_hint">Nom du compte</string>
 </resources>

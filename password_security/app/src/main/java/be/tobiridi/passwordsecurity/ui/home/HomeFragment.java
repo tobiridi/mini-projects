@@ -24,6 +24,7 @@ import be.tobiridi.passwordsecurity.component.HomeAdapter;
 import be.tobiridi.passwordsecurity.data.Account;
 
 public class HomeFragment extends Fragment {
+
     private HomeViewModel homeViewModel;
     private SearchView searchView;
     private RecyclerView recyclerView;
