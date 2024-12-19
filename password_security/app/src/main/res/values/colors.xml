@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-<!--    <color name="my_light_primary">#FFFFFFFF</color>-->
     <color name="black">#FF000000</color>
+    <color name="grey">#FFC4C4C4</color>
     <color name="white">#FFFFFFFF</color>
     <color name="red">#FFE53636</color>
     <color name="primary">#FF3A5983</color>
-    <color name="secondary">#FF8AAFB2</color>
+    <color name="secondary">#FFBDDEF8</color>
     <color name="tertiary">#FF474747</color>
     <color name="dark">#FF2D2D2D</color>
     <color name="activityBackground">#FFF5FAFF</color>

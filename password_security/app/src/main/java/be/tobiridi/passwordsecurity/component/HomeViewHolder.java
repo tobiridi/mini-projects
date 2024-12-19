@@ -14,19 +14,16 @@ import be.tobiridi.passwordsecurity.R;
 public class HomeViewHolder extends RecyclerView.ViewHolder {
     private final TextView _accountName;
     private final TextView _accountEmail;
-    private final TextView _accountPassword;
 
     public HomeViewHolder(@NonNull View itemView) {
         super(itemView);
         this._accountName = itemView.findViewById(R.id.accountName);
         this._accountEmail = itemView.findViewById(R.id.accountEmail);
-        this._accountPassword = itemView.findViewById(R.id.accountPassword);
     }
 
-    public void setNewAccount(String name, String email, String password) {
+    public void setNewAccount(String name, String email) {
         this._accountName.setText(name);
         this._accountEmail.setText(email);
-        this._accountPassword.setText(password);
     }
 
 }
