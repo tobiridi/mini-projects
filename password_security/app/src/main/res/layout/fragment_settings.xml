@@ -5,10 +5,11 @@
     android:layout_height="match_parent"
     tools:context=".ui.settings.SettingsFragment">
 
-    <TextView
+    <ListView
+        android:id="@+id/list_settings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="settings fragment" />
+        android:divider="@null"
+        android:dividerHeight="0dp" />
 
 </FrameLayout>

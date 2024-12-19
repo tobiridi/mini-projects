@@ -9,4 +9,8 @@
     <string name="search_hint">Search…</string>
     <!-- button description-->
     <string name="filter_btn_desc" translatable="false">Filter</string>
+    <!-- settings text -->
+    <string name="settings_import">Import</string>
+    <string name="settings_export">Export</string>
+    <string name="settings_clear_all">Clear all accounts</string>
 </resources>

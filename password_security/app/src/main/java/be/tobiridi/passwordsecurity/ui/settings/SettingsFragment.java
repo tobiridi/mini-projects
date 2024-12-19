@@ -11,12 +11,14 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import be.tobiridi.passwordsecurity.R;
+import be.tobiridi.passwordsecurity.component.SettingsListAdapter;
 
 public class SettingsFragment extends Fragment {
-
-    private SettingsViewModel mViewModel;
+    private SettingsViewModel settingsViewModel;
+    private ListView listView;
 
     public static SettingsFragment newInstance() {
         return new SettingsFragment();
@@ -29,10 +31,15 @@ public class SettingsFragment extends Fragment {
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        mViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        this.listView = view.findViewById(R.id.list_settings);
+        this.listView.setAdapter(new SettingsListAdapter());
+
+        this.settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
         // TODO: Use the ViewModel
+
     }
 
 }
