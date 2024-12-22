@@ -3,6 +3,9 @@
     <string name="cancel">Cancel</string>
     <string name="reset">Reset</string>
     <string name="validate">Validate</string>
+    <string name="import_data">Import</string>
+    <string name="export_data">Export</string>
+    <string name="clear_all_data">Clear all accounts</string>
     <!-- navBar item name -->
     <string name="nav_home">Home</string>
     <string name="nav_add">Add</string>
@@ -17,8 +20,4 @@
     <string name="filter_btn_desc" translatable="false">Filter</string>
     <string name="cancel_btn_desc" translatable="false">Cancel</string>
     <string name="validate_btn_desc" translatable="false">validate</string>
-    <!-- settings text -->
-    <string name="settings_import">Import</string>
-    <string name="settings_export">Export</string>
-    <string name="settings_clear_all">Clear all accounts</string>
 </resources>

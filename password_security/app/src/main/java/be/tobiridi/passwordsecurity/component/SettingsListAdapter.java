@@ -18,9 +18,9 @@ public class SettingsListAdapter extends BaseAdapter {
         //get resources string for the list of settings
         //possible to translate in the resource file
         this._settingsItemsResources = List.of(
-                R.string.settings_import,
-                R.string.settings_export,
-                R.string.settings_clear_all
+                R.string.import_data,
+                R.string.export_data,
+                R.string.clear_all_data
         );
     }
 
@@ -59,7 +59,7 @@ public class SettingsListAdapter extends BaseAdapter {
         String txt = resources.getString(this._settingsItemsResources.get(position));
 
         tv.setText(txt);
-        if (this._settingsItemsResources.get(position) == R.string.settings_clear_all) {
+        if (this._settingsItemsResources.get(position) == R.string.clear_all_data) {
             tv.setTextColor(resources.getColor(R.color.red, null));
         }
 
