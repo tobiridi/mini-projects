@@ -15,6 +15,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.util.HashMap;
 
+import be.tobiridi.passwordsecurity.data.AccountDataSource;
 import be.tobiridi.passwordsecurity.ui.addAccount.AddAcountFragment;
 import be.tobiridi.passwordsecurity.ui.help.HelpFragment;
 import be.tobiridi.passwordsecurity.ui.home.HomeFragment;
@@ -23,6 +24,7 @@ import be.tobiridi.passwordsecurity.ui.settings.SettingsFragment;
 public class MainActivity extends AppCompatActivity {
     private FragmentContainerView fragmentContainer;
     private BottomNavigationView bottomNavigation;
+    private AccountDataSource _accountDataSource;
     private final HashMap<Integer, Fragment> _fragments = new HashMap<>();
     private final FragmentManager _manager = getSupportFragmentManager();
 
@@ -37,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        this._accountDataSource = AccountDataSource.getInstance(this.getApplicationContext());
+
         //get views id
         this.fragmentContainer = findViewById(R.id.fragmentContainerView);
         this.bottomNavigation = findViewById(R.id.bottomNavigationView);
@@ -48,6 +52,13 @@ public class MainActivity extends AppCompatActivity {
         this._fragments.put(R.id.nav_help, HelpFragment.newInstance());
 
         this.initListener();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        //free resource memory
+        this._accountDataSource.closeExecutorService();
     }
 
     private void updateFragment(Fragment fragment) {

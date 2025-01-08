@@ -35,15 +35,8 @@ public class AddAcountViewModel extends ViewModel {
     private final Resources _resources;
 
     public AddAcountViewModel(Context context) {
-        this._accountDataSource = new AccountDataSource(context);
+        this._accountDataSource = AccountDataSource.getInstance(context);
         this._resources = context.getResources();
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        //free resource memory
-        this._accountDataSource.closeExecutorService();
     }
 
     /**

@@ -6,11 +6,9 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
-import java.time.chrono.ChronoLocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -35,7 +33,7 @@ public class HomeViewModel extends ViewModel {
     private LiveData<List<Account>> accountsLiveData;
 
     public HomeViewModel(Context context) {
-        this._accountDataSource = new AccountDataSource(context);
+        this._accountDataSource = AccountDataSource.getInstance(context);
         this.accountsLiveData = this.getAllAccountsDao();
     }
 
@@ -48,13 +46,6 @@ public class HomeViewModel extends ViewModel {
         return acc.stream()
                 .sorted((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName()))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        //free resource memory
-        this._accountDataSource.closeExecutorService();
     }
 
     /***************************/

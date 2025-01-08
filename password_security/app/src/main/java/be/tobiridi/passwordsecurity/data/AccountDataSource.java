@@ -15,12 +15,23 @@ import be.tobiridi.passwordsecurity.database.AppDatabase;
 
 /**
  * Interact with the Room database.
+ * <br/>
+ * Can be constructed using one of the getInstance class methods of this class.
  */
 public class AccountDataSource {
     private final ExecutorService _service;
     private final AccountDao _accountDao;
+    private static AccountDataSource INSTANCE;
 
-    public AccountDataSource(Context context) {
+    public static AccountDataSource getInstance(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = new AccountDataSource(context);
+        }
+
+        return INSTANCE;
+    }
+
+    private AccountDataSource(Context context) {
         this._service = Executors.newSingleThreadExecutor();
         AppDatabase db = AppDatabase.getInstance(context);
         this._accountDao = db.getAccountDao();
