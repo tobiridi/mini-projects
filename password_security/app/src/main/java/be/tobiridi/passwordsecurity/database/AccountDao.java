@@ -15,7 +15,7 @@ import be.tobiridi.passwordsecurity.data.Account;
 @Dao
 public interface AccountDao {
     @Insert
-    void insertAccount(Account... accounts);
+    long[] insertAccount(Account... accounts);
 
     @Update
     void updateAccount(Account account);

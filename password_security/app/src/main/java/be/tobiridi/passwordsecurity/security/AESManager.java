@@ -103,8 +103,8 @@ public abstract class AESManager {
     /**
      * Create a new Cipher object when using encrypt mode and then use it for encrypt and decrypt data.
      * Using a custom secret key created by the user
-     * otherwise if you need more security prefer to use {@link AESManager#getSecretKeyFromAndroidKeyStore()}
-     * @param cipherMode {@link Cipher#ENCRYPT_MODE} or {@link Cipher#DECRYPT_MODE}
+     * otherwise if you need more security prefer to use {@link AESManager#getSecretKeyFromAndroidKeyStore()}.
+     * @param cipherMode {@link Cipher#ENCRYPT_MODE} or {@link Cipher#DECRYPT_MODE}.
      * @param key The raw secret key entered by the user.
      */
     private static void initCipher(int cipherMode, String key) {
@@ -114,7 +114,7 @@ public abstract class AESManager {
                 //user custom secret key
                 byte[] digest = MessageDigest.getInstance("SHA256").digest(key.getBytes(StandardCharsets.UTF_8));
                 secretKey = new SecretKeySpec(digest, ALGORITHM);
-                //using AndroidKeyStore
+                //or using AndroidKeyStore
                 //secretKey = getSecretKeyFromAndroidKeyStore();
             }
 

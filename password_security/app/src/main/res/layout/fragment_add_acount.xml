@@ -40,15 +40,16 @@
         android:id="@+id/editText_account_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="text"
-        android:textSize="20sp"
-        android:textColor="@color/dark"
-        android:hint="@string/account_name_hint"
         android:autofillHints="name"
+        android:ems="10"
+        android:hint="@string/account_name_hint"
+        android:inputType="text"
+        android:textColor="@color/dark"
+        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        />
 
     <Button
         android:id="@+id/btn_validate"
@@ -58,11 +59,11 @@
         android:contentDescription="@string/validate_btn_desc"
         android:text="@string/validate"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/btn_cancel"
+        app:layout_constraintStart_toEndOf="@+id/btn_reset"
         app:layout_constraintTop_toBottomOf="@+id/editText_password" />
 
     <Button
-        android:id="@+id/btn_cancel"
+        android:id="@+id/btn_reset"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"

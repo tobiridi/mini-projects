@@ -44,15 +44,24 @@ public class AccountDataSource {
         }
     }
 
-//    public boolean saveAccount(Account... accounts) {
-//         //TODO : make verification
-////        for (Account acc: accounts) {
-////        }
-//        this.service.execute(() -> this.accountDao.insertAccount(accounts));
-//
-//        this.accountDao.insertAccount(accounts);
-//        return true;
-//    }
+    /**
+     * Save the new accounts.
+     * @param accounts All accounts should be saved.
+     * @return An array of rowId of each account saved.
+     */
+    public long[] saveAccount(Account... accounts) {
+        Callable<long[]> callable = () -> {
+            return this._accountDao.insertAccount(accounts);
+        };
+
+        try {
+            Future<long[]> f = this._service.submit(callable);
+            return f.get();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 //
 //    public boolean updateAccount(Account account) {
 //        //TODO : make verification

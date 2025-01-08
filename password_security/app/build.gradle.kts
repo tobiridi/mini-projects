@@ -38,11 +38,6 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
-/*
-    all dependencies interesting :
-    - "androidx.security.crypto" (encrypt file)
- */
-
 dependencies {
     implementation(libs.room.runtime)
     implementation(libs.appcompat)
