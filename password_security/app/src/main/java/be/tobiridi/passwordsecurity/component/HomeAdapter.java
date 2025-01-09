@@ -42,8 +42,8 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
         return this.accounts.size();
     }
 
-    public void replaceCurrentList(List<Account> newList) {
+    public void replaceAccounts(List<Account> newList) {
         this.accounts = newList;
-        this.notifyItemRangeChanged(0, this.getItemCount());
+        this.notifyDataSetChanged();
     }
 }

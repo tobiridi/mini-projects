@@ -6,6 +6,7 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
@@ -30,42 +31,58 @@ public class HomeViewModel extends ViewModel {
     );
 
     private final AccountDataSource _accountDataSource;
-    private LiveData<List<Account>> accountsLiveData;
+    private LiveData<List<Account>> sourceAccounts;
+    private MutableLiveData<List<Account>> mutableAccounts;
 
     public HomeViewModel(Context context) {
         this._accountDataSource = AccountDataSource.getInstance(context);
-        this.accountsLiveData = this.getAllAccountsDao();
+        this.sourceAccounts = this._accountDataSource.getAllAccounts();
+        this.mutableAccounts = new MutableLiveData<>();
     }
 
-    public LiveData<List<Account>> getAccountsLiveData() {
-        return this.accountsLiveData;
+    public void updateMutableAccounts(List<Account> newList) {
+        this.mutableAccounts.setValue(newList);
     }
 
-    public List<Account> accountsSortName() {
-        List<Account> acc = this.accountsLiveData.getValue();
-        return acc.stream()
-                .sorted((a1, a2) -> a1.getName().compareToIgnoreCase(a2.getName()))
-                .collect(Collectors.toList());
+    /**
+     * Get the current accounts data from {@link AccountDataSource}.
+     * @return The current accounts data.
+     */
+    public LiveData<List<Account>> getSourceAccounts() {
+        return this.sourceAccounts;
     }
 
-    /***************************/
-    /* Data Source Dao methods */
-    /***************************/
-
-    private LiveData<List<Account>> getAllAccountsDao() {
-        return this._accountDataSource.getAllAccounts();
+    /**
+     * Get the accounts modified by the user.
+     * @return The current modified accounts data.
+     */
+    public LiveData<List<Account>> getMutableAccounts() {
+        return this.mutableAccounts;
     }
 
-//    private boolean deleteAccountDao(Account account) {
-//        return this._accountDataSource.deleteAccount(account);
-//    }
-//
-//    private boolean saveAccountDao(Account... accounts) {
-//        return this._accountDataSource.saveAccount(accounts);
-//    }
-//
-//    private boolean updateAccountDao(Account account) {
-//        return this._accountDataSource.updateAccount(account);
-//    }
+    /**
+     * Retrieve the current list of accounts present in the {@link HomeViewModel#getSourceAccounts()}
+     * @return The list of accounts.
+     */
+    private List<Account> getAccounts() {
+        return this.sourceAccounts.getValue();
+    }
 
+    /****************************/
+    /* Mutable accounts methods */
+    /****************************/
+
+    /**
+     * Filter the accounts by account's name.
+     * @param filterAccName The input used to filter the account.
+     */
+    public void searchFilter(String filterAccName) {
+        if (this.sourceAccounts.isInitialized()) {
+            List<Account> accFilter = this.getAccounts().stream()
+                    .filter(a -> a.getName().toLowerCase().contains(filterAccName.toLowerCase()))
+                    .collect(Collectors.toList());
+
+            this.mutableAccounts.setValue(accFilter);
+        }
+    }
 }

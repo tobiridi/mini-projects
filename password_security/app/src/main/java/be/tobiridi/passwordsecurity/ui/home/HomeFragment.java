@@ -24,11 +24,11 @@ import be.tobiridi.passwordsecurity.component.HomeAdapter;
 import be.tobiridi.passwordsecurity.data.Account;
 
 public class HomeFragment extends Fragment {
-
     private HomeViewModel homeViewModel;
     private SearchView searchView;
     private RecyclerView recyclerView;
     private ImageButton filterButton;
+    private Observer<List<Account>> obSourceAccounts, obMutableAccounts;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -43,6 +43,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        this.homeViewModel = new ViewModelProvider(this, ViewModelProvider.Factory.from(HomeViewModel.initializer)).get(HomeViewModel.class);
 
         //get views id
         this.filterButton = view.findViewById(R.id.filterBtn);
@@ -52,33 +53,53 @@ public class HomeFragment extends Fragment {
         //set RecyclerView
         this.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         this.recyclerView.setAdapter(new HomeAdapter(List.of()));
-        this.homeViewModel = new ViewModelProvider(this, ViewModelProvider.Factory.from(HomeViewModel.initializer)).get(HomeViewModel.class);
 
-        this.homeViewModel.getAccountsLiveData().observe(this.getViewLifecycleOwner(), new Observer<List<Account>>() {
-            @Override
-            public void onChanged(List<Account> accounts) {
-                RecyclerView.Adapter adapter = recyclerView.getAdapter();
-                if (adapter instanceof HomeAdapter) {
-                    ((HomeAdapter) adapter).replaceCurrentList(accounts);
-                }
-            }
-        });
+        //init the observers
+        this.initObservers();
+        this.homeViewModel.getSourceAccounts().observe(this.getViewLifecycleOwner(), this.obSourceAccounts);
+        this.homeViewModel.getMutableAccounts().observe(this.getViewLifecycleOwner(), this.obMutableAccounts);
 
-        this.initListener();
+        //init the listeners
+        this.initListeners();
     }
 
-    private void initListener() {
+    @Override
+    public void onStart() {
+        super.onStart();
+        //reset search input when return to this fragment after navigated to another fragment/activity
+        searchView.setQuery(null, false);
+    }
+
+    private void initObservers() {
+        this.obSourceAccounts = new Observer<List<Account>>() {
+            @Override
+            public void onChanged(List<Account> accounts) {
+                homeViewModel.updateMutableAccounts(accounts);
+            }
+        };
+
+        this.obMutableAccounts = new Observer<List<Account>>() {
+            @Override
+            public void onChanged(List<Account> accounts) {
+                HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
+                if (adapter != null) {
+                    adapter.replaceAccounts(accounts);
+                }
+            }
+        };
+    }
+
+    private void initListeners() {
         this.searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
-                //TODO: not implemented
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                homeViewModel.searchFilter(newText);
                 return false;
-                //TODO: not implemented
             }
         });
 
