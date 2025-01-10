@@ -18,7 +18,9 @@
     <string name="account_name_hint">Nom du compte</string>
     <string name="import_data">Importer</string>
     <string name="export_data">Exporter</string>
+    <string name="welcome">Bienvenue</string>
     <string name="msg_add_account_success">Le compte a été créer</string>
     <string name="error_account_name_empty">Le nom est vide</string>
     <string name="error_account_email_empty">L\'email est vide</string>
+    <string name="confirm_password_hint">Confirmer mot de passe</string>
 </resources>
