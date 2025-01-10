@@ -12,7 +12,7 @@ public class DateConverters {
     }
     @TypeConverter
     public LocalDate stringToLocalDate(String date) {
-        return LocalDate.parse(date);
+        return LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
     }
 
 }
