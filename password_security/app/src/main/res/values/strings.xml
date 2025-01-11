@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">PasswordSecurity</string>
+    <string name="app_name" translatable="false">PasswordSecurity</string>
     <string name="cancel">Cancel</string>
     <string name="reset">Reset</string>
     <string name="validate">Validate</string>
@@ -9,10 +9,12 @@
     <string name="welcome">Welcome</string>
     <string name="msg_add_account_success">The account has been created</string>
     <string name="msg_add_account_fail">Error occur when account creation</string>
+    <string name="msg_authenticate_fail">Authentication fail</string>
     <string name="error_account_name_empty">Name is empty</string>
     <string name="error_account_email_empty">Email is empty</string>
     <string name="error_account_email_format">Email format invalid</string>
     <string name="error_account_password_empty">Password is empty</string>
+    <string name="error_password_not_same">Password is not correct</string>
     <!-- navBar item name -->
     <string name="nav_home">Home</string>
     <string name="nav_add">Add</string>

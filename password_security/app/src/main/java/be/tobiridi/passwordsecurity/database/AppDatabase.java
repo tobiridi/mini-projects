@@ -8,10 +8,14 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 import be.tobiridi.passwordsecurity.data.Account;
+import be.tobiridi.passwordsecurity.data.UserPreferences;
 import be.tobiridi.passwordsecurity.database.converters.DateConverters;
 
 @Database(version = 1,
-        entities = {Account.class},
+        entities = {
+            Account.class,
+            UserPreferences.class,
+        },
         exportSchema = true
 )
 @TypeConverters({DateConverters.class})
@@ -30,4 +34,5 @@ public abstract class AppDatabase extends RoomDatabase {
 
     //Dao class
     public abstract AccountDao getAccountDao();
+    public abstract UserPreferencesDao getUserPreferencesDao();
 }
