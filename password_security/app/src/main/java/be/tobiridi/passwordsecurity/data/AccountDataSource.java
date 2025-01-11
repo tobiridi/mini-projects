@@ -37,8 +37,12 @@ public class AccountDataSource {
         this._accountDao = db.getAccountDao();
     }
 
+    /**
+     * Close the Threads and free the resources.
+     */
     public void closeExecutorService() {
         this._service.shutdown();
+        INSTANCE = null;
     }
 
     public LiveData<List<Account>> getAllAccounts() {

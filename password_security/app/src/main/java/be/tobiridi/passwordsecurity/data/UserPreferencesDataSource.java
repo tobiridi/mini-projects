@@ -35,24 +35,32 @@ public class UserPreferencesDataSource {
         this._userPreferencesDao = db.getUserPreferencesDao();
     }
 
+    /**
+     * Close the Threads and free the resources.
+     */
     public void closeExecutorService() {
         this._service.shutdown();
+        INSTANCE = null;
     }
 
-    //TODO: document this method
+    /**
+     * Attempt to authenticate the user with the provided password.
+     * @param base64HashPassword The hashed user password in Base64 format.
+     * @return True if the password matches false otherwise.
+     */
     public boolean authenticateUser(String base64HashPassword) {
         Callable<Boolean> callable = () -> {
-//            String dbData = this._userPreferencesDao.getMasterPassword();
-            
-            //testing, ok
-//            System.out.println("DB password : " + dbData);
-//            if (dbData == null) {
-//                dbData = HashManager.hashStringToStringBase64("tony");
-//            }
-//            System.out.println("DB password : " + dbData);
-//            return dbData.equals(base64HashPassword);
+            String dbData = this._userPreferencesDao.getMasterPassword();
 
-            return this._userPreferencesDao.getMasterPassword().equals(base64HashPassword);
+            //testing, ok
+            System.out.println("DB password : " + dbData);
+            if (dbData == null) {
+                dbData = HashManager.hashStringToStringBase64("tony");
+            }
+            System.out.println("DB password : " + dbData);
+            return dbData.equals(base64HashPassword);
+
+            //return this._userPreferencesDao.getMasterPassword().equals(base64HashPassword);
         };
 
         try {
