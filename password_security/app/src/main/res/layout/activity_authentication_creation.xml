@@ -44,7 +44,7 @@
             android:id="@+id/inputEditText_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/password_hint"
+            android:hint="@string/hint_password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -62,7 +62,7 @@
             android:id="@+id/inputEditText_confirm_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/confirm_password_hint"
+            android:hint="@string/hint_confirm_password"
             android:inputType="textPassword" />
     </com.google.android.material.textfield.TextInputLayout>
 

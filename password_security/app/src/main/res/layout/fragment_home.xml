@@ -14,7 +14,7 @@
         app:layout_constraintEnd_toStartOf="@+id/filterBtn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:queryHint="@string/search_hint" />
+        android:queryHint="@string/hint_search" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:contentDescription="@string/filter_btn_desc"
+        android:contentDescription="@string/btn_desc_filter"
         android:src="@drawable/outline_filter_list_24"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/searchView"
