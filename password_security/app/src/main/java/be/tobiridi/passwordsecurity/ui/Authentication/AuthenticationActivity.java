@@ -91,6 +91,7 @@ public class AuthenticationActivity extends AppCompatActivity {
                     AuthenticationActivity.this.authAttempt++;
                     if (AuthenticationActivity.this.authAttempt == AuthenticationActivity.this.maxAuthAttempt) {
                         authViewModel.destroyAllData(AuthenticationActivity.this.getApplicationContext());
+                        AuthenticationActivity.this.finish();
                     }
                 }
             }
