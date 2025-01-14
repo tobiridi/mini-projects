@@ -9,12 +9,13 @@ import java.util.concurrent.Future;
 
 import be.tobiridi.passwordsecurity.database.AppDatabase;
 import be.tobiridi.passwordsecurity.database.UserPreferencesDao;
-import be.tobiridi.passwordsecurity.security.HashManager;
+
 
 /**
  * Interact with the Room database.
  * <br/>
  * Can be constructed using one of the getInstance class methods of this class.
+ * @see androidx.room.RoomDatabase
  */
 public class UserPreferencesDataSource {
     private final ExecutorService _service;
@@ -46,21 +47,12 @@ public class UserPreferencesDataSource {
     /**
      * Attempt to authenticate the user with the provided password.
      * @param base64HashPassword The hashed user password in Base64 format.
-     * @return True if the password matches false otherwise.
+     * @return {@code true} If the password matches {@code false} otherwise.
+     * @see be.tobiridi.passwordsecurity.security.HashManager
      */
     public boolean authenticateUser(String base64HashPassword) {
         Callable<Boolean> callable = () -> {
-            String dbData = this._userPreferencesDao.getMasterPassword();
-
-            //testing, ok
-            System.out.println("DB password : " + dbData);
-            if (dbData == null) {
-                dbData = HashManager.hashStringToStringBase64("tony");
-            }
-            System.out.println("DB password : " + dbData);
-            return dbData.equals(base64HashPassword);
-
-            //return this._userPreferencesDao.getMasterPassword().equals(base64HashPassword);
+            return this._userPreferencesDao.getMasterPassword().equals(base64HashPassword);
         };
 
         try {
@@ -72,4 +64,45 @@ public class UserPreferencesDataSource {
         }
     }
 
+    /**
+     * Check if the master password of the app exists.
+     * @return {@code true} If the master password exists, {@code false} if the master password does not exist.
+     */
+    public boolean hasMasterPassword() {
+        Callable<Boolean> callable = () -> {
+            //return null if not found
+            return this._userPreferencesDao.getMasterPassword() != null;
+        };
+
+        try {
+            Future<Boolean> f = this._service.submit(callable);
+            return f.get();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Save a new master password to authenticate the user.
+     * <br/>
+     * Replace it if the master password already exists.
+     * @param base64HashPassword The hashed user password in Base64 format.
+     * @return {@code true} if the master password has been save.
+     * @see be.tobiridi.passwordsecurity.security.HashManager
+     */
+    public boolean saveMasterPassword(String base64HashPassword) {
+        Callable<Long> callable = () -> {
+            UserPreferences pref = new UserPreferences(base64HashPassword);
+            return this._userPreferencesDao.saveMasterPassword(pref);
+        };
+
+        try {
+            Future<Long> f = this._service.submit(callable);
+            return f.get() > 0;
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

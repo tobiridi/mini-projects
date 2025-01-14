@@ -7,14 +7,18 @@
     <string name="export_data">Export</string>
     <string name="clear_all_data">Clear all accounts</string>
     <string name="welcome">Welcome</string>
+    <string name="master_password_explain">Please define a master password to start using the application. This master password is used to access at the stored data. If you forgot it, you will no longer able to access to your data anymore.</string>
+    <!-- message to user -->
     <string name="msg_add_account_success">The account has been created</string>
-    <string name="msg_add_account_fail">Error occur when account creation</string>
+    <string name="msg_add_account_fail">Error when account creation</string>
     <string name="msg_authenticate_fail">Authentication fail</string>
+    <!-- error text -->
     <string name="error_account_name_empty">Name is empty</string>
     <string name="error_account_email_empty">Email is empty</string>
     <string name="error_account_email_format">Email format invalid</string>
     <string name="error_account_password_empty">Password is empty</string>
-    <string name="error_password_not_same">Password is not correct</string>
+    <string name="error_password_not_same">Password is not the same</string>
+    <string name="error_master_password_creation">An error occurred while master password creation</string>
     <!-- navBar item name -->
     <string name="nav_home">Home</string>
     <string name="nav_add">Add</string>

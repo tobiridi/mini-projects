@@ -6,7 +6,8 @@
     <string name="msg_add_account_fail">Erreur lors de la création du compte</string>
     <string name="error_account_email_format">Format de l\'email invalide</string>
     <string name="error_account_password_empty">Mot de passe vide</string>
-    <string name="error_password_not_same">Mot de passe incorrect</string>
+    <string name="error_password_not_same">Le mot de passe ne correspond pas</string>
+    <string name="error_master_password_creation">Une erreur s\'est produite lors de la création du mot de passe maître</string>
     <string name="nav_home">Accueil</string>
     <string name="nav_add">Ajouter</string>
     <string name="nav_settings">Options</string>
@@ -19,6 +20,7 @@
     <string name="import_data">Importer</string>
     <string name="export_data">Exporter</string>
     <string name="welcome">Bienvenue</string>
+    <string name="master_password_explain">Veuillez définir un mot de passe maître pour commencer à utiliser l\'application. Ce mot de passe maître est utilisé pour accéder aux données qui sont stocker dans l\'application. Si vous avez oublier le mot de passe maitre, vous ne pourrez plus accéder à vos données.</string>
     <string name="msg_add_account_success">Le compte a été créer</string>
     <string name="msg_authenticate_fail">Authentification échouée</string>
     <string name="error_account_name_empty">Le nom est vide</string>

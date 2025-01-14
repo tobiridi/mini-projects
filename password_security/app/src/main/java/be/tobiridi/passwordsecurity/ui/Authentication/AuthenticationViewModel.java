@@ -26,23 +26,55 @@ public class AuthenticationViewModel extends ViewModel {
     );
 
     private final UserPreferencesDataSource _userPreferencesDataSource;
+    private Boolean hasMasterPassword;
+    private boolean switchActivity;
 
     public AuthenticationViewModel(Context context) {
         this._userPreferencesDataSource = UserPreferencesDataSource.getInstance(context);
+        this.switchActivity = false;
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        this._userPreferencesDataSource.closeExecutorService();
+        if (!this.switchActivity) {
+            this._userPreferencesDataSource.closeExecutorService();
+        }
+    }
+
+    public boolean isMasterPasswordExists() {
+        if (this.hasMasterPassword == null) {
+            this.hasMasterPassword = this._userPreferencesDataSource.hasMasterPassword();
+        }
+
+        return this.hasMasterPassword;
     }
 
     public boolean confirmPassword(String password) {
         if (!password.isEmpty()) {
             String hashPwd = HashManager.hashStringToStringBase64(password);
-            return this._userPreferencesDataSource.authenticateUser(hashPwd);
+            if (this._userPreferencesDataSource.authenticateUser(hashPwd)) {
+                this.switchActivity = true;
+                return true;
+            }
         }
+        return false;
+    }
 
+    public boolean isPasswordEqualsConfirmPassword(String password, String confirmPassword) {
+        if (password.isEmpty() || confirmPassword.isEmpty()) {
+            return false;
+        }
+        else {
+            return confirmPassword.equals(password);
+        }
+    }
+
+    public boolean createMasterPassword(String masterPwd) {
+        if (!this.isMasterPasswordExists()) {
+            String hashPwd = HashManager.hashStringToStringBase64(masterPwd);
+            return this._userPreferencesDataSource.saveMasterPassword(hashPwd);
+        }
         return false;
     }
 

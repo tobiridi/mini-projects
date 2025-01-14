@@ -13,9 +13,20 @@ public class UserPreferences implements Serializable {
     private static final long serialVersionUID = 3415344675890978362L;
 
     @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "user_pref_id")
+    private int userPrefId;
+
     @ColumnInfo(name = "master_password")
     @NonNull
     private String masterPassword;
+
+    public int getUserPrefId() {
+        return userPrefId;
+    }
+
+    public void setUserPrefId(int userPrefId) {
+        this.userPrefId = userPrefId;
+    }
 
     @NonNull
     public String getMasterPassword() {
@@ -23,6 +34,16 @@ public class UserPreferences implements Serializable {
     }
 
     public void setMasterPassword(String masterPassword) {
+        this.masterPassword = masterPassword;
+    }
+
+    public UserPreferences() {
+        //Always use the "primary key = 1" to oblige to have only one row in the table
+        this.userPrefId = 1;
+    }
+
+    public UserPreferences(@NonNull String masterPassword) {
+        this();
         this.masterPassword = masterPassword;
     }
 
@@ -36,6 +57,6 @@ public class UserPreferences implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(this.masterPassword);
+        return Objects.hash(this.userPrefId, this.masterPassword);
     }
 }
