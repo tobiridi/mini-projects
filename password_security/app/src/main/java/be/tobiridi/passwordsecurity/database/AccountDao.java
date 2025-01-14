@@ -18,10 +18,10 @@ public interface AccountDao {
     long[] insertAccount(Account... accounts);
 
     @Update
-    void updateAccount(Account account);
+    int updateAccount(Account... accounts);
 
     @Delete
-    void deleteAccount(Account account);
+    int deleteAccount(Account... accounts);
 
     @Transaction
     @Query("SELECT id, name, email, password, created, updated FROM accounts ORDER BY name ASC")

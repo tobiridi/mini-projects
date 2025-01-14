@@ -10,7 +10,6 @@ import java.util.concurrent.Future;
 import be.tobiridi.passwordsecurity.database.AppDatabase;
 import be.tobiridi.passwordsecurity.database.UserPreferencesDao;
 
-
 /**
  * Interact with the Room database.
  * <br/>
@@ -104,5 +103,18 @@ public class UserPreferencesDataSource {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * This method will clear all tables present in the database.
+     * <br/>
+     * <b>Please be careful when you use this method !</b>
+     */
+    public void destroyAllData(Context context) {
+        this._service.execute(() -> {
+            AppDatabase db = AppDatabase.getInstance(context);
+            db.clearAllTables();
+            this.closeExecutorService();
+        });
     }
 }
