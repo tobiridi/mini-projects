@@ -27,7 +27,6 @@ public class AuthenticationActivity extends AppCompatActivity {
     private Button validateBtn;
     private TextInputLayout passwordInputLayout, confirmPasswordInputLayout;
     private TextInputEditText passwordInputEditText, confirmPasswordInputEditText;
-    private byte authAttempt = 0, maxAuthAttempt = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,8 +87,7 @@ public class AuthenticationActivity extends AppCompatActivity {
                     passwordInputLayout.setError(error);
 
                     //destroy all data if max attempts is reached
-                    AuthenticationActivity.this.authAttempt++;
-                    if (AuthenticationActivity.this.authAttempt == AuthenticationActivity.this.maxAuthAttempt) {
+                    if (authViewModel.isMaxAuthAttemptReached()) {
                         authViewModel.destroyAllData(AuthenticationActivity.this.getApplicationContext());
                         AuthenticationActivity.this.finish();
                     }

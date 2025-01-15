@@ -28,6 +28,8 @@ public class AuthenticationViewModel extends ViewModel {
     private final UserPreferencesDataSource _userPreferencesDataSource;
     private Boolean hasMasterPassword;
     private boolean switchActivity;
+    private byte authAttempt = 0;
+    private final byte _maxAuthAttempt = 3;
 
     public AuthenticationViewModel(Context context) {
         this._userPreferencesDataSource = UserPreferencesDataSource.getInstance(context);
@@ -50,6 +52,10 @@ public class AuthenticationViewModel extends ViewModel {
         return this.hasMasterPassword;
     }
 
+    public boolean isMaxAuthAttemptReached() {
+        return this.authAttempt == this._maxAuthAttempt;
+    }
+
     public boolean confirmPassword(String password) {
         if (!password.isEmpty()) {
             String hashPwd = HashManager.hashStringToStringBase64(password);
@@ -57,6 +63,7 @@ public class AuthenticationViewModel extends ViewModel {
                 this.switchActivity = true;
                 return true;
             }
+            this.authAttempt++;
         }
         return false;
     }
