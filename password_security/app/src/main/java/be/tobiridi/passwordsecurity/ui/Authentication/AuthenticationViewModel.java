@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import be.tobiridi.passwordsecurity.data.UserPreferencesDataSource;
-import be.tobiridi.passwordsecurity.security.HashManager;
 
 public class AuthenticationViewModel extends ViewModel {
     /*********************/
@@ -56,10 +55,9 @@ public class AuthenticationViewModel extends ViewModel {
         return this.authAttempt == this._maxAuthAttempt;
     }
 
-    public boolean confirmPassword(String password) {
-        if (!password.isEmpty()) {
-            String hashPwd = HashManager.hashStringToStringBase64(password);
-            if (this._userPreferencesDataSource.authenticateUser(hashPwd)) {
+    public boolean confirmPassword(String masterPassword) {
+        if (!masterPassword.isEmpty()) {
+            if (this._userPreferencesDataSource.authenticateUser(masterPassword)) {
                 this.switchActivity = true;
                 return true;
             }
@@ -79,8 +77,7 @@ public class AuthenticationViewModel extends ViewModel {
 
     public boolean createMasterPassword(String masterPwd) {
         if (!this.isMasterPasswordExists()) {
-            String hashPwd = HashManager.hashStringToStringBase64(masterPwd);
-            return this._userPreferencesDataSource.saveMasterPassword(hashPwd);
+            return this._userPreferencesDataSource.saveMasterPassword(masterPwd);
         }
         return false;
     }

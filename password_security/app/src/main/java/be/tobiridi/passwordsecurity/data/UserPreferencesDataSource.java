@@ -1,14 +1,19 @@
 package be.tobiridi.passwordsecurity.data;
 
 import android.content.Context;
+import android.util.Base64;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import javax.crypto.BadPaddingException;
+
 import be.tobiridi.passwordsecurity.database.AppDatabase;
 import be.tobiridi.passwordsecurity.database.UserPreferencesDao;
+import be.tobiridi.passwordsecurity.security.AESManager;
+import be.tobiridi.passwordsecurity.security.HashManager;
 
 /**
  * Interact with the Room database.
@@ -45,13 +50,21 @@ public class UserPreferencesDataSource {
 
     /**
      * Attempt to authenticate the user with the provided password.
-     * @param base64HashPassword The hashed user password in Base64 format.
+     * @param userPassword The user password.
      * @return {@code true} If the password matches {@code false} otherwise.
-     * @see be.tobiridi.passwordsecurity.security.HashManager
      */
-    public boolean authenticateUser(String base64HashPassword) {
+    public boolean authenticateUser(String userPassword) {
         Callable<Boolean> callable = () -> {
-            return this._userPreferencesDao.getMasterPassword().equals(base64HashPassword);
+            byte[] masterKey = HashManager.hashStringToBytes(userPassword);
+            String encryptedMasterPassword = this._userPreferencesDao.getMasterPassword();
+
+            try {
+                String decryptedMasterPassword = AESManager.decryptToStringBase64(masterKey, encryptedMasterPassword);
+                return Base64.encodeToString(masterKey, Base64.DEFAULT).equals(decryptedMasterPassword);
+            } catch (BadPaddingException e) {
+                //the key is wrong
+                return false;
+            }
         };
 
         try {
@@ -85,14 +98,16 @@ public class UserPreferencesDataSource {
     /**
      * Save a new master password to authenticate the user.
      * <br/>
-     * Replace it if the master password already exists.
-     * @param base64HashPassword The hashed user password in Base64 format.
+     * It will be replace if the master password already exists.
+     * @param masterPassword The user master password.
      * @return {@code true} if the master password has been save.
-     * @see be.tobiridi.passwordsecurity.security.HashManager
      */
-    public boolean saveMasterPassword(String base64HashPassword) {
+    public boolean saveMasterPassword(String masterPassword) {
         Callable<Long> callable = () -> {
-            UserPreferences pref = new UserPreferences(base64HashPassword);
+            byte[] masterKey = HashManager.hashStringToBytes(masterPassword);
+            String encryptedMasterKey = AESManager.encryptToStringBase64(masterKey, masterKey);
+
+            UserPreferences pref = new UserPreferences(encryptedMasterKey);
             return this._userPreferencesDao.saveMasterPassword(pref);
         };
 

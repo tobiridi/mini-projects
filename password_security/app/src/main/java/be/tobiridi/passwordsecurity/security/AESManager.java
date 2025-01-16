@@ -2,19 +2,20 @@ package be.tobiridi.passwordsecurity.security;
 
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
+import android.util.Base64;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.InvalidParameterException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.UnrecoverableEntryException;
 import java.security.cert.CertificateException;
+import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -40,9 +41,9 @@ public abstract class AESManager {
     private static final int KEY_SIZE = 256;
     private static final String ALIAS_KEY = "AppKey";
     private static final String ANDROID_PROVIDER = "AndroidKeyStore";
+    private static KeyStore keyStore;
     private static Cipher cipher;
     private static SecretKey secretKey;
-    private static KeyStore keyStore;
 
     /**
      * Describe the parameters spec for generate key.
@@ -101,42 +102,46 @@ public abstract class AESManager {
     }
 
     /**
-     * Create a new Cipher object when using encrypt mode and then use it for encrypt and decrypt data.
-     * Using a custom secret key created by the user
-     * otherwise if you need more security prefer to use {@link AESManager#getSecretKeyFromAndroidKeyStore()}.
-     * @param cipherMode {@link Cipher#ENCRYPT_MODE} or {@link Cipher#DECRYPT_MODE}.
-     * @param key The raw secret key entered by the user.
+     * Encrypt the data using the key in AES-256 format.
+     * Using a custom secret key created by the user.
+     * If you need more security prefer to use {@link AESManager#getSecretKeyFromAndroidKeyStore()}.
+     * @param key The raw key used to encrypt/decrypt.
+     * @param plainData The data that you want to encrypt.
+     * @return The encrypted data.
+     * @see AESManager#decrypt(byte[], byte[])
      */
-    private static void initCipher(int cipherMode, String key) {
+    public static byte[] encrypt(byte[] key, byte[] plainData) {
         try {
-            if (cipherMode == Cipher.ENCRYPT_MODE) {
+            if (cipher == null) {
                 cipher = Cipher.getInstance(TRANSFORMATION);
                 //user custom secret key
-                byte[] digest = MessageDigest.getInstance("SHA256").digest(key.getBytes(StandardCharsets.UTF_8));
-                secretKey = new SecretKeySpec(digest, ALGORITHM);
+                secretKey = new SecretKeySpec(key, ALGORITHM);
                 //or using AndroidKeyStore
                 //secretKey = getSecretKeyFromAndroidKeyStore();
             }
 
-            switch (cipherMode) {
-                case Cipher.ENCRYPT_MODE: cipher.init(Cipher.ENCRYPT_MODE, secretKey);
-                    break;
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
+            byte[] iv = cipher.getIV();
+            byte[] encryptedData = cipher.doFinal(plainData);
 
-                case Cipher.DECRYPT_MODE: {
-                    IvParameterSpec ivSpec = new IvParameterSpec(cipher.getIV());
-                    cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec);
-                }
-                    break;
-            }
+            ByteArrayOutputStream byteArrayOut = new ByteArrayOutputStream();
+            byteArrayOut.write(iv);
+            byteArrayOut.write(encryptedData);
+
+            return byteArrayOut.toByteArray();
 
             //TODO: manage exception
+        } catch (NoSuchPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalBlockSizeException e) {
+            throw new RuntimeException(e);
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
-        } catch (NoSuchPaddingException e) {
+        } catch (BadPaddingException e) {
             throw new RuntimeException(e);
         } catch (InvalidKeyException e) {
             throw new RuntimeException(e);
-        } catch (InvalidAlgorithmParameterException e) {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -144,45 +149,68 @@ public abstract class AESManager {
 
     /**
      * Encrypt the data using the key in AES-256 format.
-     * @param key The key used to encrypt/decrypt.
+     * @param key The raw key used to encrypt/decrypt.
      * @param plainData The data that you want to encrypt.
-     * @return The encrypt data.
-     * @see AESManager#decrypt(String, byte[])
+     * @return The encrypted data in Base64 format.
+     * @see AESManager#encrypt(byte[], byte[])
      */
-    public static byte[] encrypt(String key, byte[] plainData) {
-        initCipher(Cipher.ENCRYPT_MODE, key);
+    public static String encryptToStringBase64(byte[] key, byte[] plainData) {
+        return Base64.encodeToString(AESManager.encrypt(key, plainData), Base64.DEFAULT);
+    }
 
+    /**
+     * Decrypt the data using the key in AES-256 format.
+     * Using a custom secret key created by the user.
+     * If you need more security prefer to use {@link AESManager#getSecretKeyFromAndroidKeyStore()}.
+     * @param key The raw key used to encrypt/decrypt.
+     * @param encryptedData The encrypted data.
+     * @return The decrypted data.
+     * @see AESManager#encrypt(byte[], byte[])
+     */
+    public static byte[] decrypt(byte[] key, byte[] encryptedData) throws BadPaddingException {
         try {
-            return cipher.doFinal(plainData);
+            if (cipher == null) {
+                cipher = Cipher.getInstance(TRANSFORMATION);
+                //user custom secret key
+                secretKey = new SecretKeySpec(key, ALGORITHM);
+                //or using AndroidKeyStore
+                //secretKey = getSecretKeyFromAndroidKeyStore();
+            }
+
+            byte[] iv = Arrays.copyOfRange(encryptedData, 0, cipher.getBlockSize());
+            byte[] data = Arrays.copyOfRange(encryptedData, cipher.getBlockSize(), encryptedData.length);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
+
+            return cipher.doFinal(data);
 
             //TODO: manage exception
-        } catch (BadPaddingException | IllegalBlockSizeException e) {
+        } catch (NoSuchPaddingException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalBlockSizeException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        } catch (BadPaddingException e) {
+            //throw exception when user input a wrong key
+            //because padding is not the same while encryption
+            throw new BadPaddingException("Padding different because the key used for encrypted data is not the same.");
+        } catch (InvalidKeyException e) {
+            throw new RuntimeException(e);
+        } catch (InvalidAlgorithmParameterException e) {
             throw new RuntimeException(e);
         }
     }
 
     /**
      * Decrypt the data using the key in AES-256 format.
-     * @param key The key used to encrypt/decrypt.
-     * @param encryptData The encrypt data.
-     * @return The decrypt data.
-     * @see AESManager#encrypt(String, byte[])
-     * @throws NullPointerException If the cipher is null
+     * @param key The raw key used to encrypt/decrypt.
+     * @param base64EncryptedData The encrypted data in Base64 format.
+     * @return The decrypted data in Base64 format.
+     * @see AESManager#decrypt(byte[], byte[])
      */
-    public static byte[] decrypt(String key, byte[] encryptData) throws NullPointerException {
-        if (cipher == null) {
-            throw new NullPointerException("The cipher is not initialized, use encryption method before using decryption method.");
-        }
-
-        initCipher(Cipher.DECRYPT_MODE, key);
-
-        try {
-            return cipher.doFinal(encryptData);
-
-        } catch (BadPaddingException | IllegalBlockSizeException e) {
-            throw new RuntimeException(e);
-        }
-
+    public static String decryptToStringBase64(byte[] key, String base64EncryptedData) throws BadPaddingException {
+        byte[] data = AESManager.decrypt(key, Base64.decode(base64EncryptedData, Base64.DEFAULT));
+        return Base64.encodeToString(data, Base64.DEFAULT);
     }
 
 }
