@@ -34,7 +34,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull HomeViewHolder holder, int position) {
         Account acc = this.accounts.get(position);
-        holder.setNewAccount(acc.getName(), acc.getEmail());
+        holder.setAccount(acc);
     }
 
     @Override

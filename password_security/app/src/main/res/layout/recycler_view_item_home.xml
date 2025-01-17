@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:clickable="true"
+    android:padding="8dp"
+    android:id="@+id/rv_item">
 
     <!--    <TextView-->
     <!--        android:id="@+id/accountIcon"-->

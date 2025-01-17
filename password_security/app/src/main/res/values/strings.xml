@@ -7,6 +7,9 @@
     <string name="export_data">Export</string>
     <string name="clear_all_data">Clear all accounts</string>
     <string name="welcome">Welcome</string>
+    <string name="email" translatable="false">Email</string>
+    <string name="password">Password</string>
+    <string name="ok" translatable="false">OK</string>
     <string name="master_password_explain">Please define a master password to start using the application. This master password is used to access at the stored data. If you forgot it, you will no longer able to access to your data anymore.</string>
     <!-- message to user -->
     <string name="msg_add_account_success">The account has been created</string>
