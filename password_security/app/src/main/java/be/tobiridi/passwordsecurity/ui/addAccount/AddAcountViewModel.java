@@ -62,7 +62,7 @@ public class AddAcountViewModel extends ViewModel {
             LocalDate created = LocalDate.now();
 
             Account a = new Account(name, email, pwd, created, created);
-            idResults = this._accountDataSource.saveAccount(a);
+            idResults = this._accountDataSource.saveAccounts(a);
         }
 
         return idResults.length > 0;

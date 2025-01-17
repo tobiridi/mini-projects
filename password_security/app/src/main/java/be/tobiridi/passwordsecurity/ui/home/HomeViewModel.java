@@ -7,14 +7,19 @@ import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.crypto.BadPaddingException;
+
 import be.tobiridi.passwordsecurity.data.Account;
 import be.tobiridi.passwordsecurity.data.AccountDataSource;
+import be.tobiridi.passwordsecurity.data.UserPreferencesDataSource;
+import be.tobiridi.passwordsecurity.security.AESManager;
 
 public class HomeViewModel extends ViewModel {
     /*********************/
@@ -33,11 +38,37 @@ public class HomeViewModel extends ViewModel {
     private final AccountDataSource _accountDataSource;
     private LiveData<List<Account>> sourceAccounts;
     private MutableLiveData<List<Account>> mutableAccounts;
+    private Observer<List<Account>> obDecryptAccounts;
 
     public HomeViewModel(Context context) {
         this._accountDataSource = AccountDataSource.getInstance(context);
         this.sourceAccounts = this._accountDataSource.getAllAccounts();
         this.mutableAccounts = new MutableLiveData<>();
+
+        this.obDecryptAccounts = new Observer<List<Account>>() {
+            @Override
+            public void onChanged(List<Account> accounts) {
+                //TODO: manage exception
+                //TODO: optimise
+                byte[] masterKey = UserPreferencesDataSource.getAuthenticatedMasterPassword();
+                for (Account a: accounts) {
+                    try {
+                        a.setName(AESManager.decryptToString(masterKey, a.getName()));
+                        a.setEmail(AESManager.decryptToString(masterKey, a.getEmail()));
+                        a.setPassword(AESManager.decryptToString(masterKey, a.getPassword()));
+                    } catch (BadPaddingException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        };
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        //TODO: maybe better practice
+        this.sourceAccounts.removeObserver(this.obDecryptAccounts);
     }
 
     public void updateMutableAccounts(List<Account> newList) {
@@ -49,6 +80,8 @@ public class HomeViewModel extends ViewModel {
      * @return The current accounts data.
      */
     public LiveData<List<Account>> getSourceAccounts() {
+        //TODO: maybe better practice
+        this.sourceAccounts.observeForever(this.obDecryptAccounts);
         return this.sourceAccounts;
     }
 

@@ -12,6 +12,7 @@ import java.util.concurrent.Future;
 
 import be.tobiridi.passwordsecurity.database.AccountDao;
 import be.tobiridi.passwordsecurity.database.AppDatabase;
+import be.tobiridi.passwordsecurity.security.AESManager;
 
 /**
  * Interact with the Room database.
@@ -19,9 +20,10 @@ import be.tobiridi.passwordsecurity.database.AppDatabase;
  * Can be constructed using one of the getInstance class methods of this class.
  */
 public class AccountDataSource {
+    private static AccountDataSource INSTANCE;
     private final ExecutorService _service;
     private final AccountDao _accountDao;
-    private static AccountDataSource INSTANCE;
+    private byte[] authenticatedMasterPassword;
 
     public static AccountDataSource getInstance(Context context) {
         if (INSTANCE == null) {
@@ -35,6 +37,7 @@ public class AccountDataSource {
         this._service = Executors.newSingleThreadExecutor();
         AppDatabase db = AppDatabase.getInstance(context);
         this._accountDao = db.getAccountDao();
+        this.authenticatedMasterPassword = UserPreferencesDataSource.getAuthenticatedMasterPassword();
     }
 
     /**
@@ -64,8 +67,14 @@ public class AccountDataSource {
      * @param accounts All accounts should be saved.
      * @return An array of rowId of each account saved.
      */
-    public long[] saveAccount(Account... accounts) {
+    public long[] saveAccounts(Account... accounts) {
         Callable<long[]> callable = () -> {
+            for (Account a: accounts) {
+                a.setName(AESManager.encryptToStringBase64(this.authenticatedMasterPassword, a.getName().getBytes()));
+                a.setEmail(AESManager.encryptToStringBase64(this.authenticatedMasterPassword, a.getEmail().getBytes()));
+                a.setPassword(AESManager.encryptToStringBase64(this.authenticatedMasterPassword, a.getPassword().getBytes()));
+            }
+
             return this._accountDao.insertAccount(accounts);
         };
 

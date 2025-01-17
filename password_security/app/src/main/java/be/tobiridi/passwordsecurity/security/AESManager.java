@@ -6,6 +6,7 @@ import android.util.Base64;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.InvalidParameterException;
@@ -211,6 +212,18 @@ public abstract class AESManager {
     public static String decryptToStringBase64(byte[] key, String base64EncryptedData) throws BadPaddingException {
         byte[] data = AESManager.decrypt(key, Base64.decode(base64EncryptedData, Base64.DEFAULT));
         return Base64.encodeToString(data, Base64.DEFAULT);
+    }
+
+    /**
+     * Decrypt the data using the key in AES-256 format.
+     * @param key The raw key used to encrypt/decrypt.
+     * @param base64EncryptedData The encrypted data in Base64 format.
+     * @return The decrypted data in textual format.
+     * @see AESManager#decrypt(byte[], byte[])
+     */
+    public static String decryptToString(byte[] key, String base64EncryptedData) throws BadPaddingException {
+        byte[] data = AESManager.decrypt(key, Base64.decode(base64EncryptedData, Base64.DEFAULT));
+        return new String(data, StandardCharsets.UTF_8);
     }
 
 }
