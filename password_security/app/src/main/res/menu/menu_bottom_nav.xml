@@ -17,8 +17,4 @@
         app:showAsAction="ifRoom"
         android:id="@+id/nav_settings"/>
 
-    <item android:title="@string/nav_help"
-        android:icon="@drawable/baseline_help_outline_24"
-        app:showAsAction="ifRoom"
-        android:id="@+id/nav_help"/>
 </menu>

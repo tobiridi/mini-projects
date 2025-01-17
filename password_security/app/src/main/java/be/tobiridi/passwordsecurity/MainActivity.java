@@ -17,7 +17,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.HashMap;
 
 import be.tobiridi.passwordsecurity.ui.addAccount.AddAcountFragment;
-import be.tobiridi.passwordsecurity.ui.help.HelpFragment;
 import be.tobiridi.passwordsecurity.ui.home.HomeFragment;
 import be.tobiridi.passwordsecurity.ui.settings.SettingsFragment;
 
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         this._fragments.put(R.id.nav_home, HomeFragment.newInstance());
         this._fragments.put(R.id.nav_add, AddAcountFragment.newInstance());
         this._fragments.put(R.id.nav_settings, SettingsFragment.newInstance());
-        this._fragments.put(R.id.nav_help, HelpFragment.newInstance());
 
         this.initListener();
     }
