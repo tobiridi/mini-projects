@@ -10,7 +10,7 @@
     <string name="error_master_password_creation">Une erreur s\'est produite lors de la création du mot de passe maître</string>
     <string name="nav_home">Accueil</string>
     <string name="nav_add">Ajouter</string>
-    <string name="nav_settings">Options</string>
+    <string name="nav_settings">Paramètres</string>
     <string name="cancel">Annuler</string>
     <string name="import_data">Importer</string>
     <string name="export_data">Exporter</string>

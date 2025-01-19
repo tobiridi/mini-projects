@@ -14,8 +14,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import java.util.HashMap;
-
 import be.tobiridi.passwordsecurity.ui.addAccount.AddAcountFragment;
 import be.tobiridi.passwordsecurity.ui.home.HomeFragment;
 import be.tobiridi.passwordsecurity.ui.settings.SettingsFragment;
@@ -24,7 +22,6 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel mainViewModel;
     private FragmentContainerView fragmentContainer;
     private BottomNavigationView bottomNavigation;
-    private final HashMap<Integer, Fragment> _fragments = new HashMap<>();
     private final FragmentManager _manager = getSupportFragmentManager();
 
     @Override
@@ -44,27 +41,43 @@ public class MainActivity extends AppCompatActivity {
         this.fragmentContainer = findViewById(R.id.fragmentContainerView);
         this.bottomNavigation = findViewById(R.id.bottomNavigationView);
 
-        //set fragments for navigation bar
-        this._fragments.put(R.id.nav_home, HomeFragment.newInstance());
-        this._fragments.put(R.id.nav_add, AddAcountFragment.newInstance());
-        this._fragments.put(R.id.nav_settings, SettingsFragment.newInstance());
-
-        this.initListener();
+        this.initFragmentManager();
+        this.initListeners();
     }
 
-    private void updateFragment(Fragment fragment) {
+    private void initFragmentManager() {
+        HomeFragment homeFrag = HomeFragment.newInstance();
+        AddAcountFragment addAccountFrag = AddAcountFragment.newInstance();
+        SettingsFragment settingsFrag = SettingsFragment.newInstance();
+
         this._manager.beginTransaction()
-                .replace(R.id.fragmentContainerView, fragment)
-                .addToBackStack(null)
-                .setReorderingAllowed(true)
+                .add(this.fragmentContainer.getId(), homeFrag, "HOME")
+                .add(this.fragmentContainer.getId(), addAccountFrag, "ADD_ACCOUNT")
+                .add(this.fragmentContainer.getId(), settingsFrag, "SETTINGS")
+                .hide(addAccountFrag)
+                .hide(settingsFrag)
                 .commit();
+
+        this.mainViewModel.putFragment(R.id.nav_home, homeFrag);
+        this.mainViewModel.putFragment(R.id.nav_add, addAccountFrag);
+        this.mainViewModel.putFragment(R.id.nav_settings, settingsFrag);
+
+        this.mainViewModel.setCurrentFragDisplay(homeFrag);
     }
 
-    private void initListener() {
+    private void initListeners() {
         this.bottomNavigation.setOnItemSelectedListener(item -> {
-            this.updateFragment(this._fragments.get(item.getItemId()));
+            Fragment selectedFrag = mainViewModel.getFragment(item.getItemId());
+
+            this._manager.beginTransaction()
+                    .hide(mainViewModel.getCurrentFragDisplay())
+                    .show(selectedFrag)
+                    .addToBackStack(null)
+                    .setReorderingAllowed(true)
+                    .commit();
+
+            mainViewModel.setCurrentFragDisplay(selectedFrag);
             return true;
         });
-
     }
 }

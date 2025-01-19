@@ -5,11 +5,19 @@ import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLI
 import android.app.Application;
 import android.content.Context;
 
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
+import java.util.HashMap;
+import java.util.List;
+
 import be.tobiridi.passwordsecurity.data.AccountDataSource;
 import be.tobiridi.passwordsecurity.data.UserPreferencesDataSource;
+import be.tobiridi.passwordsecurity.ui.addAccount.AddAcountFragment;
+import be.tobiridi.passwordsecurity.ui.home.HomeFragment;
+import be.tobiridi.passwordsecurity.ui.settings.SettingsFragment;
 
 public class MainViewModel extends ViewModel {
     /*********************/
@@ -27,10 +35,14 @@ public class MainViewModel extends ViewModel {
 
     private final UserPreferencesDataSource _userPreferencesDataSource;
     private final AccountDataSource _accountDataSource;
+    private final HashMap<Integer, Fragment> _fragments;
+    private Fragment currentFragDisplay;
 
     public MainViewModel(Context context) {
         this._userPreferencesDataSource = UserPreferencesDataSource.getInstance(context);
         this._accountDataSource = AccountDataSource.getInstance(context);
+        this._fragments = new HashMap<>();
+        this.currentFragDisplay = null;
     }
 
     @Override
@@ -40,4 +52,19 @@ public class MainViewModel extends ViewModel {
         this._accountDataSource.closeExecutorService();
     }
 
+    public Fragment getCurrentFragDisplay() {
+        return this.currentFragDisplay;
+    }
+
+    public void setCurrentFragDisplay(Fragment currentFragDisplay) {
+        this.currentFragDisplay = currentFragDisplay;
+    }
+
+    public void putFragment(int resourceId, Fragment fragment) {
+        this._fragments.put(resourceId, fragment);
+    }
+
+    public Fragment getFragment(int resourceId) {
+        return this._fragments.get(resourceId);
+    }
 }
