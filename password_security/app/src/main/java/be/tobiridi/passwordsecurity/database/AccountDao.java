@@ -24,6 +24,6 @@ public interface AccountDao {
     int deleteAccount(Account... accounts);
 
     @Transaction
-    @Query("SELECT id, name, email, password, created, updated FROM accounts ORDER BY name ASC")
+    @Query("SELECT id, encrypted_account, created, updated FROM accounts")
     LiveData<List<Account>> getAllAccounts();
 }

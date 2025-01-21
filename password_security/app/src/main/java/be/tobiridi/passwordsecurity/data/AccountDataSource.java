@@ -4,6 +4,7 @@ import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -23,7 +24,6 @@ public class AccountDataSource {
     private static AccountDataSource INSTANCE;
     private final ExecutorService _service;
     private final AccountDao _accountDao;
-    private byte[] authenticatedMasterPassword;
 
     public static AccountDataSource getInstance(Context context) {
         if (INSTANCE == null) {
@@ -37,7 +37,6 @@ public class AccountDataSource {
         this._service = Executors.newSingleThreadExecutor();
         AppDatabase db = AppDatabase.getInstance(context);
         this._accountDao = db.getAccountDao();
-        this.authenticatedMasterPassword = UserPreferencesDataSource.getAuthenticatedMasterPassword();
     }
 
     /**
@@ -69,10 +68,13 @@ public class AccountDataSource {
      */
     public long[] saveAccounts(Account... accounts) {
         Callable<long[]> callable = () -> {
+            byte[] masterKey = UserPreferencesDataSource.getAuthenticatedMasterPassword();
+
             for (Account a: accounts) {
-                a.setName(AESManager.encryptToStringBase64(this.authenticatedMasterPassword, a.getName().getBytes()));
-                a.setEmail(AESManager.encryptToStringBase64(this.authenticatedMasterPassword, a.getEmail().getBytes()));
-                a.setPassword(AESManager.encryptToStringBase64(this.authenticatedMasterPassword, a.getPassword().getBytes()));
+                if (a.getState().equals(Account.EncryptionState.DECRYPTED)) {
+                    a.setCompactAccount(AESManager.encryptToStringBase64(masterKey, a.getCompactAccount().getBytes(StandardCharsets.UTF_8)));
+                    a.setState(Account.EncryptionState.ENCRYPTED);
+                }
             }
 
             return this._accountDao.insertAccount(accounts);

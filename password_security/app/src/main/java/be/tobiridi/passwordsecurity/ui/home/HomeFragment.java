@@ -28,7 +28,7 @@ public class HomeFragment extends Fragment {
     private SearchView searchView;
     private RecyclerView recyclerView;
     private ImageButton filterButton;
-    private Observer<List<Account>> obSourceAccounts, obMutableAccounts;
+    private Observer<List<Account>> obAccounts;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -52,14 +52,10 @@ public class HomeFragment extends Fragment {
 
         //set RecyclerView
         this.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        this.recyclerView.setAdapter(new HomeAdapter(List.of()));
 
-        //init the observers
         this.initObservers();
-        this.homeViewModel.getSourceAccounts().observe(this.getViewLifecycleOwner(), this.obSourceAccounts);
-        this.homeViewModel.getMutableAccounts().observe(this.getViewLifecycleOwner(), this.obMutableAccounts);
+        this.homeViewModel.getMutableAccounts().observe(this.getViewLifecycleOwner(), this.obAccounts);
 
-        //init the listeners
         this.initListeners();
     }
 
@@ -71,19 +67,16 @@ public class HomeFragment extends Fragment {
     }
 
     private void initObservers() {
-        this.obSourceAccounts = new Observer<List<Account>>() {
-            @Override
-            public void onChanged(List<Account> accounts) {
-                homeViewModel.updateMutableAccounts(accounts);
-            }
-        };
-
-        this.obMutableAccounts = new Observer<List<Account>>() {
+        this.obAccounts = new Observer<List<Account>>() {
             @Override
             public void onChanged(List<Account> accounts) {
                 HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
-                if (adapter != null) {
-                    adapter.replaceAccounts(accounts);
+                if (adapter == null) {
+                    //init adapter when activity creation
+                    recyclerView.setAdapter(new HomeAdapter(accounts));
+                }
+                else {
+                    adapter.updateAccounts();
                 }
             }
         };
@@ -98,13 +91,15 @@ public class HomeFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                homeViewModel.searchFilter(newText);
+                //TODO: bug adapter don't update the UI
+                //homeViewModel.searchFilter(newText);
                 return false;
             }
         });
 
         this.filterButton.setOnClickListener(view -> {
             //TODO: not implemented
+            // remove useless
         });
     }
 

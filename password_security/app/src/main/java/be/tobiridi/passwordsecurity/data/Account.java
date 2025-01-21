@@ -1,28 +1,34 @@
 package be.tobiridi.passwordsecurity.data;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
 @Entity(tableName = "accounts")
-public class Account implements Serializable {
-    private static final long serialVersionUID = 2765142817316875747L;
+public class Account {
+    public enum EncryptionState {
+        ENCRYPTED,
+        DECRYPTED
+    }
 
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @NonNull
+    @ColumnInfo(name = "encrypted_account")
+    private String compactAccount;
+
+    @Ignore
     private String name;
 
-    @NonNull
+    @Ignore
     private String email;
 
-    @NonNull
+    @Ignore
     private String password;
 
     @NonNull
@@ -31,18 +37,23 @@ public class Account implements Serializable {
     @NonNull
     private LocalDate updated;
 
+    @Ignore
+    private EncryptionState state;
+
     public int getId() {
         return id;
     }
 
-    /**
-     * Define the new id of this account.
-     * @param id identification of this account, the id must be greater than 0.
-     */
     public void setId(int id) {
-        if (id > 0) {
-            this.id = id;
-        }
+        this.id = id;
+    }
+
+    public String getCompactAccount() {
+        return this.compactAccount;
+    }
+
+    public void setCompactAccount(String compactAccount) {
+        this.compactAccount = compactAccount;
     }
 
     public String getName() {
@@ -73,7 +84,7 @@ public class Account implements Serializable {
         return this.created;
     }
 
-    public void setCreated(LocalDate created) throws IllegalArgumentException {
+    public void setCreated(LocalDate created) {
         this.created = created;
     }
 
@@ -81,13 +92,25 @@ public class Account implements Serializable {
         return this.updated;
     }
 
-    public void setUpdated(LocalDate updated) throws IllegalArgumentException {
+    public void setUpdated(LocalDate updated) {
         this.updated = updated;
     }
 
+    public EncryptionState getState() {
+        return this.state;
+    }
+
+    public void setState(EncryptionState state) {
+        this.state = state;
+    }
+
+    private static final String ACCOUNT_SEPARATOR = ",";
+
     public Account() {
-        this.created = LocalDate.now();
-        this.updated = LocalDate.now();
+        LocalDate n = LocalDate.now();
+        this.created = n;
+        this.updated = n;
+        this.state = EncryptionState.ENCRYPTED;
     }
 
     @Ignore
@@ -97,6 +120,9 @@ public class Account implements Serializable {
         this.password = password;
         this.created = created;
         this.updated = updated;
+        //used to encryption/decryption one String (better performance)
+        this.compactAccount = this.name + Account.ACCOUNT_SEPARATOR + this.email + Account.ACCOUNT_SEPARATOR + this.password;
+        this.state = EncryptionState.DECRYPTED;
     }
 
     @Override
@@ -107,6 +133,7 @@ public class Account implements Serializable {
                 ", email='" + email + '\'' +
                 ", created=" + created +
                 ", updated=" + updated +
+                ", state=" + state +
                 '}';
     }
 
@@ -115,11 +142,26 @@ public class Account implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Account)) return false;
         Account account = (Account) o;
-        return this.id == account.id && this.name.equals(account.name);
+        return this.name.equalsIgnoreCase(account.name) && this.email.equalsIgnoreCase(account.email);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(this.id, this.name, this.email, this.created, this.updated);
+    }
+
+    /**
+     * Restore the values of the account once the account has been decrypt.
+     * If the account state is not {@link EncryptionState#DECRYPTED}, call this method will produce nothing.
+     * @param compactAccount The compacted and decrypted account data.
+     */
+    public void unPackAccountData(String compactAccount) {
+        if (this.state.equals(EncryptionState.DECRYPTED)) {
+            String[] values = compactAccount.split(Account.ACCOUNT_SEPARATOR);
+            //respect the same order as creating of the object
+            this.name = values[0];
+            this.email = values[1];
+            this.password = values[2];
+        }
     }
 }

@@ -11,6 +11,7 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,69 +37,66 @@ public class HomeViewModel extends ViewModel {
     );
 
     private final AccountDataSource _accountDataSource;
-    private LiveData<List<Account>> sourceAccounts;
+    private LiveData<List<Account>> sourceAccountsLiveData;
+    private Observer<List<Account>> obSourceAccounts;
     private MutableLiveData<List<Account>> mutableAccounts;
-    private Observer<List<Account>> obDecryptAccounts;
+    private List<Account> currentAccounts;
 
     public HomeViewModel(Context context) {
         this._accountDataSource = AccountDataSource.getInstance(context);
-        this.sourceAccounts = this._accountDataSource.getAllAccounts();
+        this.sourceAccountsLiveData = this._accountDataSource.getAllAccounts();
+        this.currentAccounts = new ArrayList<>();
         this.mutableAccounts = new MutableLiveData<>();
 
-        this.obDecryptAccounts = new Observer<List<Account>>() {
-            @Override
-            public void onChanged(List<Account> accounts) {
-                //TODO: manage exception
-                //TODO: optimise
-                byte[] masterKey = UserPreferencesDataSource.getAuthenticatedMasterPassword();
-                for (Account a: accounts) {
-                    try {
-                        a.setName(AESManager.decryptToString(masterKey, a.getName()));
-                        a.setEmail(AESManager.decryptToString(masterKey, a.getEmail()));
-                        a.setPassword(AESManager.decryptToString(masterKey, a.getPassword()));
-                    } catch (BadPaddingException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-            }
-        };
+        this.initObservers();
+        this.sourceAccountsLiveData.observeForever(this.obSourceAccounts);
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        //TODO: maybe better practice
-        this.sourceAccounts.removeObserver(this.obDecryptAccounts);
+        this.sourceAccountsLiveData.removeObserver(this.obSourceAccounts);
     }
 
-    public void updateMutableAccounts(List<Account> newList) {
-        this.mutableAccounts.setValue(newList);
+    private void initObservers() {
+        this.obSourceAccounts = new Observer<List<Account>>() {
+            @Override
+            public void onChanged(List<Account> accounts) {
+                //DB accounts changed
+
+                //add to current accounts
+                if (currentAccounts.isEmpty() || currentAccounts.size() < accounts.size()) {
+                    accounts.forEach(HomeViewModel.this::addToCurrentAccounts);
+                    mutableAccounts.setValue(currentAccounts);
+                }
+            }
+        };
+    }
+
+    private void addToCurrentAccounts(Account newAccount) {
+        //decrypt only new account
+        if (currentAccounts.stream().noneMatch(a -> a.getId() == newAccount.getId())) {
+            try {
+                byte[] masterPassword = UserPreferencesDataSource.getAuthenticatedMasterPassword();
+                String decryptedCompactData = AESManager.decryptToString(masterPassword, newAccount.getCompactAccount());
+
+                newAccount.setState(Account.EncryptionState.DECRYPTED);
+                newAccount.unPackAccountData(decryptedCompactData);
+
+                currentAccounts.add(newAccount);
+            } catch (BadPaddingException e) {
+                //TODO: manage exception
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
-     * Get the current accounts data from {@link AccountDataSource}.
+     * Get the current state of accounts.
      * @return The current accounts data.
-     */
-    public LiveData<List<Account>> getSourceAccounts() {
-        //TODO: maybe better practice
-        this.sourceAccounts.observeForever(this.obDecryptAccounts);
-        return this.sourceAccounts;
-    }
-
-    /**
-     * Get the accounts modified by the user.
-     * @return The current modified accounts data.
      */
     public LiveData<List<Account>> getMutableAccounts() {
         return this.mutableAccounts;
-    }
-
-    /**
-     * Retrieve the current list of accounts present in the {@link HomeViewModel#getSourceAccounts()}
-     * @return The list of accounts.
-     */
-    private List<Account> getAccounts() {
-        return this.sourceAccounts.getValue();
     }
 
     /****************************/
@@ -110,8 +108,8 @@ public class HomeViewModel extends ViewModel {
      * @param filterAccName The input used to filter the account.
      */
     public void searchFilter(String filterAccName) {
-        if (this.sourceAccounts.isInitialized()) {
-            List<Account> accFilter = this.getAccounts().stream()
+        if (!this.currentAccounts.isEmpty()) {
+            List<Account> accFilter = this.currentAccounts.stream()
                     .filter(a -> a.getName().toLowerCase().contains(filterAccName.toLowerCase()))
                     .collect(Collectors.toList());
 
