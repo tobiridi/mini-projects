@@ -49,7 +49,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
 
         if (this.lastSize < currentSize) {
             //item added
-            this.notifyItemInserted(currentSize);
+            this.notifyItemInserted(currentSize - 1);
             this.lastSize = currentSize;
         }
     }
