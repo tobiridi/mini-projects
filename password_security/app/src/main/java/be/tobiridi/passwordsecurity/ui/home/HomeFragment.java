@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.SearchView;
 
 import java.util.List;
@@ -27,7 +26,6 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private SearchView searchView;
     private RecyclerView recyclerView;
-    private ImageButton filterButton;
     private Observer<List<Account>> obAccounts;
 
     public static HomeFragment newInstance() {
@@ -46,7 +44,6 @@ public class HomeFragment extends Fragment {
         this.homeViewModel = new ViewModelProvider(this, ViewModelProvider.Factory.from(HomeViewModel.initializer)).get(HomeViewModel.class);
 
         //get views id
-        this.filterButton = view.findViewById(R.id.filterBtn);
         this.recyclerView = view.findViewById(R.id.recyclerView);
         this.searchView = view.findViewById(R.id.searchView);
 
@@ -96,11 +93,5 @@ public class HomeFragment extends Fragment {
                 return false;
             }
         });
-
-        this.filterButton.setOnClickListener(view -> {
-            //TODO: not implemented
-            // remove useless
-        });
     }
-
 }

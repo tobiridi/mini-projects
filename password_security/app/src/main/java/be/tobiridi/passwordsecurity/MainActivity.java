@@ -72,8 +72,6 @@ public class MainActivity extends AppCompatActivity {
             this._manager.beginTransaction()
                     .hide(mainViewModel.getCurrentFragDisplay())
                     .show(selectedFrag)
-                    .addToBackStack(null)
-                    .setReorderingAllowed(true)
                     .commit();
 
             mainViewModel.setCurrentFragDisplay(selectedFrag);

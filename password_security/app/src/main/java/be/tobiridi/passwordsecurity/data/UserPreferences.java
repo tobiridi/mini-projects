@@ -3,15 +3,13 @@ package be.tobiridi.passwordsecurity.data;
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 @Entity(tableName = "user_preferences")
-public class UserPreferences implements Serializable {
-    private static final long serialVersionUID = 3415344675890978362L;
-
+public class UserPreferences {
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "user_pref_id")
     private int userPrefId;
@@ -42,6 +40,7 @@ public class UserPreferences implements Serializable {
         this.userPrefId = 1;
     }
 
+    @Ignore
     public UserPreferences(@NonNull String masterPassword) {
         this();
         this.masterPassword = masterPassword;
