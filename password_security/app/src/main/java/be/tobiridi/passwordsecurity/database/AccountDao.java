@@ -21,7 +21,7 @@ public interface AccountDao {
     int updateAccount(Account... accounts);
 
     @Delete
-    int deleteAccount(Account... accounts);
+    int deleteAccount(Account account);
 
     @Transaction
     @Query("SELECT id, encrypted_account, created, updated FROM accounts")

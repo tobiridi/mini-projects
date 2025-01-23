@@ -10,11 +10,15 @@
     <string name="email" translatable="false">Email</string>
     <string name="password">Password</string>
     <string name="ok" translatable="false">OK</string>
+    <string name="delete">Delete</string>
+    <string name="modify">Modify</string>
     <string name="master_password_explain">Please define a master password to start using the application. This master password is used to access at the stored data. If you forgot it, you will no longer able to access to your data anymore.</string>
     <!-- message to user -->
     <string name="msg_add_account_success">The account has been created</string>
     <string name="msg_add_account_fail">Error when account creation</string>
     <string name="msg_authenticate_fail">Authentication fail</string>
+    <!-- AlertDialog -->
+    <string name="alert_account_change">Do you want to modify or delete this account ?</string>
     <!-- error text -->
     <string name="error_account_name_empty">Name is empty</string>
     <string name="error_account_email_empty">Email is empty</string>

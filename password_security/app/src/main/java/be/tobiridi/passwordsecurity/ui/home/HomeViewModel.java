@@ -66,14 +66,14 @@ public class HomeViewModel extends ViewModel {
 
                 //add to current accounts
                 if (currentAccounts.isEmpty() || currentAccounts.size() < accounts.size()) {
-                    accounts.forEach(HomeViewModel.this::addToCurrentAccounts);
+                    accounts.forEach(HomeViewModel.this::decryptAccount);
                     mutableAccounts.setValue(currentAccounts);
                 }
             }
         };
     }
 
-    private void addToCurrentAccounts(Account newAccount) {
+    private void decryptAccount(Account newAccount) {
         //decrypt only new account
         if (currentAccounts.stream().noneMatch(a -> a.getId() == newAccount.getId())) {
             try {
@@ -102,6 +102,16 @@ public class HomeViewModel extends ViewModel {
     /****************************/
     /* Mutable accounts methods */
     /****************************/
+
+    public boolean deleteAccount(Account deletedAccount) {
+        if (this._accountDataSource.deleteAccount(deletedAccount) > 0) {
+            //account deleted from DB
+            this.currentAccounts.remove(deletedAccount);
+            this.mutableAccounts.setValue(this.currentAccounts);
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Filter the accounts by account's name.

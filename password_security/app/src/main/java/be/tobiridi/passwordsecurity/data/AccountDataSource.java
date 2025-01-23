@@ -96,11 +96,17 @@ public class AccountDataSource {
 //        return true;
 //    }
 //
-//    public boolean deleteAccount(Account account) {
-//        //TODO : make verification
-//
-//        this.accountDao.deleteAccount(account);
-//        return true;
-//    }
+    public int deleteAccount(Account account) {
+        Callable<Integer> callable = () -> {
+            return this._accountDao.deleteAccount(account);
+        };
 
+        try {
+            Future<Integer> f = this._service.submit(callable);
+            return f.get();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

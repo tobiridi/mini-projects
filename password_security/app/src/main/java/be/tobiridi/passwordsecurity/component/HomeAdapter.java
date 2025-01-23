@@ -11,6 +11,7 @@ import java.util.List;
 
 import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.data.Account;
+import be.tobiridi.passwordsecurity.ui.home.HomeViewModel;
 
 /**
  * Link the {@link HomeViewHolder} to the RecyclerView.
@@ -18,10 +19,12 @@ import be.tobiridi.passwordsecurity.data.Account;
 public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
     private List<Account> accounts;
     private int lastSize;
+    private final HomeViewModel _homeViewModel;
 
-    public HomeAdapter(@NonNull List<Account> accounts) {
+    public HomeAdapter(@NonNull List<Account> accounts, HomeViewModel homeViewModel) {
         this.accounts = accounts;
         this.lastSize = this.accounts.size();
+        this._homeViewModel = homeViewModel;
     }
 
     @NonNull
@@ -30,7 +33,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_view_item_home, parent, false);
 
-        return new HomeViewHolder(view);
+        return new HomeViewHolder(view, this);
     }
 
     @Override
@@ -51,6 +54,16 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> {
             //item added
             this.notifyItemInserted(currentSize - 1);
             this.lastSize = currentSize;
+        }
+        else if (this.lastSize > currentSize) {
+            //item already deleted
+            this.lastSize = currentSize;
+        }
+    }
+
+    public void deleteAccount(Account account, int position) {
+        if (this._homeViewModel.deleteAccount(account)) {
+            this.notifyItemRemoved(position);
         }
     }
 }

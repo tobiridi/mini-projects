@@ -70,7 +70,7 @@ public class HomeFragment extends Fragment {
                 HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
                 if (adapter == null) {
                     //init adapter when activity creation
-                    recyclerView.setAdapter(new HomeAdapter(accounts));
+                    recyclerView.setAdapter(new HomeAdapter(accounts, homeViewModel));
                 }
                 else {
                     adapter.updateAccounts();
