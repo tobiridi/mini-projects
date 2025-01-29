@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import be.tobiridi.passwordsecurity.ui.addAccount.AddAcountFragment;
+import be.tobiridi.passwordsecurity.ui.addAccount.AddAccountFragment;
 import be.tobiridi.passwordsecurity.ui.home.HomeFragment;
 import be.tobiridi.passwordsecurity.ui.settings.SettingsFragment;
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initFragmentManager() {
         HomeFragment homeFrag = HomeFragment.newInstance();
-        AddAcountFragment addAccountFrag = AddAcountFragment.newInstance();
+        AddAccountFragment addAccountFrag = AddAccountFragment.newInstance();
         SettingsFragment settingsFrag = SettingsFragment.newInstance();
 
         this._manager.beginTransaction()

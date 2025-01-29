@@ -33,11 +33,11 @@
     <!-- hint text -->
     <string name="hint_search">Search…</string>
     <string name="hint_account_name">Account name</string>
-    <string name="hint_email">Example@hotmail.com</string>
+    <string name="hint_email_example">Example@hotmail.com</string>
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm password</string>
     <!-- button description -->
     <string name="btn_desc_filter" translatable="false">Filter</string>
     <string name="btn_desc_cancel" translatable="false">Cancel</string>
-    <string name="btn_desc_validate" translatable="false">validate</string>
+    <string name="btn_desc_validate" translatable="false">Validate</string>
 </resources>

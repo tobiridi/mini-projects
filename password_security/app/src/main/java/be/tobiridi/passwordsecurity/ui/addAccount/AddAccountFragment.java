@@ -13,25 +13,25 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 
 import be.tobiridi.passwordsecurity.R;
 
-public class AddAcountFragment extends Fragment {
-    private AddAcountViewModel addAcountViewModel;
-    private EditText editTextAccountName, editTextAccountEmail, editTextAccountPassword;
+public class AddAccountFragment extends Fragment {
+    private AddAccountViewModel addAccountViewModel;
+    private TextInputLayout accountNameInputLayout, accountEmailInputLayout, accountPasswordInputLayout;
     private Button resetBtn, validateBtn;
 
-    public static AddAcountFragment newInstance() {
-        return new AddAcountFragment();
+    public static AddAccountFragment newInstance() {
+        return new AddAccountFragment();
     }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_add_acount, container, false);
+        return inflater.inflate(R.layout.fragment_add_account, container, false);
     }
 
     @Override
@@ -39,9 +39,9 @@ public class AddAcountFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         //get views id
-        this.editTextAccountName = view.findViewById(R.id.editText_account_name);
-        this.editTextAccountEmail = view.findViewById(R.id.editText_email);
-        this.editTextAccountPassword = view.findViewById(R.id.editText_password);
+        this.accountNameInputLayout = view.findViewById(R.id.inputLayout_accountName);
+        this.accountEmailInputLayout = view.findViewById(R.id.inputLayout_accountEmail);
+        this.accountPasswordInputLayout = view.findViewById(R.id.inputLayout_accountPassword);
         this.resetBtn = view.findViewById(R.id.btn_reset);
         this.validateBtn = view.findViewById(R.id.btn_validate);
 
@@ -49,16 +49,16 @@ public class AddAcountFragment extends Fragment {
         this.resetBtn.setOnClickListener(this.resetListener());
         this.validateBtn.setOnClickListener(this.validateListener());
 
-        this.addAcountViewModel = new ViewModelProvider(this, ViewModelProvider.Factory.from(AddAcountViewModel.initializer)).get(AddAcountViewModel.class);
+        this.addAccountViewModel = new ViewModelProvider(this, ViewModelProvider.Factory.from(AddAccountViewModel.initializer)).get(AddAccountViewModel.class);
     }
 
     private View.OnClickListener resetListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                editTextAccountName.getText().clear();
-                editTextAccountEmail.getText().clear();
-                editTextAccountPassword.getText().clear();
+                accountNameInputLayout.getEditText().getText().clear();
+                accountEmailInputLayout.getEditText().getText().clear();
+                accountPasswordInputLayout.getEditText().getText().clear();
             }
         };
     }
@@ -69,7 +69,7 @@ public class AddAcountFragment extends Fragment {
             public void onClick(View v) {
                 String msg;
 
-                if (addAcountViewModel.createAccount(editTextAccountName, editTextAccountEmail, editTextAccountPassword)) {
+                if (addAccountViewModel.createAccount(accountNameInputLayout, accountEmailInputLayout, accountPasswordInputLayout)) {
                     resetBtn.callOnClick();
                     msg = v.getResources().getString(R.string.msg_add_account_success);
                 }
@@ -78,9 +78,10 @@ public class AddAcountFragment extends Fragment {
                 }
 
                 //close soft keyboard
-                editTextAccountName.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                editTextAccountEmail.onEditorAction(EditorInfo.IME_ACTION_DONE);
-                editTextAccountPassword.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                //TODO: find another option
+//                inputEditTextAccountName.onEditorAction(EditorInfo.IME_ACTION_DONE);
+//                inputEditTextAccountEmail.onEditorAction(EditorInfo.IME_ACTION_DONE);
+//                inputEditTextAccountPassword.onEditorAction(EditorInfo.IME_ACTION_DONE);
 
                 Snackbar.make(v.getContext(), v, msg, Snackbar.LENGTH_SHORT)
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)

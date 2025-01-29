@@ -6,18 +6,13 @@ import android.app.Application;
 import android.content.Context;
 
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import java.util.HashMap;
-import java.util.List;
 
 import be.tobiridi.passwordsecurity.data.AccountDataSource;
 import be.tobiridi.passwordsecurity.data.UserPreferencesDataSource;
-import be.tobiridi.passwordsecurity.ui.addAccount.AddAcountFragment;
-import be.tobiridi.passwordsecurity.ui.home.HomeFragment;
-import be.tobiridi.passwordsecurity.ui.settings.SettingsFragment;
 
 public class MainViewModel extends ViewModel {
     /*********************/
