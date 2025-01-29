@@ -57,7 +57,9 @@ public class UserPreferencesDataSource {
     public void closeExecutorService() {
         this._service.shutdown();
         //remove manually the master key from the memory
-        Arrays.fill(AUTH_MASTER_PASSWORD, (byte) 0);
+        if (AUTH_MASTER_PASSWORD != null)
+            Arrays.fill(AUTH_MASTER_PASSWORD, (byte) 0);
+        
         INSTANCE = null;
     }
 
