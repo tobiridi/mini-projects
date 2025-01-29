@@ -45,11 +45,13 @@ public class AddAccountFragment extends Fragment {
         this.resetBtn = view.findViewById(R.id.btn_reset);
         this.validateBtn = view.findViewById(R.id.btn_validate);
 
-        //set buttons listeners
+        this.addAccountViewModel = new ViewModelProvider(this, ViewModelProvider.Factory.from(AddAccountViewModel.initializer)).get(AddAccountViewModel.class);
+        this.initListeners();
+    }
+
+    private void initListeners() {
         this.resetBtn.setOnClickListener(this.resetListener());
         this.validateBtn.setOnClickListener(this.validateListener());
-
-        this.addAccountViewModel = new ViewModelProvider(this, ViewModelProvider.Factory.from(AddAccountViewModel.initializer)).get(AddAccountViewModel.class);
     }
 
     private View.OnClickListener resetListener() {
@@ -78,10 +80,9 @@ public class AddAccountFragment extends Fragment {
                 }
 
                 //close soft keyboard
-                //TODO: find another option
-//                inputEditTextAccountName.onEditorAction(EditorInfo.IME_ACTION_DONE);
-//                inputEditTextAccountEmail.onEditorAction(EditorInfo.IME_ACTION_DONE);
-//                inputEditTextAccountPassword.onEditorAction(EditorInfo.IME_ACTION_DONE);
+                accountNameInputLayout.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
+                accountEmailInputLayout.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
+                accountPasswordInputLayout.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
 
                 Snackbar.make(v.getContext(), v, msg, Snackbar.LENGTH_SHORT)
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)

@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/tv_master_password_explain"
+        android:id="@+id/tv_masterPasswordExplain"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -31,17 +31,16 @@
         app:layout_constraintTop_toBottomOf="@+id/tv_welcome" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputLayout_password"
+        android:id="@+id/inputLayout_masterPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_master_password_explain"
+        app:layout_constraintTop_toBottomOf="@+id/tv_masterPasswordExplain"
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputEditText_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_password"
@@ -49,17 +48,16 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputLayout_confirm_password"
+        android:id="@+id/inputLayout_confirmMasterPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputLayout_password"
+        app:layout_constraintTop_toBottomOf="@+id/inputLayout_masterPassword"
         app:passwordToggleEnabled="true">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/inputEditText_confirm_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_confirm_password"
@@ -74,6 +72,6 @@
         android:text="@string/validate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputLayout_confirm_password" />
+        app:layout_constraintTop_toBottomOf="@+id/inputLayout_confirmMasterPassword" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
