@@ -13,7 +13,6 @@ import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.crypto.BadPaddingException;
 
@@ -38,36 +37,34 @@ public class HomeViewModel extends ViewModel {
 
     private final AccountDataSource _accountDataSource;
     private LiveData<List<Account>> sourceAccountsLiveData;
-    private Observer<List<Account>> obSourceAccounts;
-    private MutableLiveData<List<Account>> mutableAccounts;
-    private List<Account> currentAccounts;
+    private Observer<List<Account>> obDecryptSourceAccounts;
+    private MutableLiveData<List<Account>> mutableSourceAccounts;
+    private List<Account> sourceAccounts;
 
     public HomeViewModel(Context context) {
         this._accountDataSource = AccountDataSource.getInstance(context);
         this.sourceAccountsLiveData = this._accountDataSource.getAllAccounts();
-        this.currentAccounts = new ArrayList<>();
-        this.mutableAccounts = new MutableLiveData<>();
+        this.sourceAccounts = new ArrayList<>();
+        this.mutableSourceAccounts = new MutableLiveData<>();
 
         this.initObservers();
-        this.sourceAccountsLiveData.observeForever(this.obSourceAccounts);
+        this.sourceAccountsLiveData.observeForever(this.obDecryptSourceAccounts);
     }
 
     @Override
     protected void onCleared() {
         super.onCleared();
-        this.sourceAccountsLiveData.removeObserver(this.obSourceAccounts);
+        this.sourceAccountsLiveData.removeObserver(this.obDecryptSourceAccounts);
     }
 
     private void initObservers() {
-        this.obSourceAccounts = new Observer<List<Account>>() {
+        this.obDecryptSourceAccounts = new Observer<List<Account>>() {
             @Override
             public void onChanged(List<Account> accounts) {
-                //DB accounts changed
-
-                //add to current accounts
-                if (currentAccounts.isEmpty() || currentAccounts.size() < accounts.size()) {
+                //DB accounts changed, get all or add new account
+                if (sourceAccounts.isEmpty() || sourceAccounts.size() < accounts.size()) {
                     accounts.forEach(HomeViewModel.this::decryptAccount);
-                    mutableAccounts.setValue(currentAccounts);
+                    updateMutableSourceAccounts(sourceAccounts);
                 }
             }
         };
@@ -75,7 +72,7 @@ public class HomeViewModel extends ViewModel {
 
     private void decryptAccount(Account newAccount) {
         //decrypt only new account
-        if (currentAccounts.stream().noneMatch(a -> a.getId() == newAccount.getId())) {
+        if (this.sourceAccounts.stream().noneMatch(a -> a.equals(newAccount))) {
             try {
                 byte[] masterPassword = UserPreferencesDataSource.getAuthenticatedMasterPassword();
                 String decryptedCompactData = AESManager.decryptToString(masterPassword, newAccount.getCompactAccount());
@@ -83,7 +80,7 @@ public class HomeViewModel extends ViewModel {
                 newAccount.setState(Account.EncryptionState.DECRYPTED);
                 newAccount.unPackAccountData(decryptedCompactData);
 
-                currentAccounts.add(newAccount);
+                this.sourceAccounts.add(newAccount);
             } catch (BadPaddingException e) {
                 //TODO: manage exception
                 throw new RuntimeException(e);
@@ -91,39 +88,36 @@ public class HomeViewModel extends ViewModel {
         }
     }
 
-    /**
-     * Get the current state of accounts.
-     * @return The current accounts data.
-     */
-    public LiveData<List<Account>> getMutableAccounts() {
-        return this.mutableAccounts;
-    }
-
     /****************************/
     /* Mutable accounts methods */
     /****************************/
 
+    /**
+     * Get the current source accounts.
+     * @return The current decrypted source accounts data.
+     */
+    public LiveData<List<Account>> getMutableSourceAccounts() {
+        return this.mutableSourceAccounts;
+    }
+
+    public void updateMutableSourceAccounts(List<Account> accounts) {
+//        if (this.mutableAccounts.isInitialized()) {
+//            List<Account> current = this.editableAccounts.getValue();
+//            if (!current.isEmpty()) {
+//                current.clear();
+//            }
+//            current.addAll(accounts);
+//        }
+        this.mutableSourceAccounts.setValue(accounts);
+    }
+
     public boolean deleteAccount(Account deletedAccount) {
         if (this._accountDataSource.deleteAccount(deletedAccount) > 0) {
             //account deleted from DB
-            this.currentAccounts.remove(deletedAccount);
-            this.mutableAccounts.setValue(this.currentAccounts);
+            this.sourceAccounts.remove(deletedAccount);
+            this.updateMutableSourceAccounts(this.sourceAccounts);
             return true;
         }
         return false;
-    }
-
-    /**
-     * Filter the accounts by account's name.
-     * @param filterAccName The input used to filter the account.
-     */
-    public void searchFilter(String filterAccName) {
-        if (!this.currentAccounts.isEmpty()) {
-            List<Account> accFilter = this.currentAccounts.stream()
-                    .filter(a -> a.getName().toLowerCase().contains(filterAccName.toLowerCase()))
-                    .collect(Collectors.toList());
-
-            this.mutableAccounts.setValue(accFilter);
-        }
     }
 }

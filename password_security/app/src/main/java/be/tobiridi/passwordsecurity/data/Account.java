@@ -142,7 +142,7 @@ public class Account {
         if (this == o) return true;
         if (!(o instanceof Account)) return false;
         Account account = (Account) o;
-        return this.name.equalsIgnoreCase(account.name) && this.email.equalsIgnoreCase(account.email);
+        return this.id == account.id || (this.name.equalsIgnoreCase(account.name) && this.email.equalsIgnoreCase(account.email));
     }
 
     @Override

@@ -11,6 +11,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:queryHint="@string/hint_search"
+        android:autofillHints="name"
+        android:inputType="textFilter"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

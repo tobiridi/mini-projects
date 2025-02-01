@@ -51,26 +51,19 @@ public class HomeFragment extends Fragment {
         this.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         this.initObservers();
-        this.homeViewModel.getMutableAccounts().observe(this.getViewLifecycleOwner(), this.obAccounts);
+        this.homeViewModel.getMutableSourceAccounts().observe(this.getViewLifecycleOwner(), this.obAccounts);
 
         this.initListeners();
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        //reset search input when return to this fragment after navigated to another fragment/activity
-        searchView.setQuery(null, false);
     }
 
     private void initObservers() {
         this.obAccounts = new Observer<List<Account>>() {
             @Override
-            public void onChanged(List<Account> accounts) {
+            public void onChanged(List<Account> mutableAccounts) {
                 HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
                 if (adapter == null) {
                     //init adapter when activity creation
-                    recyclerView.setAdapter(new HomeAdapter(accounts, homeViewModel));
+                    recyclerView.setAdapter(new HomeAdapter(mutableAccounts, homeViewModel));
                 }
                 else {
                     adapter.updateAccounts();
@@ -88,8 +81,10 @@ public class HomeFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                //TODO: bug adapter don't update the UI
-                //homeViewModel.searchFilter(newText);
+                HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
+                if (adapter != null) {
+                    adapter.getFilter().filter(newText.toLowerCase());
+                }
                 return false;
             }
         });
