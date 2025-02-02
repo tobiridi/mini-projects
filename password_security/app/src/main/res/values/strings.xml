@@ -1,43 +1,55 @@
 <resources>
     <string name="app_name" translatable="false">PasswordSecurity</string>
     <string name="cancel">Cancel</string>
-    <string name="reset">Reset</string>
+    <string name="clear">Clear</string>
     <string name="validate">Validate</string>
     <string name="import_data">Import</string>
     <string name="export_data">Export</string>
-    <string name="clear_all_data">Clear all accounts</string>
+    <string name="delete_all_accounts">Delete all accounts</string>
     <string name="welcome">Welcome</string>
     <string name="email" translatable="false">Email</string>
     <string name="password">Password</string>
     <string name="ok" translatable="false">OK</string>
     <string name="delete">Delete</string>
     <string name="modify">Modify</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
     <string name="master_password_explain">Please define a master password to start using the application. This master password is used to access at the stored data. If you forgot it, you will no longer able to access to your data anymore.</string>
-    <!-- message to user -->
+    <!-- Message to user -->
     <string name="msg_add_account_success">The account has been created</string>
     <string name="msg_add_account_fail">Error when account creation</string>
     <string name="msg_authenticate_fail">Authentication fail</string>
     <!-- AlertDialog -->
     <string name="alert_account_change">Do you want to modify or delete this account ?</string>
-    <!-- error text -->
+    <!-- Error text -->
     <string name="error_account_name_empty">Name is empty</string>
     <string name="error_account_email_empty">Email is empty</string>
     <string name="error_account_email_format">Email format invalid</string>
     <string name="error_account_password_empty">Password is empty</string>
     <string name="error_password_not_same">Password is not the same</string>
     <string name="error_master_password_creation">An error occurred while master password creation</string>
-    <!-- navBar item name -->
+    <!-- NavBar item name -->
     <string name="nav_home">Home</string>
     <string name="nav_add">Add</string>
     <string name="nav_settings">Settings</string>
-    <!-- hint text -->
+    <!-- Hint text -->
     <string name="hint_search">Search…</string>
     <string name="hint_account_name">Account name</string>
     <string name="hint_email_example">Example@hotmail.com</string>
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm password</string>
-    <!-- button description -->
+    <!-- Button description -->
     <string name="btn_desc_filter" translatable="false">Filter</string>
     <string name="btn_desc_cancel" translatable="false">Cancel</string>
     <string name="btn_desc_validate" translatable="false">Validate</string>
+    <!-- Preference -->
+    <!-- Preference titles -->
+    <string name="pref_header_database">Database</string>
+    <string name="pref_header_security">Security</string>
+    <!-- Database preferences -->
+    <!-- Security preferences -->
+    <string name="pref_attempts">Attempts</string>
+    <string name="pref_attempts_summary">The number of attempts before delete all accounts stored in the app when enter master password</string>
+    <string name="pref_export_summary">Export the encrypted database to make a backup</string>
+    <string name="pref_import_summary">Import a backup of an encrypted database</string>
 </resources>

@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="reset">Réinitialiser</string>
+    <string name="clear">Effacer</string>
     <string name="validate">Valider</string>
-    <string name="clear_all_data">Supprimer tous les comptes</string>
     <string name="msg_add_account_fail">Erreur lors de la création du compte</string>
     <string name="error_account_email_format">Format de l\'email invalide</string>
     <string name="error_account_password_empty">Mot de passe vide</string>
@@ -14,10 +13,12 @@
     <string name="cancel">Annuler</string>
     <string name="import_data">Importer</string>
     <string name="export_data">Exporter</string>
+    <string name="delete_all_accounts">Supprimer tous les comptes</string>
     <string name="welcome">Bienvenue</string>
     <string name="password">Mot de passe</string>
     <string name="delete">Supprimer</string>
     <string name="modify">Modifier</string>
+    <string name="no">Non</string>
     <string name="master_password_explain">Veuillez définir un mot de passe maître pour commencer à utiliser l\'application. Ce mot de passe maître est utilisé pour accéder aux données qui sont stocker dans l\'application. Si vous avez oublier le mot de passe maitre, vous ne pourrez plus accéder à vos données.</string>
     <string name="msg_add_account_success">Le compte a été créer</string>
     <string name="msg_authenticate_fail">Authentification échouée</string>
@@ -29,4 +30,11 @@
     <string name="hint_email_example">Exemple@hotmail.com</string>
     <string name="hint_password">Mot de passe</string>
     <string name="hint_confirm_password">Confirmer mot de passe</string>
+    <string name="pref_header_database">Base de données</string>
+    <string name="pref_header_security">Sécurité</string>
+    <string name="yes">Oui</string>
+    <string name="pref_attempts">Tentatives</string>
+    <string name="pref_attempts_summary">Le nombre de tentatives avant de supprimer tous les comptes stockés dans l\'application lors de la saisie du mot de passe maître</string>
+    <string name="pref_export_summary">Exporter la base de données chiffrée pour faire une sauvegarde</string>
+    <string name="pref_import_summary">Importer une sauvegarde d\'une base de données chiffrée</string>
 </resources>

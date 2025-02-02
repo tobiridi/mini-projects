@@ -1,0 +1,52 @@
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+        app:title="@string/pref_header_database">
+
+        <Preference
+            app:key="import_database"
+            app:title="@string/import_data"
+            app:summary="@string/pref_import_summary"/>
+
+        <Preference
+            app:key="export_database"
+            app:title="@string/export_data"
+            app:summary="@string/pref_export_summary"/>
+
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        app:title="@string/pref_header_security">
+
+        <SeekBarPreference
+            app:key="attempts"
+            app:title="@string/pref_attempts"
+            app:summary="@string/pref_attempts_summary"
+            app:showSeekBarValue="true"
+            app:seekBarIncrement="1"
+            app:persistent="true"
+            android:defaultValue="3"
+            app:min="0"
+            android:max="100" />
+
+            <!--TODO : make a reminder notification for backup-->
+<!--        <SwitchPreferenceCompat-->
+<!--            app:key=""-->
+<!--            app:dependency=""-->
+<!--            app:summaryOff="@string/"-->
+<!--            app:summaryOn="@string/"-->
+<!--            app:title="@string/" />-->
+
+<!--        <EditTextPreference-->
+<!--            app:key="reminder"-->
+<!--            app:title="@string/" />-->
+        <ListPreference
+            app:key="delete_all_accounts"
+            app:title="@string/delete_all_accounts"
+            app:entries="@array/delete_all_accounts_entries"
+            app:entryValues="@array/delete_all_accounts_values" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

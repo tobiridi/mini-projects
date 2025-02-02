@@ -39,6 +39,7 @@ room {
 }
 
 dependencies {
+    implementation(libs.preference.ktx)
     implementation(libs.room.runtime)
     implementation(libs.appcompat)
     implementation(libs.material)
@@ -47,6 +48,7 @@ dependencies {
     implementation(libs.legacy.support.v4)
     implementation(libs.lifecycle.livedata.ktx)
     implementation(libs.lifecycle.viewmodel.ktx)
+    implementation(libs.preference)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

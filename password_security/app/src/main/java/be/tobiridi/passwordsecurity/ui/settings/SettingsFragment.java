@@ -1,46 +1,33 @@
 package be.tobiridi.passwordsecurity.ui.settings;
 
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
+import androidx.preference.PreferenceFragmentCompat;
 
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.component.SettingsListAdapter;
+import be.tobiridi.passwordsecurity.ui.home.HomeFragment;
 
-public class SettingsFragment extends Fragment {
-    
+public class SettingsFragment extends PreferenceFragmentCompat {
     private SettingsViewModel settingsViewModel;
-    private ListView listView;
 
-    public static SettingsFragment newInstance() {
-        return new SettingsFragment();
-    }
+    public static SettingsFragment newInstance() { return new SettingsFragment(); }
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_settings, container, false);
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+        setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+        this.initListeners();
+
+        //TODO : links
+        // https://developer.android.com/topic/libraries/architecture/datastore?hl=fr
+        // https://developer.android.com/reference/android/preference/Preference
+        // https://developer.android.com/develop/ui/views/components/settings?hl=fr#java
+        // https://developer.android.com/develop/ui/views/components/settings/components-and-attributes?hl=fr
+        // https://source.android.com/docs/core/settings/settings-guidelines?hl=fr
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
-        this.listView = view.findViewById(R.id.list_settings);
-        this.listView.setAdapter(new SettingsListAdapter());
-
-        this.settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
-        // TODO: Use the ViewModel
+    private void initListeners() {
 
     }
-
 }

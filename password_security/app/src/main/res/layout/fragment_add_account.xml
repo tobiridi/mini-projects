@@ -61,7 +61,7 @@
         android:layout_marginTop="16dp"
         android:backgroundTint="@color/tertiary"
         android:contentDescription="@string/btn_desc_cancel"
-        android:text="@string/reset"
+        android:text="@string/clear"
         app:layout_constraintEnd_toStartOf="@+id/btn_validate"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/inputLayout_accountPassword" />
