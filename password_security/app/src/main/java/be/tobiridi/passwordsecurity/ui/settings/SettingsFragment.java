@@ -21,6 +21,7 @@ import androidx.preference.SeekBarPreference;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.database.AppDatabase;
@@ -32,6 +33,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private SeekBarPreference attemptsPreference;
     private ListPreference deleteAllAccountsPreference;
     private ActivityResultLauncher<String> exportFileLauncher;
+    //private ActivityResultLauncher<String[]> importFileLauncher;
 
     public static SettingsFragment newInstance() { return new SettingsFragment(); }
 
@@ -60,9 +62,9 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             if (dbFile.canRead()) {
                                 ContentResolver resolver = appContext.getContentResolver();
 
-                                try {
-                                    FileInputStream fins = new FileInputStream(dbFile);
-                                    long bytesCopied = FileUtils.copy(fins, resolver.openOutputStream(o));
+                                try (FileInputStream fins = new FileInputStream(dbFile);
+                                     OutputStream fos = resolver.openOutputStream(o)) {
+                                    long bytesCopied = FileUtils.copy(fins, fos);
                                     if (bytesCopied > 0) {
                                         Toast.makeText(getContext(), getResources().getString(R.string.msg_backup_created), Toast.LENGTH_SHORT)
                                                 .show();
@@ -75,6 +77,41 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         }
                     }
                 });
+//
+//        this.importFileLauncher = registerForActivityResult(
+//                new ActivityResultContracts.OpenDocument(), new ActivityResultCallback<Uri>() {
+//                    @Override
+//                    public void onActivityResult(Uri o) {
+//                        //null if the user does not open a document
+//                        if (o != null) {
+//                            System.out.println(o);
+//
+//                            Context appContext = requireContext().getApplicationContext();
+//                            //close database
+//                            AppDatabase database = AppDatabase.getInstance(appContext);
+//                            if (database.isOpen()) {
+//                                database.close();
+//                            }
+//
+//                            File dbFile = appContext.getDatabasePath(AppDatabase.DB_NAME);
+//
+//                            if (dbFile.canRead()) {
+//                                ContentResolver resolver = appContext.getContentResolver();
+//
+//                                try (FileInputStream fins = resolver.openInputStream(o);) {
+//                                    long bytesCopied = FileUtils.copy(fins, resolver.openOutputStream(o));
+//                                    if (bytesCopied > 0) {
+//                                        Toast.makeText(getContext(), getResources().getString(R.string.msg_backup_created), Toast.LENGTH_SHORT)
+//                                                .show();
+//                                    }
+//
+//                                } catch (IOException e) {
+//                                    throw new RuntimeException(e);
+//                                }
+//                            }
+//                        }
+//                    }
+//                });
 
         this.initListeners();
     }
@@ -88,5 +125,14 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
+
+//        this.importPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+//            @Override
+//            public boolean onPreferenceClick(@NonNull Preference preference) {
+//                String[] input = {settingsViewModel.SQLITE_MIME_TYPE};
+//                importFileLauncher.launch(input);
+//                return true;
+//            }
+//        });
     }
 }
