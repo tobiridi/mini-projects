@@ -22,6 +22,7 @@
     <string name="master_password_explain">Veuillez définir un mot de passe maître pour commencer à utiliser l\'application. Ce mot de passe maître est utilisé pour accéder aux données qui sont stocker dans l\'application. Si vous avez oublier le mot de passe maitre, vous ne pourrez plus accéder à vos données.</string>
     <string name="msg_add_account_success">Le compte a été créer</string>
     <string name="msg_authenticate_fail">Authentification échouée</string>
+    <string name="msg_backup_created">Fichier de sauvegarde créé</string>
     <string name="alert_account_change">Voulez-vous modifier ou supprimer ce compte ?</string>
     <string name="error_account_name_empty">Le nom est vide</string>
     <string name="error_account_email_empty">Email vide</string>

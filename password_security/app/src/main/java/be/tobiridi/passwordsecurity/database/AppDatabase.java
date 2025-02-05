@@ -1,6 +1,7 @@
 package be.tobiridi.passwordsecurity.database;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -20,16 +21,28 @@ import be.tobiridi.passwordsecurity.database.converters.DateConverters;
 )
 @TypeConverters({DateConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
+    public static final String DB_NAME = "appDatabase.db";
     private static AppDatabase INSTANCE;
 
     public static AppDatabase getInstance(Context context) {
         if (INSTANCE == null) {
             INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                    AppDatabase.class, "appDatabase.db")
+                    AppDatabase.class, DB_NAME)
                     .build();
         }
 
         return INSTANCE;
+    }
+
+    /**
+     * Make a checkpoint for SQLite {@code .wal} file and apply all modifications in the database file.
+     * </br>
+     * Use the {@code PRAGMA wal_checkpoint(TRUNCATE);} MySQL statement.
+     */
+    public void MakeWalCheckpoint() {
+        Cursor cursor = INSTANCE.getOpenHelper().getWritableDatabase().query("PRAGMA wal_checkpoint(TRUNCATE);");
+        cursor.moveToNext();
+        cursor.close();
     }
 
     //Dao class
