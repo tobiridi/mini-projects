@@ -18,6 +18,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import be.tobiridi.passwordsecurity.R;
+import be.tobiridi.passwordsecurity.component.TextWatcherResetError;
 
 public class AddAccountFragment extends Fragment {
     private AddAccountViewModel addAccountViewModel;
@@ -52,14 +53,22 @@ public class AddAccountFragment extends Fragment {
     private void initListeners() {
         this.resetBtn.setOnClickListener(this.resetListener());
         this.validateBtn.setOnClickListener(this.validateListener());
+        this.accountNameInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountNameInputLayout));
+        this.accountEmailInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountEmailInputLayout));
+        this.accountPasswordInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountPasswordInputLayout));
     }
 
     private View.OnClickListener resetListener() {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                accountNameInputLayout.setError(null);
                 accountNameInputLayout.getEditText().getText().clear();
+                
+                accountEmailInputLayout.setError(null);
                 accountEmailInputLayout.getEditText().getText().clear();
+
+                accountPasswordInputLayout.setError(null);
                 accountPasswordInputLayout.getEditText().getText().clear();
             }
         };
