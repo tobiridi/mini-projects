@@ -69,7 +69,7 @@ public class AddAccountFragment extends Fragment {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String msg;
+                String msg = "";
 
                 if (addAccountViewModel.createAccount(accountNameInputLayout, accountEmailInputLayout, accountPasswordInputLayout)) {
                     resetBtn.callOnClick();
@@ -86,6 +86,7 @@ public class AddAccountFragment extends Fragment {
 
                 Snackbar.make(v.getContext(), v, msg, Snackbar.LENGTH_SHORT)
                         .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                        .setAnchorView(R.id.bottomNavigationView)
                         .show();
             }
         };
