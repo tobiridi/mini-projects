@@ -7,6 +7,7 @@
         <item name="colorTertiary">@color/tertiary</item>
         <item name="android:windowBackground">@color/activityBackground</item>
         <item name="android:fontFamily">@font/roboto_family</item>
+        <item name="colorAccent">@color/primary</item>
     </style>
 
     <style name="Theme.Passwordsecurity" parent="Base.Theme.Passwordsecurity" />

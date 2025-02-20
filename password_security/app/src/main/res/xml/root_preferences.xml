@@ -6,11 +6,13 @@
 
         <Preference
             app:key="import_database"
+            app:icon="@drawable/round_install_mobile_48"
             app:title="@string/import_data"
             app:summary="@string/pref_import_summary"/>
 
         <Preference
             app:key="export_database"
+            app:icon="@drawable/round_backup_48"
             app:title="@string/export_data"
             app:summary="@string/pref_export_summary"/>
 
