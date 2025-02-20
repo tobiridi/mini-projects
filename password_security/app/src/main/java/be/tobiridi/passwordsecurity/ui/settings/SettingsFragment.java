@@ -1,10 +1,11 @@
 package be.tobiridi.passwordsecurity.ui.settings;
 
-import android.content.ContentResolver;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.FileUtils;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -18,13 +19,8 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.database.AppDatabase;
+import be.tobiridi.passwordsecurity.ui.Authentication.AuthenticationActivity;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     private SettingsViewModel settingsViewModel;
@@ -33,7 +29,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     private SeekBarPreference attemptsPreference;
     private ListPreference deleteAllAccountsPreference;
     private ActivityResultLauncher<String> exportFileLauncher;
-    //private ActivityResultLauncher<String[]> importFileLauncher;
+    private ActivityResultLauncher<String[]> importFileLauncher;
 
     public static SettingsFragment newInstance() { return new SettingsFragment(); }
 
@@ -49,69 +45,61 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         this.attemptsPreference = findPreference("attempts");
         this.deleteAllAccountsPreference = findPreference("delete_all_accounts");
 
+        //configure ActivityResultLauncher
         this.exportFileLauncher = registerForActivityResult(
                 new ActivityResultContracts.CreateDocument(settingsViewModel.SQLITE_MIME_TYPE), new ActivityResultCallback<Uri>() {
                     @Override
                     public void onActivityResult(Uri o) {
                         //null if the user does not create the document
                         if (o != null) {
-                            // get database file
-                            Context appContext = requireContext().getApplicationContext();
-                            File dbFile = appContext.getDatabasePath(AppDatabase.DB_NAME);
+                            String toastText = "";
+                            Context ctx = requireContext().getApplicationContext();
+                            //Android 12 does not support SQLite MIME type
+                            //the MIME type is recognize as "application/octet-stream"
+                            if (settingsViewModel.createBackup(ctx, o)) {
+                                toastText = getResources().getString(R.string.msg_backup_export_success);
+                            }
+                            else {
+                                //error create backup
+                                toastText = getResources().getString(R.string.msg_backup_export_fail);
+                            }
+                            Toast.makeText(getContext(), toastText, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
 
-                            if (dbFile.canRead()) {
-                                ContentResolver resolver = appContext.getContentResolver();
-
-                                try (FileInputStream fins = new FileInputStream(dbFile);
-                                     OutputStream fos = resolver.openOutputStream(o)) {
-                                    long bytesCopied = FileUtils.copy(fins, fos);
-                                    if (bytesCopied > 0) {
-                                        Toast.makeText(getContext(), getResources().getString(R.string.msg_backup_created), Toast.LENGTH_SHORT)
-                                                .show();
+        this.importFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.OpenDocument(), new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri o) {
+                        //null if the user does not open a document
+                        if (o != null) {
+                            Context ctx = requireContext().getApplicationContext();
+                            if (settingsViewModel.importBackup(ctx, o)) {
+                                //TODO: make a better implementation,
+                                // reload the app completely OR stay in the app and update database data to UI
+                                // OR close all activity and relaunch the app to authenticate
+                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                                builder.setTitle("Reload the app");
+                                builder.setPositiveButton(requireContext().getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //close the app, after rewrite de database file
+                                        //SettingsFragment.this.requireActivity().finishAffinity();
+                                        Intent intent = new Intent(SettingsFragment.this.requireActivity(), AuthenticationActivity.class);
+                                        startActivity(intent);
+                                        SettingsFragment.this.requireActivity().finish();
                                     }
-
-                                } catch (IOException e) {
-                                    throw new RuntimeException(e);
-                                }
+                                });
+                                builder.show();
+                            }
+                            else {
+                                //error import backup
+                                Toast.makeText(getContext(), getResources().getString(R.string.msg_backup_import_fail), Toast.LENGTH_SHORT).show();
                             }
                         }
                     }
                 });
-//
-//        this.importFileLauncher = registerForActivityResult(
-//                new ActivityResultContracts.OpenDocument(), new ActivityResultCallback<Uri>() {
-//                    @Override
-//                    public void onActivityResult(Uri o) {
-//                        //null if the user does not open a document
-//                        if (o != null) {
-//                            System.out.println(o);
-//
-//                            Context appContext = requireContext().getApplicationContext();
-//                            //close database
-//                            AppDatabase database = AppDatabase.getInstance(appContext);
-//                            if (database.isOpen()) {
-//                                database.close();
-//                            }
-//
-//                            File dbFile = appContext.getDatabasePath(AppDatabase.DB_NAME);
-//
-//                            if (dbFile.canRead()) {
-//                                ContentResolver resolver = appContext.getContentResolver();
-//
-//                                try (FileInputStream fins = resolver.openInputStream(o);) {
-//                                    long bytesCopied = FileUtils.copy(fins, resolver.openOutputStream(o));
-//                                    if (bytesCopied > 0) {
-//                                        Toast.makeText(getContext(), getResources().getString(R.string.msg_backup_created), Toast.LENGTH_SHORT)
-//                                                .show();
-//                                    }
-//
-//                                } catch (IOException e) {
-//                                    throw new RuntimeException(e);
-//                                }
-//                            }
-//                        }
-//                    }
-//                });
 
         this.initListeners();
     }
@@ -120,19 +108,17 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         this.exportPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(@NonNull Preference preference) {
-                AppDatabase.getInstance(getContext()).MakeWalCheckpoint();
                 exportFileLauncher.launch(settingsViewModel.BACKUP_FILE_NAME);
                 return true;
             }
         });
 
-//        this.importPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-//            @Override
-//            public boolean onPreferenceClick(@NonNull Preference preference) {
-//                String[] input = {settingsViewModel.SQLITE_MIME_TYPE};
-//                importFileLauncher.launch(input);
-//                return true;
-//            }
-//        });
+        this.importPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(@NonNull Preference preference) {
+                importFileLauncher.launch(settingsViewModel.OPEN_DOCUMENT_MIME_TYPE);
+                return true;
+            }
+        });
     }
 }

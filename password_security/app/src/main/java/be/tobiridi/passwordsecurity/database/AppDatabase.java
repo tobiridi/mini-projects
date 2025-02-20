@@ -45,6 +45,14 @@ public abstract class AppDatabase extends RoomDatabase {
         cursor.close();
     }
 
+    /**
+     * Close the database connection and set the instance references to {@code null}.
+     */
+    public static void closeDatabase() {
+        INSTANCE.close();
+        INSTANCE = null;
+    }
+
     //Dao class
     public abstract AccountDao getAccountDao();
     public abstract UserPreferencesDao getUserPreferencesDao();
