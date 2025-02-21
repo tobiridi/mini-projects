@@ -15,13 +15,13 @@
 
     <!-- BottomNavigationView global style -->
     <style name="BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
-        <item name="backgroundTint">@color/primary</item>
+        <item name="android:background">@color/primary</item>
         <item name="itemIconTint">@color/color_item_bottom_nav</item>
-        <item name="itemTextColor">@color/white</item>
+        <item name="itemTextColor">@color/color_item_text_bottom_nav</item>
+<!--        <item name="itemPaddingTop">12dp</item>-->
+        <item name="itemPaddingBottom">22dp</item>
         <item name="itemIconSize">32dp</item>
-        <item name="itemPaddingBottom">0dp</item>
-        <item name="android:minHeight">70dp</item>
-        <item name="itemRippleColor">#33FFFFFF</item>
+        <item name="itemRippleColor">@color/rippleColor</item>
         <item name="itemTextAppearanceActive">?attr/textAppearanceLabelLarge</item>
         <item name="itemActiveIndicatorStyle">@style/BottomNavigationViewActiveIndicator</item>
     </style>
