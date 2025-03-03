@@ -39,6 +39,7 @@ room {
 }
 
 dependencies {
+    implementation(libs.androidx.cardview)
     implementation(libs.preference.ktx)
     implementation(libs.room.runtime)
     implementation(libs.appcompat)

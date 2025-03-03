@@ -1,5 +1,6 @@
 [versions]
 agp = "8.7.2"
+androidxCardview = "1.0.0"
 junit = "4.13.2"
 junitVersion = "1.1.5"
 espressoCore = "3.5.1"
@@ -15,6 +16,7 @@ lifecycleViewmodelKtx = "2.6.1"
 preference = "1.2.1"
 
 [libraries]
+androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "androidxCardview" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

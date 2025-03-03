@@ -17,7 +17,6 @@ import be.tobiridi.passwordsecurity.data.Account;
  */
 public class HomeViewHolder extends RecyclerView.ViewHolder {
     private final TextView _accountName;
-    private final TextView _accountEmail;
     private Account account;
     private final HomeAdapter _adapter;
 
@@ -25,7 +24,6 @@ public class HomeViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         this._adapter = adapter;
         this._accountName = itemView.findViewById(R.id.accountName);
-        this._accountEmail = itemView.findViewById(R.id.accountEmail);
 
         itemView.setOnClickListener(this.layoutClick());
         itemView.setOnLongClickListener(this.layoutLongClick());
@@ -35,7 +33,6 @@ public class HomeViewHolder extends RecyclerView.ViewHolder {
         this.account = account;
 
         this._accountName.setText(account.getName());
-        this._accountEmail.setText(account.getEmail());
     }
 
     private View.OnClickListener layoutClick() {

@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="rippleColor">#33B7F5F4</color>
-    <color name="black">#FF000000</color>
-    <color name="grey">#FFB9BABF</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="red">#FFE53636</color>
-    <color name="primary">#FF3A5983</color>
-    <color name="secondary">#FFBDDEF8</color>
-    <color name="tertiary">#FF474747</color>
-    <color name="dark">#FF2D2D2D</color>
-    <color name="activityBackground">#FFF5FAFF</color>
+    <color name="black">#000000</color>
+    <color name="grey">#B9BABF</color>
+    <color name="white">#FFFFFF</color>
+    <color name="red">#E53636</color>
+    <color name="dark">#2D2D2D</color>
+    <color name="activityBackgroundLight">#F5FAFF</color>
+    <color name="primary">#687FC3</color>
+    <color name="secondary">#6B7698</color>
+    <color name="tertiary">#597EEE</color>
+    <color name="surfaceLow">#E5ECFF</color>
+    <color name="surface">#5F636E</color>
+    <color name="shadow">#333743</color>
+    <color name="lightning">#1E2433</color>
+
 </resources>

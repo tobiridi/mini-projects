@@ -1,27 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- HeadLine -->
-    <style name="HeadlineSmall" parent="TextAppearance.Material3.HeadlineSmall">
-        <item name="android:fontFamily">@font/poppins_family</item>
-    </style>
-
-    <style name="HeadlineMedium" parent="TextAppearance.Material3.HeadlineMedium">
-        <item name="android:fontFamily">@font/poppins_family</item>
-    </style>
-
-    <style name="HeadlineLarge" parent="TextAppearance.Material3.HeadlineLarge">
-        <item name="android:fontFamily">@font/poppins_family</item>
-    </style>
-
     <!-- BottomNavigationView global style -->
     <style name="BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
-        <item name="android:background">@color/primary</item>
         <item name="itemIconTint">@color/color_item_bottom_nav</item>
         <item name="itemTextColor">@color/color_item_text_bottom_nav</item>
-<!--        <item name="itemPaddingTop">12dp</item>-->
         <item name="itemPaddingBottom">22dp</item>
         <item name="itemIconSize">32dp</item>
-        <item name="itemRippleColor">@color/rippleColor</item>
+<!--        <item name="itemRippleColor">@color/rippleColor</item>-->
         <item name="itemTextAppearanceActive">?attr/textAppearanceLabelLarge</item>
         <item name="itemActiveIndicatorStyle">@style/BottomNavigationViewActiveIndicator</item>
     </style>
