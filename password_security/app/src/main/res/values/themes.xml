@@ -6,6 +6,7 @@
         <item name="android:windowBackground">@color/activityBackgroundLight</item>
         <item name="android:fontFamily">@font/roboto_family</item>
         <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/primaryTextColor</item>
         <item name="colorSurface">@color/secondary</item>
         <!-- BottomNavigationView background color -->
         <item name="colorSurfaceContainer">@color/primary</item>

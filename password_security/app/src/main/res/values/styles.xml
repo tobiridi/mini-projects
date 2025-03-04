@@ -6,7 +6,7 @@
         <item name="itemTextColor">@color/color_item_text_bottom_nav</item>
         <item name="itemPaddingBottom">22dp</item>
         <item name="itemIconSize">32dp</item>
-<!--        <item name="itemRippleColor">@color/rippleColor</item>-->
+        <item name="itemRippleColor">@color/white</item>
         <item name="itemTextAppearanceActive">?attr/textAppearanceLabelLarge</item>
         <item name="itemActiveIndicatorStyle">@style/BottomNavigationViewActiveIndicator</item>
     </style>
