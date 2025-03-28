@@ -115,11 +115,11 @@ public abstract class AESManager {
         try {
             if (cipher == null) {
                 cipher = Cipher.getInstance(TRANSFORMATION);
-                //user custom secret key
-                secretKey = new SecretKeySpec(key, ALGORITHM);
-                //or using AndroidKeyStore
-                //secretKey = getSecretKeyFromAndroidKeyStore();
             }
+            //user custom secret key
+            secretKey = new SecretKeySpec(key, ALGORITHM);
+            //or using AndroidKeyStore
+            //secretKey = getSecretKeyFromAndroidKeyStore();
 
             cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             byte[] iv = cipher.getIV();
@@ -172,11 +172,11 @@ public abstract class AESManager {
         try {
             if (cipher == null) {
                 cipher = Cipher.getInstance(TRANSFORMATION);
-                //user custom secret key
-                secretKey = new SecretKeySpec(key, ALGORITHM);
-                //or using AndroidKeyStore
-                //secretKey = getSecretKeyFromAndroidKeyStore();
             }
+            //user custom secret key
+            secretKey = new SecretKeySpec(key, ALGORITHM);
+            //or using AndroidKeyStore
+            //secretKey = getSecretKeyFromAndroidKeyStore();
 
             byte[] iv = Arrays.copyOfRange(encryptedData, 0, cipher.getBlockSize());
             byte[] data = Arrays.copyOfRange(encryptedData, cipher.getBlockSize(), encryptedData.length);
