@@ -1,5 +1,6 @@
 package be.tobiridi.passwordsecurity;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.EdgeToEdge;
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import be.tobiridi.passwordsecurity.ui.Authentication.AuthenticationActivity;
 import be.tobiridi.passwordsecurity.ui.addAccount.AddAccountFragment;
 import be.tobiridi.passwordsecurity.ui.home.HomeFragment;
 import be.tobiridi.passwordsecurity.ui.settings.SettingsFragment;
@@ -54,6 +56,15 @@ public class MainActivity extends AppCompatActivity {
 
         this.initFragmentManager();
         this.initListeners();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        //re authenticate the user when lock screen or background the app
+        Intent authIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
+        startActivity(authIntent);
+        this.finish();
     }
 
     private void initFragmentManager() {
