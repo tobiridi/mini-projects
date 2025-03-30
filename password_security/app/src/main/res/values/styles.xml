@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- BottomNavigationView global style -->
+    <style name="BottomNavigationView" parent="Widget.Material3.BottomNavigationView">
+        <item name="itemIconTint">@color/color_item_bottom_nav</item>
+        <item name="itemTextColor">@color/color_item_text_bottom_nav</item>
+        <item name="itemPaddingBottom">22dp</item>
+        <item name="itemIconSize">32dp</item>
+        <item name="itemRippleColor">@color/white</item>
+        <item name="itemTextAppearanceActive">?attr/textAppearanceLabelLarge</item>
+        <item name="itemActiveIndicatorStyle">@style/BottomNavigationViewActiveIndicator</item>
+    </style>
+
+    <!-- BottomNavigationView active indicator style -->
+    <style name="BottomNavigationViewActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
+        <item name="android:color">#19FFFFFF</item>
+    </style>
+</resources>

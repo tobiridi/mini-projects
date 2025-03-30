@@ -1,0 +1,20 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.Passwordsecurity" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <item name="colorSurfaceContainerLow">@color/surfaceLow</item>
+        <item name="android:windowBackground">@color/activityBackgroundLight</item>
+        <item name="android:fontFamily">@font/roboto_family</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorOnPrimary">@color/primaryTextColor</item>
+        <item name="colorSurface">@color/secondary</item>
+        <!-- BottomNavigationView background color -->
+        <item name="colorSurfaceContainer">@color/primary</item>
+        <!-- BottomNavigationView -->
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:enforceNavigationBarContrast">true</item>
+    </style>
+
+    <style name="Theme.Passwordsecurity" parent="Base.Theme.Passwordsecurity" />
+</resources>

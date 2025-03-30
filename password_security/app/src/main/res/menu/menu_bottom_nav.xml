@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:title="@string/nav_home"
+        android:icon="@drawable/round_home_24"
+        app:showAsAction="ifRoom"
+        android:id="@+id/nav_home"/>
+
+    <item android:title="@string/nav_add"
+        android:icon="@drawable/round_add_circle_outline_24"
+        app:showAsAction="ifRoom"
+        android:id="@+id/nav_add"/>
+
+    <item android:title="@string/nav_settings"
+        android:icon="@drawable/round_settings_24"
+        app:showAsAction="ifRoom"
+        android:id="@+id/nav_settings"/>
+
+</menu>
