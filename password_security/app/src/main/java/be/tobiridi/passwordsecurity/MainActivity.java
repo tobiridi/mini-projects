@@ -59,12 +59,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        //when come back to this activity always authorize to finish it
+        MainViewModel.setCloseMainActivity(true);
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
-        //re authenticate the user when lock screen or background the app
-        Intent authIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
-        startActivity(authIntent);
-        this.finish();
+        //re authenticate the user when lock screen or move this activity on background
+        if (MainViewModel.isCloseMainActivity()) {
+            Intent authIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
+            startActivity(authIntent);
+            this.finish();
+        }
     }
 
     private void initFragmentManager() {

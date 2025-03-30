@@ -32,12 +32,17 @@ public class MainViewModel extends ViewModel {
     private final AccountDataSource _accountDataSource;
     private final HashMap<Integer, Fragment> _fragments;
     private Fragment currentFragDisplay;
+    /**
+     * Used to prevent close the activity and switch to user authentication.
+     */
+    private static boolean closeActivity;
 
     public MainViewModel(Context context) {
         this._userPreferencesDataSource = UserPreferencesDataSource.getInstance(context);
         this._accountDataSource = AccountDataSource.getInstance(context);
         this._fragments = new HashMap<>();
         this.currentFragDisplay = null;
+        MainViewModel.closeActivity = true;
     }
 
     @Override
@@ -61,5 +66,23 @@ public class MainViewModel extends ViewModel {
 
     public Fragment getFragment(int resourceId) {
         return this._fragments.get(resourceId);
+    }
+
+    public static boolean isCloseMainActivity() {
+        return MainViewModel.closeActivity;
+    }
+
+    /**
+     * Set the new state to {@code false} to prevent finish the {@link MainActivity} when switch activity
+     * <b>(e.g: select file from device)</b>.
+     * <br/>
+     * Set to {@code true} if the activity can be finished.
+     * <br/>
+     * Set to {@code false} if the activity can not be finished.
+     * @param newValue The new state.
+     * @see MainViewModel#isCloseMainActivity()
+     */
+    public static void setCloseMainActivity(boolean newValue) {
+        MainViewModel.closeActivity = newValue;
     }
 }
