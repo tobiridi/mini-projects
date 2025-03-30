@@ -23,7 +23,11 @@ public class SettingsViewModel extends ViewModel {
     /** 2018 - new SQLite MIME type */
     public final String SQLITE_MIME_TYPE = "application/vnd.sqlite3";
     public final String[] OPEN_DOCUMENT_MIME_TYPE = {SQLITE_MIME_TYPE, "application/octet-stream"};
-    private final ExecutorService _backgroundTask = Executors.newSingleThreadExecutor();
+    private final ExecutorService _backgroundTask;
+
+    public SettingsViewModel() {
+        this._backgroundTask = Executors.newSingleThreadExecutor();
+    }
 
     @Override
     protected void onCleared() {

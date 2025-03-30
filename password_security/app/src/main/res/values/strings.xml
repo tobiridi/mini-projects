@@ -53,7 +53,7 @@
     <!-- Database preferences -->
     <!-- Security preferences -->
     <string name="pref_attempts">Attempts</string>
-    <string name="pref_attempts_summary">The number of attempts before delete all accounts stored in the app when enter master password</string>
+    <string name="pref_attempts_summary">The number of attempts before delete all accounts stored in the app when enter master password, set to 0 = unlimited</string>
     <string name="pref_export_summary">Export the encrypted database to make a backup</string>
     <string name="pref_import_summary">Import a backup of an encrypted database</string>
 </resources>

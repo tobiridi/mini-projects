@@ -35,7 +35,7 @@
     <string name="pref_header_security">Sécurité</string>
     <string name="yes">Oui</string>
     <string name="pref_attempts">Tentatives</string>
-    <string name="pref_attempts_summary">Le nombre de tentatives avant de supprimer tous les comptes stockés dans l\'application lors de la saisie du mot de passe maître</string>
+    <string name="pref_attempts_summary">Le nombre de tentatives avant de supprimer tous les comptes stockés dans l\'application lors de la saisie du mot de passe maître, défirni à 0 = illimité</string>
     <string name="pref_export_summary">Exporter la base de données chiffrée pour faire une sauvegarde</string>
     <string name="pref_import_summary">Importer une sauvegarde d\'une base de données chiffrée</string>
     <string name="msg_backup_export_fail">Fichier de sauvegarde non créé</string>

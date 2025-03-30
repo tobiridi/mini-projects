@@ -4,9 +4,11 @@ import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLI
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
+import androidx.preference.PreferenceManager;
 
 import be.tobiridi.passwordsecurity.data.UserPreferencesDataSource;
 
@@ -27,12 +29,16 @@ public class AuthenticationViewModel extends ViewModel {
     private final UserPreferencesDataSource _userPreferencesDataSource;
     private Boolean hasMasterPassword;
     private boolean switchActivity;
-    private byte authAttempt = 0;
-    private final byte _maxAuthAttempt = 3;
+    private byte authAttempt;
+    private final byte _maxAuthAttempt;
 
     public AuthenticationViewModel(Context context) {
         this._userPreferencesDataSource = UserPreferencesDataSource.getInstance(context);
         this.switchActivity = false;
+        this.authAttempt = 0;
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        //retrieve from Preference, otherwise set to 3
+        this._maxAuthAttempt = (byte) prefs.getInt("attempts", 3);
     }
 
     @Override
@@ -52,6 +58,10 @@ public class AuthenticationViewModel extends ViewModel {
     }
 
     public boolean isMaxAuthAttemptReached() {
+        //if max attempt is set to 0 == unlimited
+        if (this._maxAuthAttempt == 0) {
+            return false;
+        }
         return this.authAttempt == this._maxAuthAttempt;
     }
 
