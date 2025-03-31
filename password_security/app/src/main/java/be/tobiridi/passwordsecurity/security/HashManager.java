@@ -11,11 +11,11 @@ import java.security.NoSuchAlgorithmException;
  * <br/>
  * The algorithm used is SHA-256.
  */
-public abstract class HashManager {
+public final class HashManager {
     private static final String ALGORITHM = "SHA-256";
 
     /**
-     * Hash the provided String into bytes array.
+     * Hash the provided {@code String} into {@code byte[]}.
      * @param data The data should be hashed.
      * @return The hashed data.
      */
@@ -23,12 +23,13 @@ public abstract class HashManager {
         try {
             return MessageDigest.getInstance(ALGORITHM).digest(data.getBytes(StandardCharsets.UTF_8));
         } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
+            //normally never happened, if the algorithm is invalid
+            return new byte[0];
         }
     }
 
     /**
-     * Hash the provided String into Base64 String.
+     * Hash the provided {@code String} into Base64 {@code String}.
      * @param data The data should be hashed.
      * @return The hashed data in Base64 format.
      */

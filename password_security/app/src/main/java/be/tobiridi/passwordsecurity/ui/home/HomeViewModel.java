@@ -11,10 +11,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.crypto.BadPaddingException;
 
 import be.tobiridi.passwordsecurity.data.Account;
 import be.tobiridi.passwordsecurity.data.AccountDataSource;
@@ -81,8 +80,8 @@ public class HomeViewModel extends ViewModel {
                 newAccount.unPackAccountData(decryptedCompactData);
 
                 this.sourceAccounts.add(newAccount);
-            } catch (BadPaddingException e) {
-                //TODO: manage exception
+            } catch (GeneralSecurityException e) {
+                //the master key used is not the same when encryption of the account data
                 throw new RuntimeException(e);
             }
         }
