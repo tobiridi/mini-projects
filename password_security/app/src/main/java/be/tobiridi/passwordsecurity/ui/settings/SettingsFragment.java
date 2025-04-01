@@ -131,6 +131,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return true;
             }
         });
+
+        this.deleteAllAccountsPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                String val = String.valueOf(newValue);
+                if (val.equalsIgnoreCase("yes")) {
+                    //TODO: change implementation
+                    settingsViewModel.deleteAllAccounts(SettingsFragment.this.getContext());
+                }
+                return false;
+            }
+        });
     }
 
     private boolean isActivityAssociate() {

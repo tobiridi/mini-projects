@@ -16,6 +16,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import be.tobiridi.passwordsecurity.data.AccountDataSource;
 import be.tobiridi.passwordsecurity.database.AppDatabase;
 
 public class SettingsViewModel extends ViewModel {
@@ -83,5 +84,13 @@ public class SettingsViewModel extends ViewModel {
         } catch (ExecutionException | InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public boolean deleteAllAccounts(Context ctx) {
+        //TODO: temp, update to better way
+        AccountDataSource source = AccountDataSource.getInstance(ctx);
+        int delAccounts = source.deleteAllAccounts();
+        //System.out.println(delAccounts);
+        return delAccounts > 0;
     }
 }

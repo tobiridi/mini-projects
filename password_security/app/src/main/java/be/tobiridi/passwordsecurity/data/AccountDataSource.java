@@ -109,4 +109,17 @@ public class AccountDataSource {
             throw new RuntimeException(e);
         }
     }
+
+    public int deleteAllAccounts() {
+        Callable<Integer> callable = () -> {
+            return this._accountDao.deleteAllAccounts();
+        };
+
+        try {
+            return this._service.submit(callable).get();
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
