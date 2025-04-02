@@ -30,7 +30,6 @@ public abstract class AppDatabase extends RoomDatabase {
                     AppDatabase.class, DB_NAME)
                     .build();
         }
-
         return INSTANCE;
     }
 
@@ -40,7 +39,7 @@ public abstract class AppDatabase extends RoomDatabase {
      * Use the {@code PRAGMA wal_checkpoint(TRUNCATE);} MySQL statement.
      */
     public void MakeWalCheckpoint() {
-        Cursor cursor = INSTANCE.getOpenHelper().getWritableDatabase().query("PRAGMA wal_checkpoint(TRUNCATE);");
+        Cursor cursor = this.getOpenHelper().getWritableDatabase().query("PRAGMA wal_checkpoint(TRUNCATE);");
         cursor.moveToNext();
         cursor.close();
     }
@@ -53,7 +52,7 @@ public abstract class AppDatabase extends RoomDatabase {
         INSTANCE = null;
     }
 
-    //Dao class
+    //DAO class
     public abstract AccountDao getAccountDao();
     public abstract UserPreferencesDao getUserPreferencesDao();
 }

@@ -7,58 +7,32 @@ import androidx.lifecycle.LiveData;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-import be.tobiridi.passwordsecurity.database.AccountDao;
-import be.tobiridi.passwordsecurity.database.AppDatabase;
 import be.tobiridi.passwordsecurity.security.AESManager;
 
 /**
- * Interact with the Room database.
- * <br/>
  * Can be constructed using one of the getInstance class methods of this class.
  */
-public class AccountDataSource {
+public class AccountDataSource extends DatabaseDataSource {
     private static AccountDataSource INSTANCE;
-    private final ExecutorService _service;
-    private final AccountDao _accountDao;
 
     public static AccountDataSource getInstance(Context context) {
+        DatabaseDataSource.getInstance(context);
         if (INSTANCE == null) {
             INSTANCE = new AccountDataSource(context);
         }
-
         return INSTANCE;
     }
 
     private AccountDataSource(Context context) {
-        this._service = Executors.newSingleThreadExecutor();
-        AppDatabase db = AppDatabase.getInstance(context);
-        this._accountDao = db.getAccountDao();
-    }
-
-    /**
-     * Close the Threads and free the resources.
-     */
-    public void closeExecutorService() {
-        this._service.shutdown();
-        INSTANCE = null;
+        super(context);
     }
 
     public LiveData<List<Account>> getAllAccounts() {
         Callable<LiveData<List<Account>>> callable = () -> {
-            return this._accountDao.getAllAccounts();
+            return this.accountDao.getAllAccounts();
         };
-
-        try {
-            Future<LiveData<List<Account>>> future = this._service.submit(callable);
-            return future.get();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return this.executeCallable(callable);
     }
 
     /**
@@ -77,16 +51,9 @@ public class AccountDataSource {
                 }
             }
 
-            return this._accountDao.insertAccount(accounts);
+            return this.accountDao.insertAccount(accounts);
         };
-
-        try {
-            Future<long[]> f = this._service.submit(callable);
-            return f.get();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return this.executeCallable(callable);
     }
 //
 //    public boolean updateAccount(Account account) {
@@ -98,28 +65,15 @@ public class AccountDataSource {
 //
     public int deleteAccount(Account account) {
         Callable<Integer> callable = () -> {
-            return this._accountDao.deleteAccount(account);
+            return this.accountDao.deleteAccount(account);
         };
-
-        try {
-            Future<Integer> f = this._service.submit(callable);
-            return f.get();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return this.executeCallable(callable);
     }
 
     public int deleteAllAccounts() {
         Callable<Integer> callable = () -> {
-            return this._accountDao.deleteAllAccounts();
+            return this.accountDao.deleteAllAccounts();
         };
-
-        try {
-            return this._service.submit(callable).get();
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
+        return this.executeCallable(callable);
     }
 }

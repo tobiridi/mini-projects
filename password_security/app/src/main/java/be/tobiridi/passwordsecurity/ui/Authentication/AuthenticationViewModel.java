@@ -28,32 +28,21 @@ public class AuthenticationViewModel extends ViewModel {
 
     private final UserPreferencesDataSource _userPreferencesDataSource;
     private Boolean hasMasterPassword;
-    private boolean switchActivity;
     private byte authAttempt;
     private final byte _maxAuthAttempt;
 
     public AuthenticationViewModel(Context context) {
         this._userPreferencesDataSource = UserPreferencesDataSource.getInstance(context);
-        this.switchActivity = false;
         this.authAttempt = 0;
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         //retrieve from Preference, otherwise set to 3
         this._maxAuthAttempt = (byte) prefs.getInt("attempts", 3);
     }
 
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        if (!this.switchActivity) {
-            this._userPreferencesDataSource.closeExecutorService();
-        }
-    }
-
     public boolean isMasterPasswordExists() {
         if (this.hasMasterPassword == null) {
             this.hasMasterPassword = this._userPreferencesDataSource.hasMasterPassword();
         }
-
         return this.hasMasterPassword;
     }
 
@@ -62,16 +51,13 @@ public class AuthenticationViewModel extends ViewModel {
         if (this._maxAuthAttempt == 0) {
             return false;
         }
-        return this.authAttempt == this._maxAuthAttempt;
+        return this.authAttempt >= this._maxAuthAttempt;
     }
 
     public boolean confirmPassword(String masterPassword) {
         if (!masterPassword.isEmpty()) {
-            if (this._userPreferencesDataSource.authenticateUser(masterPassword)) {
-                this.switchActivity = true;
-                return true;
-            }
             this.authAttempt++;
+            return this._userPreferencesDataSource.authenticateUser(masterPassword);
         }
         return false;
     }

@@ -11,9 +11,6 @@ import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import java.util.HashMap;
 
-import be.tobiridi.passwordsecurity.data.AccountDataSource;
-import be.tobiridi.passwordsecurity.data.UserPreferencesDataSource;
-
 public class MainViewModel extends ViewModel {
     /*********************/
     /* ViewModel Factory */
@@ -28,8 +25,6 @@ public class MainViewModel extends ViewModel {
             }
     );
 
-    private final UserPreferencesDataSource _userPreferencesDataSource;
-    private final AccountDataSource _accountDataSource;
     private final HashMap<Integer, Fragment> _fragments;
     private Fragment currentFragDisplay;
     /**
@@ -38,18 +33,9 @@ public class MainViewModel extends ViewModel {
     private static boolean closeActivity;
 
     public MainViewModel(Context context) {
-        this._userPreferencesDataSource = UserPreferencesDataSource.getInstance(context);
-        this._accountDataSource = AccountDataSource.getInstance(context);
         this._fragments = new HashMap<>();
         this.currentFragDisplay = null;
         MainViewModel.closeActivity = true;
-    }
-
-    @Override
-    protected void onCleared() {
-        super.onCleared();
-        this._userPreferencesDataSource.closeExecutorService();
-        this._accountDataSource.closeExecutorService();
     }
 
     public Fragment getCurrentFragDisplay() {
