@@ -23,7 +23,7 @@ import androidx.preference.SeekBarPreference;
 import be.tobiridi.passwordsecurity.MainActivity;
 import be.tobiridi.passwordsecurity.MainViewModel;
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.ui.Authentication.AuthenticationActivity;
+import be.tobiridi.passwordsecurity.ui.authentication.AuthenticationActivity;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     private SettingsViewModel settingsViewModel;
@@ -136,9 +136,10 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
                 String val = String.valueOf(newValue);
-                if (val.equalsIgnoreCase("yes")) {
-                    //TODO: change implementation
-                    settingsViewModel.deleteAllAccounts(SettingsFragment.this.getContext());
+                //first value should be positive entry !
+                CharSequence positiveEntry = deleteAllAccountsPreference.getEntries()[0];
+                if (val.equalsIgnoreCase(positiveEntry.toString())) {
+                    settingsViewModel.deleteAllAccounts(getContext());
                 }
                 return false;
             }

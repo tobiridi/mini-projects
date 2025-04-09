@@ -87,10 +87,8 @@ public class SettingsViewModel extends ViewModel {
     }
 
     public boolean deleteAllAccounts(Context ctx) {
-        //TODO: temp, update to better way
         AccountDataSource source = AccountDataSource.getInstance(ctx);
-        int delAccounts = source.deleteAllAccounts();
-        //System.out.println(delAccounts);
-        return delAccounts > 0;
+        int nbDelAccounts = source.deleteAllAccounts();
+        return nbDelAccounts > 0;
     }
 }
