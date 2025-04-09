@@ -16,7 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import be.tobiridi.passwordsecurity.ui.Authentication.AuthenticationActivity;
+import be.tobiridi.passwordsecurity.ui.authentication.AuthenticationActivity;
 import be.tobiridi.passwordsecurity.ui.addAccount.AddAccountFragment;
 import be.tobiridi.passwordsecurity.ui.home.HomeFragment;
 import be.tobiridi.passwordsecurity.ui.settings.SettingsFragment;

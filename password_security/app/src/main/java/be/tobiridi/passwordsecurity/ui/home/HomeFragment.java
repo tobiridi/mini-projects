@@ -26,7 +26,7 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private SearchView searchView;
     private RecyclerView recyclerView;
-    private Observer<List<Account>> obAccounts;
+    private Observer<List<Account>> obSourceAccounts;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -51,22 +51,22 @@ public class HomeFragment extends Fragment {
         this.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         this.initObservers();
-        this.homeViewModel.getMutableSourceAccounts().observe(this.getViewLifecycleOwner(), this.obAccounts);
+        this.homeViewModel.getMutableSourceAccounts().observe(this.getViewLifecycleOwner(), this.obSourceAccounts);
 
         this.initListeners();
     }
 
     private void initObservers() {
-        this.obAccounts = new Observer<List<Account>>() {
+        this.obSourceAccounts = new Observer<List<Account>>() {
             @Override
-            public void onChanged(List<Account> mutableAccounts) {
+            public void onChanged(List<Account> accounts) {
                 HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
                 if (adapter == null) {
                     //init adapter when activity creation
-                    recyclerView.setAdapter(new HomeAdapter(mutableAccounts, homeViewModel));
+                    recyclerView.setAdapter(new HomeAdapter(accounts, homeViewModel));
                 }
                 else {
-                    adapter.updateAccounts();
+                    adapter.sourceAccountsChanged(accounts);
                 }
             }
         };
@@ -85,7 +85,7 @@ public class HomeFragment extends Fragment {
                 if (adapter != null) {
                     adapter.getFilter().filter(newText.toLowerCase());
                 }
-                return false;
+                return true;
             }
         });
     }

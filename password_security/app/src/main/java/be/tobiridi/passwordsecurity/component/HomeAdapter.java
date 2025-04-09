@@ -26,10 +26,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> implements
     private final HomeViewModel _homeViewModel;
     private Filter filter;
 
-    public HomeAdapter(@NonNull List<Account> accounts, HomeViewModel homeViewModel) {
-        this.sourceAccounts = accounts;
-        //use a different reference than source account
-        this.filteredAccounts = new ArrayList<>(accounts);
+    public HomeAdapter(@NonNull List<Account> sourceAccounts, HomeViewModel homeViewModel) {
+        this.sourceAccounts = sourceAccounts;
+        //use a different reference than source account, used to apply a filter
+        this.filteredAccounts = new ArrayList<>(sourceAccounts);
         this._homeViewModel = homeViewModel;
         this.filter = this.getFilter();
     }
@@ -99,12 +99,45 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> implements
         return this.filter;
     }
 
-    public void updateAccounts() {
-        //account added
-        if (this.sourceAccounts.size() > this.filteredAccounts.size()) {
-            this.filteredAccounts.add(this.sourceAccounts.get(this.sourceAccounts.size() - 1));
-            this.notifyItemInserted(this.getItemCount() - 1);
+    /**
+     * Should be trigger when the source data changed.
+     */
+    public void sourceAccountsChanged(List<Account> accounts) {
+        //DELETE : occurred when the user interact with a viewHolder
+        //UPDATE : ???
+        this.sourceAccounts = accounts;
+        int sourceSize = this.sourceAccounts.size();
+        int currentSize = this.getItemCount();
+        int diffSize = sourceSize - currentSize;
+
+        //DELETE ALL
+        if (sourceSize == 0) {
+            this.filteredAccounts.clear();
+            this.notifyItemRangeRemoved(0, currentSize);
         }
+        //ADD, ADD ALL
+        else if (diffSize >= 1) {
+            this.addAccounts();
+        }
+    }
+
+    /**
+     * Add the news {@link Account} to the adapter list items.
+     * <br/>
+     * The added items are the difference between the source and the current items list.
+     */
+    public void addAccounts() {
+        int sourceSize = this.sourceAccounts.size();
+        int currentSize = this.getItemCount();
+
+        List<Account> newAccounts;
+        if (currentSize == 0)
+            newAccounts = this.sourceAccounts;
+        else
+            newAccounts = this.sourceAccounts.subList(currentSize, sourceSize);
+
+        this.filteredAccounts.addAll(newAccounts);
+        this.notifyItemRangeInserted(currentSize, this.getItemCount());
     }
 
     public void deleteAccount(Account account, int position) {
@@ -113,4 +146,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> implements
             this.notifyItemRemoved(position);
         }
     }
+
+//    public void updateAccount(Account account, int position) {
+//        if (this._homeViewModel.updateAccount(account)) {
+//            this.filteredAccounts.set(position, account);
+//            this.notifyItemChanged(position);
+//        }
+//    }
 }

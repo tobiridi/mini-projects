@@ -25,12 +25,13 @@ public class MainViewModel extends ViewModel {
             }
     );
 
+    //TODO: make a better implementation for switch between fragment correctly
     private final HashMap<Integer, Fragment> _fragments;
     private Fragment currentFragDisplay;
     /**
      * Used to prevent close the activity and switch to user authentication.
      */
-    private static boolean closeActivity;
+    private static boolean closeActivity; //TODO: rename to 'switchToAuthActivity'
 
     public MainViewModel(Context context) {
         this._fragments = new HashMap<>();

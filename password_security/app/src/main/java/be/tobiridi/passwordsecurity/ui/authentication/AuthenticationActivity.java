@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.ui.Authentication;
+package be.tobiridi.passwordsecurity.ui.authentication;
 
 import android.content.Intent;
 import android.os.Bundle;

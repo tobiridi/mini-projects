@@ -6,8 +6,9 @@ import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.data.Account;
@@ -39,7 +40,7 @@ public class HomeViewHolder extends RecyclerView.ViewHolder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(v.getContext());
                 View dialogView = LayoutInflater.from(builder.getContext())
                         .inflate(R.layout.dialog_account_info, null);
 
@@ -68,7 +69,7 @@ public class HomeViewHolder extends RecyclerView.ViewHolder {
         return new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(v.getContext());
                 builder.setTitle(R.string.alert_account_change);
                 builder.setMessage(account.getName() + "\n" + account.getEmail() + "\n" + account.getPassword());
                 builder.setPositiveButton(R.string.modify, new DialogInterface.OnClickListener() {

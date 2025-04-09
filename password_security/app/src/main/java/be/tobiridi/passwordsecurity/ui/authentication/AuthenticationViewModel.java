@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.ui.Authentication;
+package be.tobiridi.passwordsecurity.ui.authentication;
 
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
