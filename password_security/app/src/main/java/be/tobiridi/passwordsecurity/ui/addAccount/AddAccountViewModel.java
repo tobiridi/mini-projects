@@ -12,7 +12,7 @@ import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.data.Account;
@@ -59,7 +59,7 @@ public class AddAccountViewModel extends ViewModel {
             String accName = accountName.getEditText().getText().toString();
             String accEmail = accountEmail.getEditText().getText().toString();
             String accPassword = accountPassword.getEditText().getText().toString();
-            LocalDate created = LocalDate.now();
+            LocalDateTime created = LocalDateTime.now();
 
             Account a = new Account(accName, accEmail, accPassword, created, created);
             idResults = this._accountDataSource.saveAccounts(a);
@@ -80,7 +80,6 @@ public class AddAccountViewModel extends ViewModel {
             name.setError(this._resources.getString(R.string.error_account_name_empty));
             return false;
         }
-
         return true;
     }
 
@@ -95,11 +94,11 @@ public class AddAccountViewModel extends ViewModel {
         if (txt.trim().isEmpty()) {
             email.setError(this._resources.getString(R.string.error_account_email_empty));
             return false;
-        } else if (!Patterns.EMAIL_ADDRESS.matcher(txt).matches()) {
+        }
+        else if (!Patterns.EMAIL_ADDRESS.matcher(txt).matches()) {
             email.setError(this._resources.getString(R.string.error_account_email_format));
             return false;
         }
-
         return true;
     }
 
@@ -115,7 +114,6 @@ public class AddAccountViewModel extends ViewModel {
             password.setError(this._resources.getString(R.string.error_account_password_empty));
             return false;
         }
-
         return true;
     }
 

@@ -10,7 +10,7 @@ import androidx.room.TypeConverters;
 
 import be.tobiridi.passwordsecurity.data.Account;
 import be.tobiridi.passwordsecurity.data.UserPreferences;
-import be.tobiridi.passwordsecurity.database.converters.DateConverters;
+import be.tobiridi.passwordsecurity.database.converters.DateTimeConverters;
 
 @Database(version = 1,
         entities = {
@@ -19,7 +19,7 @@ import be.tobiridi.passwordsecurity.database.converters.DateConverters;
         },
         exportSchema = true
 )
-@TypeConverters({DateConverters.class})
+@TypeConverters({DateTimeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public static final String DB_NAME = "appDatabase.db";
     private static AppDatabase INSTANCE;

@@ -1,6 +1,8 @@
 package be.tobiridi.passwordsecurity.component;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -12,19 +14,20 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.data.Account;
+import be.tobiridi.passwordsecurity.ui.updateAccount.UpdateAccountActivity;
 
 /**
- * All functionality for the home fragment RecyclerView.
+ * Provide a view for the {@link HomeAdapter} which used as an item.
  */
 public class HomeViewHolder extends RecyclerView.ViewHolder {
-    private final TextView _accountName;
+    private final TextView _accountNameTv;
     private Account account;
     private final HomeAdapter _adapter;
 
     public HomeViewHolder(@NonNull View itemView, HomeAdapter adapter) {
         super(itemView);
         this._adapter = adapter;
-        this._accountName = itemView.findViewById(R.id.accountName);
+        this._accountNameTv = itemView.findViewById(R.id.accountName);
 
         itemView.setOnClickListener(this.layoutClick());
         itemView.setOnLongClickListener(this.layoutLongClick());
@@ -33,7 +36,7 @@ public class HomeViewHolder extends RecyclerView.ViewHolder {
     public void setAccount(Account account) {
         this.account = account;
 
-        this._accountName.setText(account.getName());
+        this._accountNameTv.setText(account.getName());
     }
 
     private View.OnClickListener layoutClick() {
@@ -75,7 +78,13 @@ public class HomeViewHolder extends RecyclerView.ViewHolder {
                 builder.setPositiveButton(R.string.modify, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO: update the account
+                        int pos = HomeViewHolder.this.getAdapterPosition();
+                        Context ctx = HomeViewHolder.this.itemView.getContext();
+
+                        Intent intent = new Intent(ctx, UpdateAccountActivity.class);
+                        intent.putExtra("updatableAccount", account);
+                        intent.putExtra("accountPosition", pos);
+                        ctx.startActivity(intent);
                     }
                 });
                 builder.setNegativeButton(R.string.delete, new DialogInterface.OnClickListener() {
@@ -97,5 +106,4 @@ public class HomeViewHolder extends RecyclerView.ViewHolder {
             }
         };
     }
-
 }

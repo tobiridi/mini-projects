@@ -6,11 +6,14 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import java.time.LocalDate;
+import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.StringJoiner;
 
 @Entity(tableName = "accounts")
-public class Account {
+public class Account implements Serializable {
+    private static final long serialVersionUID = 42263247523547L;
     public enum EncryptionState {
         ENCRYPTED,
         DECRYPTED
@@ -32,10 +35,10 @@ public class Account {
     private String password;
 
     @NonNull
-    private LocalDate created;
+    private LocalDateTime created;
 
     @NonNull
-    private LocalDate updated;
+    private LocalDateTime updated;
 
     @Ignore
     private EncryptionState state;
@@ -80,19 +83,19 @@ public class Account {
         this.password = password;
     }
 
-    public LocalDate getCreated() {
+    public LocalDateTime getCreated() {
         return this.created;
     }
 
-    public void setCreated(LocalDate created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
-    public LocalDate getUpdated() {
+    public LocalDateTime getUpdated() {
         return this.updated;
     }
 
-    public void setUpdated(LocalDate updated) {
+    public void setUpdated(LocalDateTime updated) {
         this.updated = updated;
     }
 
@@ -107,22 +110,22 @@ public class Account {
     private static final String ACCOUNT_SEPARATOR = ",";
 
     public Account() {
-        LocalDate n = LocalDate.now();
+        LocalDateTime n = LocalDateTime.now();
         this.created = n;
         this.updated = n;
         this.state = EncryptionState.ENCRYPTED;
     }
 
     @Ignore
-    public Account(@NonNull String name, @NonNull String email, @NonNull String password, @NonNull LocalDate created, @NonNull LocalDate updated) {
+    public Account(@NonNull String name, @NonNull String email, @NonNull String password, @NonNull LocalDateTime created, @NonNull LocalDateTime updated) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.created = created;
         this.updated = updated;
-        //used to encryption/decryption one String (better performance)
-        this.compactAccount = this.name + Account.ACCOUNT_SEPARATOR + this.email + Account.ACCOUNT_SEPARATOR + this.password;
         this.state = EncryptionState.DECRYPTED;
+        //used to encryption/decryption one String (better performance)
+        this.packAccountData();
     }
 
     @Override
@@ -151,17 +154,39 @@ public class Account {
     }
 
     /**
-     * Restore the values of the account once the account has been decrypt.
+     * Restore the values of the account once the account has been decrypted.
+     * <br/>
      * If the account state is not {@link EncryptionState#DECRYPTED}, call this method will produce nothing.
      * @param compactAccount The compacted and decrypted account data.
+     * @see Account#packAccountData()
      */
     public void unPackAccountData(String compactAccount) {
         if (this.state.equals(EncryptionState.DECRYPTED)) {
-            String[] values = compactAccount.split(Account.ACCOUNT_SEPARATOR);
-            //respect the same order as creating of the object
+            String[] values = compactAccount.split(ACCOUNT_SEPARATOR);
+            //respect the same order when pack the account data
             this.name = values[0];
             this.email = values[1];
             this.password = values[2];
+            this.compactAccount = compactAccount;
+        }
+    }
+
+    /**
+     * Update the compact account data with its new values.
+     * <br/>
+     * Should be call only if the data about this account has been updated.
+     * <br/>
+     * If the account state is not {@link EncryptionState#DECRYPTED}, call this method will produce nothing.
+     * @see Account#unPackAccountData(String)
+     */
+    public void packAccountData() {
+        if (this.state.equals(EncryptionState.DECRYPTED)) {
+            StringJoiner joiner = new StringJoiner(ACCOUNT_SEPARATOR);
+            //the order used to compact the account, ORDER IMPORTANT
+            joiner.add(this.name);
+            joiner.add(this.email);
+            joiner.add(this.password);
+            this.compactAccount = joiner.toString();
         }
     }
 }

@@ -18,7 +18,7 @@ import be.tobiridi.passwordsecurity.data.Account;
 import be.tobiridi.passwordsecurity.ui.home.HomeViewModel;
 
 /**
- * Link the {@link HomeViewHolder} to the RecyclerView.
+ * Link the {@link HomeViewHolder} to the {@link RecyclerView}.
  */
 public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> implements Filterable {
     private List<Account> sourceAccounts;
@@ -100,12 +100,11 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> implements
     }
 
     /**
-     * Should be trigger when the source data changed.
+     * Should be always called when the source data changed.
      */
-    public void sourceAccountsChanged(List<Account> accounts) {
+    public void sourceAccountsChanged(List<Account> sourceAccounts) {
         //DELETE : occurred when the user interact with a viewHolder
-        //UPDATE : ???
-        this.sourceAccounts = accounts;
+        this.sourceAccounts = sourceAccounts;
         int sourceSize = this.sourceAccounts.size();
         int currentSize = this.getItemCount();
         int diffSize = sourceSize - currentSize;
@@ -118,6 +117,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> implements
         //ADD, ADD ALL
         else if (diffSize >= 1) {
             this.addAccounts();
+        }
+        //UPDATE, ensure to get the source accounts
+        else if (diffSize == 0) {
+            int position = 0;
+            for (Account acc: this.sourceAccounts) {
+                Account filterAcc = this.filteredAccounts.get(position);
+                if (acc.getUpdated().isAfter(filterAcc.getUpdated())){
+                    this.filteredAccounts.set(position, acc);
+                    notifyItemChanged(position);
+                }
+                position++;
+            }
         }
     }
 
@@ -146,11 +157,4 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> implements
             this.notifyItemRemoved(position);
         }
     }
-
-//    public void updateAccount(Account account, int position) {
-//        if (this._homeViewModel.updateAccount(account)) {
-//            this.filteredAccounts.set(position, account);
-//            this.notifyItemChanged(position);
-//        }
-//    }
 }

@@ -76,21 +76,21 @@ public class HomeViewModel extends ViewModel {
                 }
                 //DELETE
                 else if (mutableAccounts.size() > dbAccounts.size()) {
-                    for (Account deletedAccount: mutableAccounts) {
-                        if (!dbAccounts.contains(deletedAccount)) {
-                            mutableAccounts.remove(deletedAccount);
-                            break;
-                        }
-                    }
+                    mutableAccounts.removeIf(mutAcc -> !dbAccounts.contains(mutAcc));
                 }
                 //UPDATE, lists size are the same
                 else {
-//                    System.out.println("updated DB accounts");
-//                    System.out.println(dbAccounts);
-//                    System.out.println(mutableAccounts);
-//                    if (mutableAccounts.retainAll(dbAccounts)) {
-//                        System.out.println("DB list : " + mutableAccounts);
-//                    }
+                    int index = 0;
+                    for (Account updatedAccount: mutableAccounts) {
+                        Account dbAcc = dbAccounts.get(index);
+                        if (dbAcc.getUpdated().isAfter(updatedAccount.getUpdated())) {
+                            //change the id to indicate a different object
+                            updatedAccount.setId(-1);
+                            HomeViewModel.this.decryptAccount(dbAcc);
+                            mutableAccounts.set(index, dbAcc);
+                        }
+                        index++;
+                    }
                 }
                 mutableSourceAccounts.setValue(mutableAccounts);
             }
@@ -115,6 +115,10 @@ public class HomeViewModel extends ViewModel {
         }
     }
 
+    public boolean deleteAccount(Account deletedAccount) {
+        return this._accountDataSource.deleteAccount(deletedAccount) > 0;
+    }
+
     /****************************/
     /* Mutable accounts methods */
     /****************************/
@@ -126,12 +130,4 @@ public class HomeViewModel extends ViewModel {
     public LiveData<List<Account>> getMutableSourceAccounts() {
         return this.mutableSourceAccounts;
     }
-
-    public boolean deleteAccount(Account deletedAccount) {
-        return this._accountDataSource.deleteAccount(deletedAccount) > 0;
-    }
-
-//    public boolean updateAccount(Account account) {
-//        return this._accountDataSource.updateAccount(account) > 0;
-//    }
 }
