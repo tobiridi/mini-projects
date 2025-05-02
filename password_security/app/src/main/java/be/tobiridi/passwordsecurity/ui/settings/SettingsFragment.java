@@ -13,15 +13,12 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
-import be.tobiridi.passwordsecurity.MainActivity;
-import be.tobiridi.passwordsecurity.MainViewModel;
 import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.ui.authentication.AuthenticationActivity;
 
@@ -111,10 +108,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         this.exportPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(@NonNull Preference preference) {
-                if (isActivityAssociate()) {
-                    //prevent to close the activity
-                    MainViewModel.setCloseMainActivity(false);
-                }
                 exportFileLauncher.launch(settingsViewModel.BACKUP_FILE_NAME);
                 return true;
             }
@@ -123,10 +116,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         this.importPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(@NonNull Preference preference) {
-                if (isActivityAssociate()) {
-                    //prevent to close the activity
-                    MainViewModel.setCloseMainActivity(false);
-                }
                 importFileLauncher.launch(settingsViewModel.OPEN_DOCUMENT_MIME_TYPE);
                 return true;
             }
@@ -144,10 +133,5 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                 return false;
             }
         });
-    }
-
-    private boolean isActivityAssociate() {
-        FragmentActivity activity = this.requireActivity();
-        return (activity instanceof MainActivity);
     }
 }

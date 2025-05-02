@@ -1,7 +1,8 @@
 package be.tobiridi.passwordsecurity;
 
-import android.content.Intent;
+import android.content.Context;
 import android.os.Bundle;
+import android.os.PowerManager;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +17,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import be.tobiridi.passwordsecurity.ui.authentication.AuthenticationActivity;
 import be.tobiridi.passwordsecurity.ui.addAccount.AddAccountFragment;
 import be.tobiridi.passwordsecurity.ui.home.HomeFragment;
 import be.tobiridi.passwordsecurity.ui.settings.SettingsFragment;
@@ -59,21 +59,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        //when come back to this activity always authorize to finish it
-        MainViewModel.setCloseMainActivity(true);
-    }
-
-    @Override
     protected void onStop() {
         super.onStop();
-        //re authenticate the user when lock screen or move this activity on background
-        if (MainViewModel.isCloseMainActivity()) {
-            Intent authIntent = new Intent(MainActivity.this, AuthenticationActivity.class);
-            startActivity(authIntent);
-            this.finish();
-        }
+        PowerManager manager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        if (!manager.isInteractive())
+            this.finishAffinity();
     }
 
     private void initFragmentManager() {
