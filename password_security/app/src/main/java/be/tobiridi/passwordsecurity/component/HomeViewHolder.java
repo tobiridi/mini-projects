@@ -73,7 +73,7 @@ public class HomeViewHolder extends RecyclerView.ViewHolder {
             @Override
             public boolean onLongClick(View v) {
                 MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(v.getContext());
-                builder.setTitle(R.string.alert_account_change);
+                builder.setTitle(R.string.alert_account_change_title);
                 builder.setMessage(account.getName() + "\n" + account.getEmail() + "\n" + account.getPassword());
                 builder.setPositiveButton(R.string.modify, new DialogInterface.OnClickListener() {
                     @Override

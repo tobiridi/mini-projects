@@ -1,6 +1,5 @@
 package be.tobiridi.passwordsecurity.ui.settings;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -18,6 +17,8 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.ui.authentication.AuthenticationActivity;
@@ -76,19 +77,19 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                         if (o != null) {
                             Context ctx = requireContext().getApplicationContext();
                             if (settingsViewModel.importBackup(ctx, o)) {
-                                //TODO: make a better implementation,
-                                // reload the app completely OR stay in the app and update database data to UI
-                                // OR close all activity and relaunch the app to authenticate
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-                                builder.setTitle("Reload the app");
+                                Toast.makeText(getContext(), getResources().getString(R.string.msg_backup_import_success), Toast.LENGTH_SHORT).show();
+
+                                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+                                builder.setCancelable(false);
+                                builder.setTitle(R.string.alert_relaunch_app_title);
+                                builder.setMessage(R.string.alert_relaunch_app_msg);
                                 builder.setPositiveButton(requireContext().getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        //close the app, after rewrite de database file
-                                        //SettingsFragment.this.requireActivity().finishAffinity();
-                                        Intent intent = new Intent(SettingsFragment.this.requireActivity(), AuthenticationActivity.class);
-                                        startActivity(intent);
-                                        SettingsFragment.this.requireActivity().finish();
+                                        //relaunch the app, after rewrite the database file
+                                        SettingsFragment.this.requireActivity().finishAffinity();
+                                        Intent authIntent = new Intent(getContext(), AuthenticationActivity.class);
+                                        startActivity(authIntent);
                                     }
                                 });
                                 builder.show();

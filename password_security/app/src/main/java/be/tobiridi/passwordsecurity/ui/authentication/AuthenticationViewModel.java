@@ -78,8 +78,8 @@ public class AuthenticationViewModel extends ViewModel {
         return false;
     }
 
-    public void destroyAllData(Context ctx) {
-        this._userPreferencesDataSource.destroyAllData(ctx);
+    public void destroyAllData() {
+        this._userPreferencesDataSource.destroyAllData();
     }
 
 }

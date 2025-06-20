@@ -1,7 +1,6 @@
 package be.tobiridi.passwordsecurity.database;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -34,21 +33,11 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     /**
-     * Make a checkpoint for SQLite {@code .wal} file and apply all modifications in the database file.
-     * </br>
-     * Use the {@code PRAGMA wal_checkpoint(TRUNCATE);} MySQL statement.
-     */
-    public void MakeWalCheckpoint() {
-        Cursor cursor = this.getOpenHelper().getWritableDatabase().query("PRAGMA wal_checkpoint(TRUNCATE);");
-        cursor.moveToNext();
-        cursor.close();
-    }
-
-    /**
      * Close the database connection and set the instance references to {@code null}.
      */
-    public static void closeDatabase() {
-        INSTANCE.close();
+    @Override
+    public void close() {
+        super.close();
         INSTANCE = null;
     }
 

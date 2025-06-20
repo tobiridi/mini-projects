@@ -1,6 +1,7 @@
 package be.tobiridi.passwordsecurity.data;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -17,35 +18,55 @@ import be.tobiridi.passwordsecurity.database.UserPreferencesDao;
  * The common class to interact with {@link AppDatabase}.
  * <br/>
  * Every class should be extends this class if needed to interact with the {@link androidx.room.RoomDatabase}.
- * @author Tony
+ * @see AccountDataSource
+ * @see UserPreferencesDataSource
+ * @author Jadoulle Tony
  */
-public class DatabaseDataSource {
-    private static DatabaseDataSource INSTANCE;
-    private ExecutorService executorService;
+public abstract class DatabaseDataSource {
+    private static AppDatabase appDB;
+    private static ExecutorService executorService;
     protected AccountDao accountDao;
     protected UserPreferencesDao userPreferencesDao;
 
     protected DatabaseDataSource(Context ctx) {
-        //access via getInstance method, executed only once
-        if (INSTANCE == null) {
-            AppDatabase db = AppDatabase.getInstance(ctx);
-            this.executorService = Executors.newSingleThreadExecutor();
-            this.accountDao = db.getAccountDao();
-            this.userPreferencesDao = db.getUserPreferencesDao();
+        if (appDB == null) {
+            appDB = AppDatabase.getInstance(ctx);
+            executorService = Executors.newSingleThreadExecutor();
         }
-        else {
-            //retrieve from INSTANCE for the children class
-            this.executorService = INSTANCE.executorService;
-            this.accountDao = INSTANCE.accountDao;
-            this.userPreferencesDao = INSTANCE.userPreferencesDao;
+        this.accountDao = appDB.getAccountDao();
+        this.userPreferencesDao = appDB.getUserPreferencesDao();
+    }
+
+    /**
+     * Free all resources used for interact with {@link AppDatabase} and close the database connection.
+     * If the resources are already freed, call this method will produce nothing.
+     */
+    public static void disconnect() {
+        if (appDB != null) {
+            appDB.close();
+            appDB = null;
+            executorService.shutdown();
+
+            //TODO: make a better implementation
+            //reset all class who extends this class
+            AccountDataSource.resetInstance();
+            UserPreferencesDataSource.resetInstance();
         }
     }
 
-    protected static DatabaseDataSource getInstance(Context ctx) {
-        if (INSTANCE == null) {
-            INSTANCE = new DatabaseDataSource(ctx);
-        }
-        return INSTANCE;
+    /**
+     * Make a checkpoint for SQLite {@code .wal} file and apply all modifications in the database file.
+     * </br>
+     * Use the {@code PRAGMA wal_checkpoint(TRUNCATE);} MySQL statement.
+     */
+    public static void makeWalCheckpoint() {
+        Cursor cursor = appDB.getOpenHelper().getWritableDatabase().query("PRAGMA wal_checkpoint(TRUNCATE);");
+        cursor.moveToNext();
+        cursor.close();
+    }
+
+    protected void clearAllTables() {
+        appDB.clearAllTables();
     }
 
     /**
@@ -55,7 +76,7 @@ public class DatabaseDataSource {
      */
     protected boolean executeRunnable(Runnable command) {
         try {
-            this.executorService.execute(command);
+            executorService.execute(command);
             return true;
         } catch (NullPointerException | RejectedExecutionException e) {
             return false;
@@ -69,7 +90,7 @@ public class DatabaseDataSource {
      */
     protected <T> T executeCallable(Callable<T> callable) {
         try {
-            return this.executorService.submit(callable).get();
+            return executorService.submit(callable).get();
         } catch (NullPointerException | RejectedExecutionException e) {
             //the callable parameter is null or invalid
             throw new RuntimeException(e);

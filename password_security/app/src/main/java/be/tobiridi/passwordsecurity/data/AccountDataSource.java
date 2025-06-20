@@ -18,7 +18,6 @@ public class AccountDataSource extends DatabaseDataSource {
     private static AccountDataSource INSTANCE;
 
     public static AccountDataSource getInstance(Context context) {
-        DatabaseDataSource.getInstance(context);
         if (INSTANCE == null) {
             INSTANCE = new AccountDataSource(context);
         }
@@ -27,6 +26,10 @@ public class AccountDataSource extends DatabaseDataSource {
 
     private AccountDataSource(Context context) {
         super(context);
+    }
+
+    public static void resetInstance() {
+        INSTANCE = null;
     }
 
     public LiveData<List<Account>> getAllAccounts() {

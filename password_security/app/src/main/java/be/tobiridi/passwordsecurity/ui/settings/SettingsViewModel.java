@@ -17,6 +17,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import be.tobiridi.passwordsecurity.data.AccountDataSource;
+import be.tobiridi.passwordsecurity.data.DatabaseDataSource;
 import be.tobiridi.passwordsecurity.database.AppDatabase;
 
 public class SettingsViewModel extends ViewModel {
@@ -38,7 +39,7 @@ public class SettingsViewModel extends ViewModel {
 
     public boolean createBackup(Context context, Uri fileCreated) {
         Callable<Boolean> exportTask = (() -> {
-            AppDatabase.getInstance(context).MakeWalCheckpoint();
+            DatabaseDataSource.makeWalCheckpoint();
             File dbFile = context.getDatabasePath(AppDatabase.DB_NAME);
             ContentResolver resolver = context.getContentResolver();
 
@@ -63,7 +64,7 @@ public class SettingsViewModel extends ViewModel {
 
     public boolean importBackup(Context context, Uri fileSelected) {
         Callable<Boolean> importTask = (() -> {
-            AppDatabase.closeDatabase();
+            DatabaseDataSource.disconnect();
             File dbFile = context.getDatabasePath(AppDatabase.DB_NAME);
             ContentResolver resolver = context.getContentResolver();
 

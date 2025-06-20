@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         PowerManager manager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        //occurred when lock the device
         if (!manager.isInteractive())
             this.finishAffinity();
     }

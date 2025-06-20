@@ -23,7 +23,8 @@
     <string name="msg_add_account_success">Le compte a été créer</string>
     <string name="msg_authenticate_fail">Authentification échouée</string>
     <string name="msg_backup_import_fail">Echec de l\'importation</string>
-    <string name="alert_account_change">Voulez-vous modifier ou supprimer ce compte ?</string>
+    <string name="alert_relaunch_app_title">Relancer l\'application</string>
+    <string name="alert_relaunch_app_msg">Afin d\'accéder aux données importées, relancer l\'application et authentifier vous.</string>
     <string name="error_account_name_empty">Le nom est vide</string>
     <string name="error_account_email_empty">Email vide</string>
     <string name="hint_search">Recherche...</string>
@@ -41,4 +42,5 @@
     <string name="msg_backup_export_fail">Fichier de sauvegarde non créé</string>
     <string name="msg_backup_import_success">Importation réussie</string>
     <string name="msg_backup_export_success">Fichier de sauvegarde créé</string>
+    <string name="alert_account_change_title">Voulez-vous modifier ou supprimer ce compte ?</string>
 </resources>

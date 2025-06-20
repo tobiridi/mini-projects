@@ -8,7 +8,6 @@ import java.util.concurrent.Callable;
 
 import javax.crypto.BadPaddingException;
 
-import be.tobiridi.passwordsecurity.database.AppDatabase;
 import be.tobiridi.passwordsecurity.security.AESManager;
 import be.tobiridi.passwordsecurity.security.HashManager;
 
@@ -20,7 +19,6 @@ public class UserPreferencesDataSource extends DatabaseDataSource {
     private static byte[] AUTH_MASTER_PASSWORD;
 
     public static UserPreferencesDataSource getInstance(Context context) {
-        DatabaseDataSource.getInstance(context);
         if (INSTANCE == null) {
             INSTANCE = new UserPreferencesDataSource(context);
         }
@@ -29,7 +27,11 @@ public class UserPreferencesDataSource extends DatabaseDataSource {
 
     private UserPreferencesDataSource(Context context) {
         super(context);
-        AUTH_MASTER_PASSWORD = new byte[0];
+    }
+
+    public static void resetInstance() {
+        INSTANCE.clearAuthenticatedMasterPassword();
+        INSTANCE = null;
     }
 
     /**
@@ -41,9 +43,9 @@ public class UserPreferencesDataSource extends DatabaseDataSource {
     }
 
     /**
-     * Clear the master password from memory.
+     * Clear the master password from the memory.
      */
-    public void clearAuthenticatedMasterPassword() {
+    private void clearAuthenticatedMasterPassword() {
         Arrays.fill(AUTH_MASTER_PASSWORD, (byte) 0);
         AUTH_MASTER_PASSWORD = new byte[0];
     }
@@ -114,10 +116,7 @@ public class UserPreferencesDataSource extends DatabaseDataSource {
      * <br/>
      * <b>Please be careful when you use this method !</b>
      */
-    public void destroyAllData(Context context) {
-        this.executeRunnable(() -> {
-            AppDatabase db = AppDatabase.getInstance(context);
-            db.clearAllTables();
-        });
+    public void destroyAllData() {
+        this.executeRunnable(this::clearAllTables);
     }
 }

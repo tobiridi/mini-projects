@@ -84,7 +84,7 @@ public class AuthenticationActivity extends AppCompatActivity {
 
                     //destroy all data if max attempts is reached
                     if (authViewModel.isMaxAuthAttemptReached()) {
-                        authViewModel.destroyAllData(AuthenticationActivity.this.getApplicationContext());
+                        authViewModel.destroyAllData();
                         AuthenticationActivity.this.finish();
                     }
                 }

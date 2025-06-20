@@ -24,7 +24,9 @@
     <string name="msg_backup_import_success">Import successful</string>
     <string name="msg_backup_import_fail">Import failed</string>
     <!-- AlertDialog -->
-    <string name="alert_account_change">Do you want to modify or delete this account ?</string>
+    <string name="alert_account_change_title">Do you want to modify or delete this account ?</string>
+    <string name="alert_relaunch_app_title">Relaunch the app</string>
+    <string name="alert_relaunch_app_msg">To prevent access at the imported data, relaunch the app and authenticate you again.</string>
     <!-- Error text -->
     <string name="error_account_name_empty">Name is empty</string>
     <string name="error_account_email_empty">Email is empty</string>
