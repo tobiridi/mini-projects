@@ -23,7 +23,7 @@ import be.tobiridi.passwordsecurity.data.Account;
 public class UpdateAccountActivity extends AppCompatActivity {
     private UpdateAccountViewModel updateAccountViewModel;
     private View.OnClickListener validateListener;
-    private TextInputLayout accountNameInputLayout, accountEmailInputLayout, accountPasswordInputLayout;
+    //private TextInputLayout accountNameInputLayout, accountEmailInputLayout, accountPasswordInputLayout;
     private Button validateBtn;
 
     @Override
@@ -38,9 +38,9 @@ public class UpdateAccountActivity extends AppCompatActivity {
         });
 
         //get views id
-        this.accountNameInputLayout = this.findViewById(R.id.inputLayout_accountName);
-        this.accountEmailInputLayout = this.findViewById(R.id.inputLayout_accountEmail);
-        this.accountPasswordInputLayout = this.findViewById(R.id.inputLayout_accountPassword);
+//        this.accountNameInputLayout = this.findViewById(R.id.inputLayout_accountName);
+//        this.accountEmailInputLayout = this.findViewById(R.id.inputLayout_accountEmail);
+//        this.accountPasswordInputLayout = this.findViewById(R.id.inputLayout_accountPassword);
         this.validateBtn = this.findViewById(R.id.btn_validate);
 
         //init viewModel
@@ -52,15 +52,15 @@ public class UpdateAccountActivity extends AppCompatActivity {
                 .setUpdatableAccount(updateAccount);
 
         //set inputs value
-        this.accountNameInputLayout.getEditText().setText(updateAccount.getName());
-        this.accountEmailInputLayout.getEditText().setText(updateAccount.getEmail());
-        this.accountPasswordInputLayout.getEditText().setText(updateAccount.getPassword());
-
-        this.initListeners();
-        this.validateBtn.setOnClickListener(this.validateListener);
-        this.accountNameInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountNameInputLayout));
-        this.accountEmailInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountEmailInputLayout));
-        this.accountPasswordInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountPasswordInputLayout));
+//        this.accountNameInputLayout.getEditText().setText(updateAccount.getName());
+//        this.accountEmailInputLayout.getEditText().setText(updateAccount.getEmail());
+//        this.accountPasswordInputLayout.getEditText().setText(updateAccount.getPassword());
+//
+//        this.initListeners();
+//        this.validateBtn.setOnClickListener(this.validateListener);
+//        this.accountNameInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountNameInputLayout));
+//        this.accountEmailInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountEmailInputLayout));
+//        this.accountPasswordInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountPasswordInputLayout));
     }
 
     @Override
@@ -73,11 +73,11 @@ public class UpdateAccountActivity extends AppCompatActivity {
     }
 
     private void initListeners() {
-        this.validateListener = (view) -> {
-            if (this.updateAccountViewModel.updateAccount(this.accountNameInputLayout,
-                    this.accountEmailInputLayout, this.accountPasswordInputLayout)) {
-                this.finish();
-            }
-        };
+//        this.validateListener = (view) -> {
+//            if (this.updateAccountViewModel.updateAccount(this.accountNameInputLayout,
+//                    this.accountEmailInputLayout, this.accountPasswordInputLayout)) {
+//                this.finish();
+//            }
+//        };
     }
 }

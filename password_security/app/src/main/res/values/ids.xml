@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Custom ids for account fields, dynamic generate in the code -->
+<resources>
+    <item type="id" name="accountField_email" />
+    <item type="id" name="accountField_username" />
+    <item type="id" name="accountField_note" />
+</resources>

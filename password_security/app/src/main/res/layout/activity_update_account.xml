@@ -9,7 +9,7 @@
     android:layout_marginHorizontal="16dp">
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputLayout_accountName"
+        android:id="@+id/accountField_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,30 +24,30 @@
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputLayout_accountEmail"
+        android:id="@+id/accountField_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputLayout_accountName">
+        app:layout_constraintTop_toBottomOf="@+id/accountField_name">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:hint="@string/email" />
+            android:hint="@string/hint_email_example" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/inputLayout_accountPassword"
+        android:id="@+id/accountField_confirm_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:passwordToggleEnabled="true"
-        app:layout_constraintTop_toBottomOf="@+id/inputLayout_accountEmail">
+        app:layout_constraintTop_toBottomOf="@+id/accountField_password">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -65,5 +65,5 @@
         android:text="@string/validate"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inputLayout_accountPassword" />
+        app:layout_constraintTop_toBottomOf="@+id/accountField_confirm_password" />
 </androidx.constraintlayout.widget.ConstraintLayout>

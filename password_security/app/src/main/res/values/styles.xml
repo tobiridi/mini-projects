@@ -15,4 +15,16 @@
     <style name="BottomNavigationViewActiveIndicator" parent="Widget.Material3.BottomNavigationView.ActiveIndicator">
         <item name="android:color">#19FFFFFF</item>
     </style>
+
+    <!-- only get the reference to the Material3 style,
+         only used for the custom account fields
+    -->
+    <style name="TextInputLayoutOutlinedBox" parent="Widget.Material3.TextInputLayout.OutlinedBox">
+    </style>
+
+    <!-- only get the reference to the Material3 style,
+         only used for the custom account fields
+    -->
+    <style name="TextInputEditTextOutlinedBox" parent="Widget.Material3.TextInputEditText.OutlinedBox">
+    </style>
 </resources>

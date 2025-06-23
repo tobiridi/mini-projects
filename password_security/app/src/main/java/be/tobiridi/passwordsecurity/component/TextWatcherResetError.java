@@ -6,7 +6,7 @@ import android.text.TextWatcher;
 import com.google.android.material.textfield.TextInputLayout;
 
 /**
- * Simple {@link TextWatcher} implementation to reset error message from a {@link TextInputLayout}.
+ * Simple {@link TextWatcher} implementation to reset error message to a {@link TextInputLayout}.
  */
 public class TextWatcherResetError implements TextWatcher {
     private TextInputLayout textInputLayout;

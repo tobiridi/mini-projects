@@ -15,10 +15,10 @@
     <string name="export_data">Exporter</string>
     <string name="delete_all_accounts">Supprimer tous les comptes</string>
     <string name="welcome">Bienvenue</string>
-    <string name="password">Mot de passe</string>
     <string name="delete">Supprimer</string>
     <string name="modify">Modifier</string>
     <string name="no">Non</string>
+    <string name="add_field">Ajouter un champ</string>
     <string name="master_password_explain">Veuillez définir un mot de passe maître pour commencer à utiliser l\'application. Ce mot de passe maître est utilisé pour accéder aux données qui sont stocker dans l\'application. Si vous avez oublier le mot de passe maitre, vous ne pourrez plus accéder à vos données.</string>
     <string name="msg_add_account_success">Le compte a été créer</string>
     <string name="msg_authenticate_fail">Authentification échouée</string>
@@ -28,10 +28,8 @@
     <string name="error_account_name_empty">Le nom est vide</string>
     <string name="error_account_email_empty">Email vide</string>
     <string name="hint_search">Recherche...</string>
-    <string name="hint_account_name">Nom du compte</string>
-    <string name="hint_email_example">Exemple@hotmail.com</string>
+    <string name="hint_account_name">Mon premier compte</string>
     <string name="hint_password">Mot de passe</string>
-    <string name="hint_confirm_password">Confirmer mot de passe</string>
     <string name="pref_header_database">Base de données</string>
     <string name="pref_header_security">Sécurité</string>
     <string name="yes">Oui</string>
@@ -43,4 +41,10 @@
     <string name="msg_backup_import_success">Importation réussie</string>
     <string name="msg_backup_export_success">Fichier de sauvegarde créé</string>
     <string name="alert_account_change_title">Voulez-vous modifier ou supprimer ce compte ?</string>
+    <string name="account_field_name">Nom</string>
+    <string name="account_field_password">Mot de passe</string>
+    <string name="account_field_confirm_password">Confirmer mot de passe</string>
+    <string name="account_field_username">Nom d\'utilisateur</string>
+    <string name="hint_confirm_password">Confirmer mot de passe</string>
+    <string name="hint_note">Note complémentaire</string>
 </resources>
