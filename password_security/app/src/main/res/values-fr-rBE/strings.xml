@@ -5,6 +5,7 @@
     <string name="msg_add_account_fail">Erreur lors de la création du compte</string>
     <string name="error_account_email_format">Format de l\'email invalide</string>
     <string name="error_account_password_empty">Mot de passe vide</string>
+    <string name="error_account_note_empty">Note vide</string>
     <string name="error_password_not_same">Le mot de passe ne correspond pas</string>
     <string name="error_master_password_creation">Une erreur s\'est produite lors de la création du mot de passe maître</string>
     <string name="nav_home">Accueil</string>
@@ -30,6 +31,7 @@
     <string name="hint_search">Recherche...</string>
     <string name="hint_account_name">Mon premier compte</string>
     <string name="hint_password">Mot de passe</string>
+    <string name="btn_desc_delete_field">Supprimer ce champ</string>
     <string name="pref_header_database">Base de données</string>
     <string name="pref_header_security">Sécurité</string>
     <string name="yes">Oui</string>
@@ -47,4 +49,5 @@
     <string name="account_field_username">Nom d\'utilisateur</string>
     <string name="hint_confirm_password">Confirmer mot de passe</string>
     <string name="hint_note">Note complémentaire</string>
+    <string name="error_account_username_empty">Nom d\'utilisateur vide</string>
 </resources>

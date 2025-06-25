@@ -12,9 +12,11 @@ import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.time.LocalDateTime;
+import java.util.EnumSet;
+import java.util.List;
 
 import be.tobiridi.passwordsecurity.R;
+import be.tobiridi.passwordsecurity.component.accountField.AccountField;
 import be.tobiridi.passwordsecurity.data.Account;
 import be.tobiridi.passwordsecurity.data.AccountDataSource;
 
@@ -42,61 +44,79 @@ public class AddAccountViewModel extends ViewModel {
 
     /**
      * Attempt to save the new account in the database.
-     * @param accountName The account name input.
-     * @param accountEmail The account email input.
-     * @param accountPassword The account password input.
+     *
+     * @param inputAccountFields All account fields input.
+     * @param accountFields      All fields used to create an {@link Account}.
      * @return {@code true} is the account has been save in the database, {@code false} if an error has occurred.
+     * @throws IllegalArgumentException If the number of elements present in each parameter is not the same.
      */
-    public boolean createAccount(TextInputLayout accountName, TextInputLayout accountEmail, TextInputLayout accountPassword) {
-        int errors = 0;
+    public boolean createAccount(List<TextInputLayout> inputAccountFields, EnumSet<AccountField> accountFields) throws IllegalArgumentException {
         long[] idResults = {};
 
-        if (!this.isNameValid(accountName)) errors++;
-        if (!this.isEmailValid(accountEmail)) errors++;
-        if (!this.isPasswordValid(accountPassword)) errors++;
+        // normally never throw except if forget to add one or more AccountField in the EnumSet
+        if (inputAccountFields.size() != accountFields.size()) {
+            throw new IllegalArgumentException("The number of TextInputLayout is not the same than the number of AccountField.");
+        }
 
+        int errors = 0;
+        for (AccountField field : accountFields) {
+            TextInputLayout input = inputAccountFields.stream()
+                    .filter(i -> i.getId() == field.getId())
+                    .findFirst()
+                    .orElse(null);
+
+            // can be null if not use the same id
+            if (input != null) {
+                switch (field) {
+                    case NAME:
+                        if (!isNameValid(input)) errors++;
+                        break;
+                    case PASSWORD:
+                        if (!this.isPasswordValid(input)) errors++;
+                        break;
+                    case EMAIL:
+                        if (!this.isEmailValid(input)) errors++;
+                        break;
+                    case USERNAME:
+                        if (!this.isUsernameValid(input)) errors++;
+                        break;
+                    case NOTE:
+                        if (!this.isNoteValid(input)) errors++;
+                        break;
+                }
+            }
+        }
+
+        // TODO: if no errors, create account
         if (errors == 0) {
-            String accName = accountName.getEditText().getText().toString();
-            String accEmail = accountEmail.getEditText().getText().toString();
-            String accPassword = accountPassword.getEditText().getText().toString();
-            LocalDateTime created = LocalDateTime.now();
-
-            Account a = new Account(accName, accEmail, accPassword, created, created);
-            idResults = this._accountDataSource.saveAccounts(a);
+//            String accName = accountName.getEditText().getText().toString();
+//            String accEmail = accountEmail.getEditText().getText().toString();
+//            String accPassword = accountPassword.getEditText().getText().toString();
+//            LocalDateTime created = LocalDateTime.now();
+//
+//            Account a = new Account(accName, accEmail, accPassword, created, created);
+//            idResults = this._accountDataSource.saveAccounts(a);
         }
 
         return idResults.length > 0;
     }
 
+    /******************/
+    /** Account Fields
+     validations  **/
+    /******************/
+
     /**
-     * Check if the account name input is in the right format.
-     * @param name The account name input.
+     * Check if the account name is in the right format.
+     *
+     * @param nameInput The account name input.
      * @return {@code true} if the account name has a valid format.
      */
-    private boolean isNameValid(TextInputLayout name) {
-        String txt = name.getEditText().getText().toString();
+    private boolean isNameValid(TextInputLayout nameInput) {
+        String txt = nameInput.getEditText().getText().toString();
 
         if (txt.trim().isEmpty()) {
-            name.setError(this._resources.getString(R.string.error_account_name_empty));
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Check if the account email input is in the right format.
-     * @param email The account email input.
-     * @return {@code true} if the account email has a valid format.
-     */
-    private boolean isEmailValid(TextInputLayout email) {
-        String txt = email.getEditText().getText().toString();
-
-        if (txt.trim().isEmpty()) {
-            email.setError(this._resources.getString(R.string.error_account_email_empty));
-            return false;
-        }
-        else if (!Patterns.EMAIL_ADDRESS.matcher(txt).matches()) {
-            email.setError(this._resources.getString(R.string.error_account_email_format));
+            nameInput.setError(this._resources.getString(R.string.error_account_name_empty));
             return false;
         }
         return true;
@@ -104,14 +124,66 @@ public class AddAccountViewModel extends ViewModel {
 
     /**
      * Check if the account password input is in the right format.
-     * @param password The account password input.
+     *
+     * @param passwordInput The account password input.
      * @return {@code true} if the account password has a valid format.
      */
-    private boolean isPasswordValid(TextInputLayout password) {
-        String txt = password.getEditText().getText().toString();
+    private boolean isPasswordValid(TextInputLayout passwordInput) {
+        String txt = passwordInput.getEditText().getText().toString();
 
         if (txt.trim().isEmpty()) {
-            password.setError(this._resources.getString(R.string.error_account_password_empty));
+            passwordInput.setError(this._resources.getString(R.string.error_account_password_empty));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if the account email is in the right format.
+     *
+     * @param emailInput The account email input.
+     * @return {@code true} if the account email has a valid format.
+     */
+    private boolean isEmailValid(TextInputLayout emailInput) {
+        String txt = emailInput.getEditText().getText().toString();
+
+        if (txt.trim().isEmpty()) {
+            emailInput.setError(this._resources.getString(R.string.error_account_email_empty));
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(txt).matches()) {
+            emailInput.setError(this._resources.getString(R.string.error_account_email_format));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if the account username is in the right format.
+     *
+     * @param usernameInput The account username input.
+     * @return {@code true} if the account username has a valid format.
+     */
+    private boolean isUsernameValid(TextInputLayout usernameInput) {
+        String txt = usernameInput.getEditText().getText().toString();
+
+        if (txt.trim().isEmpty()) {
+            usernameInput.setError(this._resources.getString(R.string.error_account_username_empty));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if the account note is in the right format.
+     *
+     * @param noteInput The account note input.
+     * @return {@code true} if the account note has a valid format.
+     */
+    private boolean isNoteValid(TextInputLayout noteInput) {
+        String txt = noteInput.getEditText().getText().toString();
+
+        if (txt.trim().isEmpty()) {
+            noteInput.setError(this._resources.getString(R.string.error_account_note_empty));
             return false;
         }
         return true;

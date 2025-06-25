@@ -38,6 +38,8 @@
     <string name="error_account_email_empty">Email is empty</string>
     <string name="error_account_email_format">Email format invalid</string>
     <string name="error_account_password_empty">Password is empty</string>
+    <string name="error_account_username_empty">Username is empty</string>
+    <string name="error_account_note_empty">Note is empty</string>
     <string name="error_password_not_same">Password is not the same</string>
     <string name="error_master_password_creation">An error occurred while master password creation</string>
     <!-- NavBar items name -->
@@ -57,6 +59,7 @@
     <string name="btn_desc_cancel" translatable="false">Cancel</string>
     <string name="btn_desc_clear" translatable="false">Clear</string>
     <string name="btn_desc_validate" translatable="false">Validate</string>
+    <string name="btn_desc_delete_field">Delete this field</string>
     <!--
         * Android Preference *
     -->

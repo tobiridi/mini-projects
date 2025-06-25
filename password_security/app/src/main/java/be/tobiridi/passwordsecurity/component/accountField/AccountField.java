@@ -16,6 +16,8 @@ import be.tobiridi.passwordsecurity.data.Account;
  * @see AccountFieldInputLayout
  */
 public enum AccountField {
+    NAME(R.id.accountField_name, R.string.account_field_name, InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE, R.string.hint_account_name),
+    PASSWORD(R.id.accountField_password, R.string.account_field_password, InputType.TYPE_TEXT_VARIATION_PASSWORD, R.string.hint_password),
     EMAIL(R.id.accountField_email, R.string.account_field_email, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, R.string.hint_email_example),
     USERNAME(R.id.accountField_username, R.string.account_field_username, InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE, R.string.hint_username_example),
     NOTE(R.id.accountField_note, R.string.account_field_note, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE, R.string.hint_note);
