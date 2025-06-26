@@ -8,6 +8,7 @@ import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringJoiner;
 
@@ -33,6 +34,12 @@ public class Account implements Serializable {
 
     @Ignore
     private String password;
+
+    @Ignore
+    private String username;
+
+    @Ignore
+    private String note;
 
     @NonNull
     private LocalDateTime created;
@@ -83,6 +90,22 @@ public class Account implements Serializable {
         this.password = password;
     }
 
+    public String getUsername() {
+        return this.username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getNote() {
+        return this.note;
+    }
+
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public LocalDateTime getCreated() {
         return this.created;
     }
@@ -107,8 +130,13 @@ public class Account implements Serializable {
         this.state = state;
     }
 
-    private static final String ACCOUNT_SEPARATOR = ",";
+    private static final String ACCOUNT_SEPARATOR = "&SEP;";
 
+    /**
+     * Constructor for {@link androidx.room.RoomDatabase} only,
+     * you should not used this constructor to create an {@code Account},
+     * prefer to use another constructor.
+     */
     public Account() {
         LocalDateTime n = LocalDateTime.now();
         this.created = n;
@@ -117,12 +145,15 @@ public class Account implements Serializable {
     }
 
     @Ignore
-    public Account(@NonNull String name, @NonNull String email, @NonNull String password, @NonNull LocalDateTime created, @NonNull LocalDateTime updated) {
+    public Account(@NonNull String name, @NonNull String password, @NonNull LocalDateTime created, @NonNull LocalDateTime updated,
+                   String email, String username, String note) {
         this.name = name;
-        this.email = email;
         this.password = password;
         this.created = created;
         this.updated = updated;
+        this.email = email;
+        this.username = username;
+        this.note = note;
         this.state = EncryptionState.DECRYPTED;
         //used to encryption/decryption one String (better performance)
         this.packAccountData();
@@ -134,6 +165,8 @@ public class Account implements Serializable {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
+                ", username='" + username + '\'' +
+                ", note='" + note + '\'' +
                 ", created=" + created +
                 ", updated=" + updated +
                 ", state=" + state +
@@ -145,12 +178,14 @@ public class Account implements Serializable {
         if (this == o) return true;
         if (!(o instanceof Account)) return false;
         Account account = (Account) o;
-        return this.id == account.id || (this.name.equalsIgnoreCase(account.name) && this.email.equalsIgnoreCase(account.email));
+        if (this.name.equalsIgnoreCase(account.name) && this.email.equalsIgnoreCase(account.email)) return true;
+        if (this.name.equalsIgnoreCase(account.name) && this.username.equalsIgnoreCase(account.username)) return true;
+        return this.id == account.id;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name, this.email, this.created, this.updated);
+        return Objects.hash(this.id, this.name, this.created, this.updated);
     }
 
     /**
@@ -163,10 +198,18 @@ public class Account implements Serializable {
     public void unPackAccountData(String compactAccount) {
         if (this.state.equals(EncryptionState.DECRYPTED)) {
             String[] values = compactAccount.split(ACCOUNT_SEPARATOR);
-            //respect the same order when pack the account data
+
+            // some member variables are optionals, see how the data are compacted
+            values = Arrays.stream(values)
+                    .map(v -> v.equals("null") ? null : v)
+                    .toArray(String[]::new);
+
+            // respect the same order when pack the account data
             this.name = values[0];
             this.email = values[1];
             this.password = values[2];
+            this.username = values[3];
+            this.note = values[4];
             this.compactAccount = compactAccount;
         }
     }
@@ -182,10 +225,13 @@ public class Account implements Serializable {
     public void packAccountData() {
         if (this.state.equals(EncryptionState.DECRYPTED)) {
             StringJoiner joiner = new StringJoiner(ACCOUNT_SEPARATOR);
-            //the order used to compact the account, ORDER IMPORTANT
+
+            // the order used to compact the account, ORDER IMPORTANT
             joiner.add(this.name);
             joiner.add(this.email);
             joiner.add(this.password);
+            joiner.add(this.username);
+            joiner.add(this.note);
             this.compactAccount = joiner.toString();
         }
     }

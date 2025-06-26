@@ -12,7 +12,9 @@ import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import com.google.android.material.textfield.TextInputLayout;
 
+import java.time.LocalDateTime;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 
 import be.tobiridi.passwordsecurity.R;
@@ -46,12 +48,13 @@ public class AddAccountViewModel extends ViewModel {
      * Attempt to save the new account in the database.
      *
      * @param inputAccountFields All account fields input.
-     * @param accountFields      All fields used to create an {@link Account}.
+     * @param accountFields All fields used to create an {@link Account}.
      * @return {@code true} is the account has been save in the database, {@code false} if an error has occurred.
      * @throws IllegalArgumentException If the number of elements present in each parameter is not the same.
      */
     public boolean createAccount(List<TextInputLayout> inputAccountFields, EnumSet<AccountField> accountFields) throws IllegalArgumentException {
         long[] idResults = {};
+        HashMap<String, String> accountData = new HashMap<>(accountFields.size());
 
         // normally never throw except if forget to add one or more AccountField in the EnumSet
         if (inputAccountFields.size() != accountFields.size()) {
@@ -67,35 +70,43 @@ public class AddAccountViewModel extends ViewModel {
 
             // can be null if not use the same id
             if (input != null) {
+                String data = input.getEditText().getText().toString();
                 switch (field) {
                     case NAME:
                         if (!isNameValid(input)) errors++;
+                        accountData.put("name", data);
                         break;
                     case PASSWORD:
                         if (!this.isPasswordValid(input)) errors++;
+                        accountData.put("password", data);
                         break;
                     case EMAIL:
                         if (!this.isEmailValid(input)) errors++;
+                        accountData.put("email", data);
                         break;
                     case USERNAME:
                         if (!this.isUsernameValid(input)) errors++;
+                        accountData.put("username", data);
                         break;
                     case NOTE:
                         if (!this.isNoteValid(input)) errors++;
+                        accountData.put("note", data);
                         break;
                 }
             }
+            // FIXME: 26/06/2025 throw an error if (input == null) ???
         }
 
-        // TODO: if no errors, create account
         if (errors == 0) {
-//            String accName = accountName.getEditText().getText().toString();
-//            String accEmail = accountEmail.getEditText().getText().toString();
-//            String accPassword = accountPassword.getEditText().getText().toString();
-//            LocalDateTime created = LocalDateTime.now();
-//
-//            Account a = new Account(accName, accEmail, accPassword, created, created);
-//            idResults = this._accountDataSource.saveAccounts(a);
+            String accName = accountData.get("name");
+            String accPassword = accountData.get("password");
+            String accEmail = accountData.get("email");
+            String accUsername = accountData.get("username");
+            String accNote = accountData.get("note");
+            LocalDateTime created = LocalDateTime.now();
+
+            Account a = new Account(accName, accPassword, created, created, accEmail, accUsername, accNote);
+            idResults = this._accountDataSource.saveAccounts(a);
         }
 
         return idResults.length > 0;
