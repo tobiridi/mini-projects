@@ -145,29 +145,31 @@ public class AddAccountFragment extends Fragment {
             params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
         }
 
-        customInputLayout.getDeleteButton().setOnClickListener(v -> {
-            int removeIndex = this.addAccountLayout.indexOfChild(customInputLayout.getParentLayout());
-            // update the next custom view position
-            // change the condition if the layout associates to this fragment changed
-            // only move if the next child is a custom TextInputLayout
-            if (!(removeIndex + 1 >= this.addAccountLayout.getChildCount() - 2)) {
-                View previousChild = this.addAccountLayout.getChildAt(removeIndex - 1);
-                View nextChild = this.addAccountLayout.getChildAt(removeIndex + 1);
-                ViewGroup.LayoutParams nextChildLayoutParams = nextChild.getLayoutParams();
-                if (nextChildLayoutParams instanceof ConstraintLayout.LayoutParams) {
-                    ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) nextChildLayoutParams;
-                    params.topToBottom = previousChild.getId();
-                    nextChild.setLayoutParams(params);
-                }
-            }
-            // don't move the next view because you delete the last custom view
-            // the previous view is a XML hardcoded TextInputLayout
-            this.addAccountLayout.removeViewAt(removeIndex);
-            this.addedFields.remove(field);
-            this.addFieldFloatBtn.setEnabled(true);
-        });
+        customInputLayout.getDeleteButton().setOnClickListener(v -> this.deleteInputField(customInputLayout, field));
 
         //position the custom TextInputLayout below the last TextInputLayout
         this.addAccountLayout.addView(customInputLayout.getParentLayout(), lastInputChildIndex + 1);
+    }
+
+    private void deleteInputField(AccountFieldInputLayout customInputLayout, AccountField field) {
+        int removeIndex = this.addAccountLayout.indexOfChild(customInputLayout.getParentLayout());
+        // update the next custom view position
+        // change the condition if the layout associates to this fragment changed
+        // only move if the next child is a custom TextInputLayout
+        if (!(removeIndex + 1 >= this.addAccountLayout.getChildCount() - 2)) {
+            View previousChild = this.addAccountLayout.getChildAt(removeIndex - 1);
+            View nextChild = this.addAccountLayout.getChildAt(removeIndex + 1);
+            ViewGroup.LayoutParams nextChildLayoutParams = nextChild.getLayoutParams();
+            if (nextChildLayoutParams instanceof ConstraintLayout.LayoutParams) {
+                ConstraintLayout.LayoutParams params = (ConstraintLayout.LayoutParams) nextChildLayoutParams;
+                params.topToBottom = previousChild.getId();
+                nextChild.setLayoutParams(params);
+            }
+        }
+        // don't move the next view because you delete the last custom view
+        // the previous view is a XML hardcoded TextInputLayout
+        this.addAccountLayout.removeViewAt(removeIndex);
+        this.addedFields.remove(field);
+        this.addFieldFloatBtn.setEnabled(true);
     }
 }
