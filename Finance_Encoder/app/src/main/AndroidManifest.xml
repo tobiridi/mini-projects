@@ -3,13 +3,24 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <application
-        android:allowBackup="true"
+        android:allowBackup="false"
+        android:appCategory="productivity"
         android:dataExtractionRules="@xml/data_extraction_rules"
+        android:description="@string/app_description"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.FinanceEncoder" />
+        android:theme="@style/Theme.FinanceEncoder">
+        <activity
+            android:name="be.tobiridi.encoder.MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <paymentCategory android:name="android.intent.paymentCategory.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
 
 </manifest>

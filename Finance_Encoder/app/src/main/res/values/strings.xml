@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Finance Encoder</string>
+    <string name="app_description">Finance Encoder to simplify tracking of finances</string>
 </resources>

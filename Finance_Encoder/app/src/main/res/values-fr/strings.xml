@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Finance Encoder</string>
+    <string name="app_name">Finance Encodeur</string>
+    <string name="app_description">Encodeur de finance afin de simplifié le suivi des finances</string>
 </resources>
