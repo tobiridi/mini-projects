@@ -1,4 +1,19 @@
 <resources>
     <string name="app_name">Finance Encoder</string>
     <string name="app_description">Finance Encoder to simplify tracking of finances</string>
+    <!-- payment categories possibility -->
+    <string name="payment_cat_invoices">Invoices</string>
+    <string name="payment_cat_transports">Transports</string>
+    <string name="payment_cat_rent">Rent</string>
+    <string name="payment_cat_car">Car</string>
+    <string name="payment_cat_services">Services</string>
+    <string name="payment_cat_food">Food</string>
+    <string name="payment_cat_education">Education</string>
+    <string name="payment_cat_health">Health</string>
+    <string name="payment_cat_hobbies">Hobbies</string>
+    <!-- payment methods possibility -->
+    <string name="payment_method_money">Cash</string>
+    <string name="payment_method_bank_cbc" translatable="false">CBC</string>
+    <string name="payment_method_bank_n26" translatable="false">N26</string>
+    <string name="payment_method_bank_revolut" translatable="false">Revolut</string>
 </resources>

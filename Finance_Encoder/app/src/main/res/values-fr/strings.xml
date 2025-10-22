@@ -2,4 +2,14 @@
 <resources>
     <string name="app_name">Finance Encodeur</string>
     <string name="app_description">Encodeur de finance afin de simplifié le suivi des finances</string>
+    <string name="payment_cat_invoices">Factures</string>
+    <string name="payment_cat_transports">Transports</string>
+    <string name="payment_cat_rent">Loyer</string>
+    <string name="payment_cat_car">Voiture</string>
+    <string name="payment_cat_services">Services</string>
+    <string name="payment_cat_food">Nourriture</string>
+    <string name="payment_cat_education">Éducation</string>
+    <string name="payment_cat_health">Santé</string>
+    <string name="payment_cat_hobbies">Loisirs</string>
+    <string name="payment_method_money">Espèces</string>
 </resources>

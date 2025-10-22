@@ -7,15 +7,9 @@ import java.io.Serializable;
 
 public class PaymentCategory implements Serializable {
     private static final long serialVersionUID = 753826482198459L;
-    private static int INSTANCE_ID = 1;
-
-    private int id;
     private String name;
 
     // --- Getters & Setters ---
-    public long getId() {
-        return id;
-    }
 
     public String getName() {
         return name;
@@ -27,13 +21,11 @@ public class PaymentCategory implements Serializable {
 
     public PaymentCategory(String name) {
         this.name = name;
-        this.id = PaymentCategory.INSTANCE_ID;
-        PaymentCategory.INSTANCE_ID++;
     }
 
     @Override
     public String toString() {
-        return "Category{id=" + id + ", name='" + name + '\'' + '}';
+        return "Category{name='" + name + '\'' + '}';
     }
 
     public JSONObject convertToJson() {
