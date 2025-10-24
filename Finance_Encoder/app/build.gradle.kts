@@ -3,11 +3,11 @@ plugins {
 }
 
 android {
-    namespace = "be.jadoulle.encoder"
+    namespace = "be.tobiridi.encoder"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "be.jadoulle.encoder"
+        applicationId = "be.tobiridi.encoder"
         minSdk = 36
         targetSdk = 36
         versionCode = 1
