@@ -2,6 +2,11 @@
 <resources>
     <string name="app_name">Finance Encodeur</string>
     <string name="app_description">Encodeur de finance afin de simplifié le suivi des finances</string>
+    <string name="title_finance_encoding">Encodage d\'un paiement</string>
+    <string name="category">Catégorie</string>
+    <string name="payment_method">Méthode de paiement</string>
+    <string name="add_expense">Ajouter la dépense</string>
+    <string name="btn_desc_FAB_send_to_notion">Envoie la dépense vers Notion</string>
     <string name="payment_cat_invoices">Factures</string>
     <string name="payment_cat_transports">Transports</string>
     <string name="payment_cat_rent">Loyer</string>
@@ -12,4 +17,9 @@
     <string name="payment_cat_health">Santé</string>
     <string name="payment_cat_hobbies">Loisirs</string>
     <string name="payment_method_money">Espèces</string>
+    <string name="name">Nom</string>
+    <string name="price">Prix (€)</string>
+    <string name="helper_form_company_name">Nom de l\'entreprise</string>
+    <string name="helper_form_price">Montant de la transaction</string>
+    <string name="helper_form_date">Date de la transaction (DD/MM/YYYY)</string>
 </resources>

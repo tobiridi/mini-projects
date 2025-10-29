@@ -1,7 +1,16 @@
 <resources>
     <string name="app_name">Finance Encoder</string>
     <string name="app_description">Finance Encoder to simplify tracking of finances</string>
-    <!-- payment categories possibility -->
+    <string name="title_finance_encoding">Finance encoding</string>
+    <string name="name">Name</string>
+    <string name="price">Price (€)</string>
+    <string name="date" translatable="false">Date</string>
+    <string name="category">Category</string>
+    <string name="payment_method">Payment method</string>
+    <string name="add_expense">Add the expense</string>
+    <!-- button description -->
+    <string name="btn_desc_FAB_send_to_notion">Send the expense to Notion</string>
+    <!-- payment categories possibility Base -->
     <string name="payment_cat_invoices">Invoices</string>
     <string name="payment_cat_transports">Transports</string>
     <string name="payment_cat_rent">Rent</string>
@@ -11,9 +20,13 @@
     <string name="payment_cat_education">Education</string>
     <string name="payment_cat_health">Health</string>
     <string name="payment_cat_hobbies">Hobbies</string>
-    <!-- payment methods possibility -->
+    <!-- payment methods possibility Base -->
     <string name="payment_method_money">Cash</string>
     <string name="payment_method_bank_cbc" translatable="false">CBC</string>
     <string name="payment_method_bank_n26" translatable="false">N26</string>
     <string name="payment_method_bank_revolut" translatable="false">Revolut</string>
+    <!-- form helper -->
+    <string name="helper_form_company_name">Firm\'s name</string>
+    <string name="helper_form_price">Transaction amount</string>
+    <string name="helper_form_date">Transaction date (DD/MM/YYYY)</string>
 </resources>

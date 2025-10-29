@@ -5,6 +5,138 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="be.tobiridi.encoder.MainActivity">
+    android:layout_margin="16dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textView_title"
+        style="@style/TextAppearance.Material3.TitleLarge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:text="@string/title_finance_encoding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView_title">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- "Name" field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name"
+                app:endIconMode="clear_text"
+                app:helperText="@string/helper_form_company_name"
+                app:helperTextEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textAutoComplete|textCapWords" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- "Price" field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/price"
+                app:endIconMode="clear_text"
+                app:helperText="@string/helper_form_price"
+                app:helperTextEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_price"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="numberDecimal" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- "Date" field -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/date"
+                app:endIconMode="clear_text"
+                app:helperText="@string/helper_form_date"
+                app:helperTextEnabled="true"
+                app:startIconDrawable="@drawable/outline_today_24">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editText_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="date" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Category dropdown list -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/category"
+                app:endIconMode="dropdown_menu"
+                app:startIconDrawable="@drawable/outline_list_24">
+
+                <AutoCompleteTextView
+                    android:id="@+id/dropdown_category"
+                    android:labelFor="@id/dropdown_category"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapWords" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <!-- Payment method dropdown list -->
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputLayout_paymentMethod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:hint="@string/payment_method"
+                app:endIconMode="dropdown_menu"
+                app:startIconDrawable="@drawable/outline_list_24">
+
+                <AutoCompleteTextView
+                    android:id="@+id/dropdown_paymentMethod"
+                    android:labelFor="@id/dropdown_paymentMethod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapWords" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- FAB Bouton send expense -->
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/fab_send_expense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:contentDescription="@string/btn_desc_FAB_send_to_notion"
+        android:text="@string/add_expense"
+        android:tooltipText="@string/btn_desc_FAB_send_to_notion"
+        app:icon="@drawable/outline_send_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
