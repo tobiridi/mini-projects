@@ -30,9 +30,11 @@ public final class JSONFileStorage {
     private static final String FILE_NAME = "finance_prefs.json";
     private File jsonFile;
     private JSONObject fileData;
+    private boolean isDataChanged;
 
     private JSONFileStorage(Context ctx) throws IOException, JSONException {
         this.fileData = new JSONObject();
+        this.isDataChanged = false;
         this.createOrGetFile(ctx);
     }
 
@@ -157,8 +159,26 @@ public final class JSONFileStorage {
         }
     }
 
+    public String[] getCategories() {
+        JSONEntry catEntry = JSONEntry.CATEGORIES;
+        try {
+            JSONArray arrayData = this.fileData.getJSONArray(catEntry.getKeyName());
+            String[] categories = new String[arrayData.length()];
+
+            for (int i = 0; i < categories.length; i++) {
+                categories[i] = arrayData.getString(i);
+            }
+            return categories;
+
+        } catch (JSONException e) {
+            //normally never occurred
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean addCategory(String... newCategories) {
         JSONEntry catEntry = JSONEntry.CATEGORIES;
+        this.isDataChanged = true;
 
         if(newCategories != null) {
             try {
@@ -181,6 +201,7 @@ public final class JSONFileStorage {
 
     public boolean deleteCategory(String... categories) {
         JSONEntry catEntry = JSONEntry.CATEGORIES;
+        this.isDataChanged = true;
 
         try {
             catEntry.setValue(categories);
@@ -202,8 +223,26 @@ public final class JSONFileStorage {
         }
     }
 
+    public String[] getPaymentMethods() {
+        JSONEntry payEntry = JSONEntry.PAYMENT_METHODS;
+        try {
+            JSONArray arrayData = this.fileData.getJSONArray(payEntry.getKeyName());
+            String[] methods = new String[arrayData.length()];
+
+            for (int i = 0; i < methods.length; i++) {
+                methods[i] = arrayData.getString(i);
+            }
+            return methods;
+
+        } catch (JSONException e) {
+            //normally never occurred
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean addPaymentMethod(String... newPaymentMethods) {
         JSONEntry payEntry = JSONEntry.PAYMENT_METHODS;
+        this.isDataChanged = true;
 
         if(newPaymentMethods != null) {
             try {
@@ -226,6 +265,7 @@ public final class JSONFileStorage {
 
     public boolean deletePaymentMethod(String... paymentMethods) {
         JSONEntry payEntry = JSONEntry.PAYMENT_METHODS;
+        this.isDataChanged = true;
 
         try {
             payEntry.setValue(paymentMethods);
@@ -252,6 +292,9 @@ public final class JSONFileStorage {
      * @return {@code true} If the rewrite succeed, throw a {@link RuntimeException} otherwise.
      */
     public boolean saveToFile() {
+        if (!this.isDataChanged)
+            return true;
+
         try (JsonWriter writer = new JsonWriter(
                 new BufferedWriter(new FileWriter(this.jsonFile))
         )) {

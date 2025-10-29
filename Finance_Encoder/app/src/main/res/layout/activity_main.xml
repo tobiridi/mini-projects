@@ -5,7 +5,6 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
     tools:context=".MainActivity">
 
     <TextView
@@ -14,6 +13,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
         android:gravity="center"
         android:text="@string/title_finance_encoding"
         app:layout_constraintEnd_toEndOf="parent"
@@ -24,6 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView_title">
@@ -71,6 +72,7 @@
             <!-- "Date" field -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputLayout_date"
+                style="@style/Widget.Material3.MaterialCalendar.Day.Today"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
@@ -90,37 +92,39 @@
             <!-- Category dropdown list -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputLayout_category"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="@string/category"
-                app:endIconMode="dropdown_menu"
                 app:startIconDrawable="@drawable/outline_list_24">
 
                 <AutoCompleteTextView
                     android:id="@+id/dropdown_category"
-                    android:labelFor="@id/dropdown_category"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapWords" />
+                    android:text="@string/payment_cat_invoices"
+                    android:inputType="none"
+                    android:labelFor="@id/dropdown_category" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- Payment method dropdown list -->
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputLayout_paymentMethod"
+                style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:hint="@string/payment_method"
-                app:endIconMode="dropdown_menu"
                 app:startIconDrawable="@drawable/outline_list_24">
 
                 <AutoCompleteTextView
                     android:id="@+id/dropdown_paymentMethod"
-                    android:labelFor="@id/dropdown_paymentMethod"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textCapWords" />
+                    android:text="@string/payment_method_money"
+                    android:inputType="none"
+                    android:labelFor="@id/dropdown_paymentMethod" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>
@@ -132,6 +136,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@string/btn_desc_FAB_send_to_notion"
         android:text="@string/add_expense"
         android:tooltipText="@string/btn_desc_FAB_send_to_notion"
