@@ -42,12 +42,12 @@ public enum AccountField {
 
     @IdRes
     public int getId() {
-        return id;
+        return this.id;
     }
 
     @StringRes
     public int getLabel() {
-        return label;
+        return this.label;
     }
 
     public int getInputType() {

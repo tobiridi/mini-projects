@@ -28,6 +28,7 @@ public class AccountDataSource extends DatabaseDataSource {
         super(context);
     }
 
+    // TODO: 31/12/2025 do a better implementation
     public static void resetInstance() {
         INSTANCE = null;
     }

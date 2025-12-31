@@ -83,7 +83,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeViewHolder> implements
                     //TODO: implement DiffUtil for better performance, if the list is big
                     // https://developer.android.com/reference/androidx/recyclerview/widget/DiffUtil
 
-                    int count = getItemCount();
+                    int count = HomeAdapter.this.getItemCount();
                     if (results.count == count) {
                         //do not recreate views, filter retrieves the same list
                         return;

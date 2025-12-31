@@ -27,6 +27,7 @@ public class UserPreferencesDataSource extends DatabaseDataSource {
 
     private UserPreferencesDataSource(Context context) {
         super(context);
+        AUTH_MASTER_PASSWORD = new byte[0];
     }
 
     public static void resetInstance() {
@@ -100,12 +101,12 @@ public class UserPreferencesDataSource extends DatabaseDataSource {
     public boolean saveMasterPassword(String newMasterPassword) {
         Callable<Long> callable = () -> {
             byte[] masterPassword = HashManager.hashStringToBytes(newMasterPassword);
-            String encryptedMasterKey = AESManager.encryptToStringBase64(masterPassword, masterPassword);
+            String encryptedMasterPassword = AESManager.encryptToStringBase64(masterPassword, masterPassword);
 
             //save the master password for reuse it in the app
             AUTH_MASTER_PASSWORD = masterPassword;
 
-            UserPreferences pref = new UserPreferences(encryptedMasterKey);
+            UserPreferences pref = new UserPreferences(encryptedMasterPassword);
             return this.userPreferencesDao.saveMasterPassword(pref);
         };
         return this.executeCallable(callable) > 0;

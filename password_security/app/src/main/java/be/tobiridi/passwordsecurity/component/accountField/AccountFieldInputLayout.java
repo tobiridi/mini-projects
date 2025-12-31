@@ -72,7 +72,7 @@ public class AccountFieldInputLayout extends TextInputLayout {
     }
 
     /**
-     * Convert the pixel to pixel densities.
+     * Convert the pixel (px) to pixel densities (dp).
      * @param px The number of pixel to convert.
      * @return The pixel densities value.
      */

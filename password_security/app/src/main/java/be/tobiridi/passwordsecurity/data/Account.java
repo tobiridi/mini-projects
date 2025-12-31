@@ -130,6 +130,9 @@ public class Account implements Serializable {
         this.state = state;
     }
 
+    /**
+     * Separator to combine all account data in one field.
+     */
     private static final String ACCOUNT_SEPARATOR = "&SEP;";
 
     /**
@@ -200,6 +203,7 @@ public class Account implements Serializable {
             String[] values = compactAccount.split(ACCOUNT_SEPARATOR);
 
             // some member variables are optionals, see how the data are compacted
+            // affect null reference and not a "null" string value
             values = Arrays.stream(values)
                     .map(v -> v.equals("null") ? null : v)
                     .toArray(String[]::new);

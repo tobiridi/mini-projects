@@ -56,7 +56,7 @@ public final class AESManager {
                 .setEncryptionPaddings(PADDING)
                 .setUserAuthenticationRequired(false)
                 .setKeySize(KEY_SIZE)
-                .setDigests(KeyProperties.DIGEST_SHA256, KeyProperties.DIGEST_SHA512)
+                .setDigests(KeyProperties.DIGEST_SHA256)
                 .build();
     }
 
@@ -69,7 +69,7 @@ public final class AESManager {
     private static SecretKey generateSecretKey() throws GeneralSecurityException {
         try {
             KeyGenerator kg = KeyGenerator.getInstance(ALGORITHM, ANDROID_PROVIDER);
-            kg.init(getKeyGenParameter());
+            kg.init(AESManager.getKeyGenParameter());
             return kg.generateKey();
 
         } catch (NoSuchAlgorithmException | NoSuchProviderException | InvalidAlgorithmParameterException e) {
@@ -79,7 +79,8 @@ public final class AESManager {
 
     /**
      * Get the secret key stored in the Android Key Store or {@code null} if failed.
-     * @return The current {@link SecretKey} presents in the Android Key Store or attempt to get a new {@link SecretKey} if is not already existing, otherwise return {@code null}.
+     * @return The current {@link SecretKey} presents in the Android Key Store or attempt to create a new {@link SecretKey} if is not already existing.
+     * Otherwise return {@code null} if a problem occurred when generating the secret key.
      * @see AESManager#generateSecretKey()
      */
     private static SecretKey getSecretKeyFromAndroidKeyStore() {
@@ -89,7 +90,7 @@ public final class AESManager {
                 keyStore.load(null);
             }
             KeyStore.SecretKeyEntry ske = (KeyStore.SecretKeyEntry) keyStore.getEntry(ALIAS_KEY, null);
-            return ske == null ? generateSecretKey() : ske.getSecretKey();
+            return ske == null ? AESManager.generateSecretKey() : ske.getSecretKey();
 
         } catch (GeneralSecurityException | IOException e) {
             //if fail to load the AndroidKeyStore or generate the secret key
@@ -98,7 +99,7 @@ public final class AESManager {
     }
 
     /**
-     * Encrypt the data using the key in AES-256 format.
+     * Encrypt the data in AES-256 format.
      * Using a custom {@link SecretKeySpec} created by the user.
      * If you need more security prefer to use {@link AESManager#getSecretKeyFromAndroidKeyStore()}.
      * @param key The raw key used to encrypt/decrypt.
@@ -122,6 +123,7 @@ public final class AESManager {
                 secretKey = new SecretKeySpec(key, ALGORITHM);
                 //or using AndroidKeyStore
                 //secretKey = getSecretKeyFromAndroidKeyStore();
+
                 cipher.init(Cipher.ENCRYPT_MODE, secretKey);
             } catch (IllegalArgumentException | InvalidKeyException e) {
                 //if the key is invalid (wrong format or not correct to use with the algorithm)
@@ -155,7 +157,7 @@ public final class AESManager {
     }
 
     /**
-     * Encrypt the data using the key in AES-256 format.
+     * Encrypt the data in AES-256 format.
      * @param key The raw key used to encrypt/decrypt.
      * @param plainData The data that you want to encrypt.
      * @return The encrypted data in Base64 format.
@@ -167,7 +169,7 @@ public final class AESManager {
     }
 
     /**
-     * Decrypt the data using the key in AES-256 format.
+     * Decrypt the encrypted data in AES-256 format.
      * Using a custom secret key created by the user.
      * If you need more security prefer to use {@link AESManager#getSecretKeyFromAndroidKeyStore()}.
      * @param key The raw key used to encrypt/decrypt.
@@ -213,7 +215,7 @@ public final class AESManager {
     }
 
     /**
-     * Decrypt the data using the key in AES-256 format.
+     * Decrypt the encrypted data in Base64 format.
      * @param key The raw key used to encrypt/decrypt.
      * @param base64EncryptedData The encrypted data in Base64 format.
      * @return The decrypted data in Base64 format.
@@ -226,7 +228,7 @@ public final class AESManager {
     }
 
     /**
-     * Decrypt the data using the key in AES-256 format.
+     * Decrypt the encrypted data in Base64 format.
      * @param key The raw key used to encrypt/decrypt.
      * @param base64EncryptedData The encrypted data in Base64 format.
      * @return The decrypted data in textual format.
