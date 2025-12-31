@@ -2,10 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/layout_updateAccount"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.addAccount.AddAccountFragment"
-    android:id="@+id/layout_addAccount">
+    tools:context=".ui.updateAccount.UpdateAccountActivity"
+    android:layout_marginHorizontal="16dp">
+
+<!--    TODO: add new field button inside of toolbar -->
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/accountField_name"
@@ -39,42 +42,14 @@
             android:inputType="textPassword"/>
     </com.google.android.material.textfield.TextInputLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/floatBtn_add_field"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <Button
-            android:id="@+id/btn_reset"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:backgroundTint="@color/tertiary"
-            android:contentDescription="@string/btn_desc_clear"
-            android:text="@string/clear" />
-
-        <Button
-            android:id="@+id/btn_validate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/btn_desc_validate"
-            android:text="@string/validate" />
-    </LinearLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatBtn_add_field"
+    <Button
+        android:id="@+id/btn_validate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:contentDescription="@string/add_field"
-        android:clickable="true"
-        android:src="@android:drawable/ic_input_add"
+        android:contentDescription="@string/btn_desc_validate"
+        android:text="@string/validate"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

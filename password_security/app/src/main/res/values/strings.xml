@@ -7,14 +7,20 @@
     <string name="export_data">Export</string>
     <string name="delete_all_accounts">Delete all accounts</string>
     <string name="welcome">Welcome</string>
-    <string name="email" translatable="false">Email</string>
-    <string name="password">Password</string>
     <string name="ok" translatable="false">OK</string>
     <string name="delete">Delete</string>
     <string name="modify">Modify</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="add_field">Add a field</string>
     <string name="master_password_explain">Please define a master password to start using the application. This master password is used to access at the stored data. If you forgot it, you will no longer able to access to your data anymore.</string>
+    <!-- Account fields name -->
+    <string name="account_field_name">Name</string>
+    <string name="account_field_email" translatable="false">Email</string>
+    <string name="account_field_password">Password</string>
+    <string name="account_field_confirm_password">Confirm password</string>
+    <string name="account_field_username">Username</string>
+    <string name="account_field_note" translatable="false">Note</string>
     <!-- Message to user -->
     <string name="msg_add_account_success">The account has been created</string>
     <string name="msg_add_account_fail">Error when account creation</string>
@@ -24,36 +30,46 @@
     <string name="msg_backup_import_success">Import successful</string>
     <string name="msg_backup_import_fail">Import failed</string>
     <!-- AlertDialog -->
-    <string name="alert_account_change">Do you want to modify or delete this account ?</string>
+    <string name="alert_account_change_title">Do you want to modify or delete this account ?</string>
+    <string name="alert_relaunch_app_title">Relaunch the app</string>
+    <string name="alert_relaunch_app_msg">To prevent access at the imported data, relaunch the app and authenticate you again.</string>
     <!-- Error text -->
     <string name="error_account_name_empty">Name is empty</string>
     <string name="error_account_email_empty">Email is empty</string>
     <string name="error_account_email_format">Email format invalid</string>
     <string name="error_account_password_empty">Password is empty</string>
+    <string name="error_account_username_empty">Username is empty</string>
+    <string name="error_account_note_empty">Note is empty</string>
     <string name="error_password_not_same">Password is not the same</string>
     <string name="error_master_password_creation">An error occurred while master password creation</string>
-    <!-- NavBar item name -->
+    <!-- NavBar items name -->
     <string name="nav_home">Home</string>
     <string name="nav_add">Add</string>
     <string name="nav_settings">Settings</string>
     <!-- Hint text -->
     <string name="hint_search">Search…</string>
-    <string name="hint_account_name">Account name</string>
-    <string name="hint_email_example">Example@hotmail.com</string>
+    <string name="hint_account_name">My first account</string>
+    <string name="hint_email_example" translatable="false">Example@hotmail.com</string>
+    <string name="hint_username_example" translatable="false">user123</string>
     <string name="hint_password">Password</string>
     <string name="hint_confirm_password">Confirm password</string>
+    <string name="hint_note">Additional note</string>
     <!-- Button description -->
     <string name="btn_desc_filter" translatable="false">Filter</string>
     <string name="btn_desc_cancel" translatable="false">Cancel</string>
+    <string name="btn_desc_clear" translatable="false">Clear</string>
     <string name="btn_desc_validate" translatable="false">Validate</string>
-    <!-- Android Preference -->
+    <string name="btn_desc_delete_field">Delete this field</string>
+    <!--
+        * Android Preference *
+    -->
     <!-- Preference titles -->
     <string name="pref_header_database">Database</string>
     <string name="pref_header_security">Security</string>
     <!-- Database preferences -->
     <!-- Security preferences -->
     <string name="pref_attempts">Attempts</string>
-    <string name="pref_attempts_summary">The number of attempts before delete all accounts stored in the app when enter master password</string>
+    <string name="pref_attempts_summary">The number of attempts before delete all accounts stored in the app when enter master password, set to 0 = unlimited</string>
     <string name="pref_export_summary">Export the encrypted database to make a backup</string>
     <string name="pref_import_summary">Import a backup of an encrypted database</string>
 </resources>

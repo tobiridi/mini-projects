@@ -2,7 +2,10 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.Passwordsecurity" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <item name="colorSurfaceContainerLow">@color/surfaceLow</item>
+        <!-- TODO: maybe change the color for cardview -->
+<!--        <item name="colorSurfaceContainerLow">@color/surfaceLow</item>-->
+        <item name="colorSurfaceContainerLow">@android:color/transparent</item>
+
         <item name="android:windowBackground">@color/activityBackgroundLight</item>
         <item name="android:fontFamily">@font/roboto_family</item>
         <item name="colorPrimary">@color/primary</item>

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:textFontWeight="600"
-        android:text="@string/email" />
+        android:text="@string/account_field_email" />
 
     <TextView
         android:id="@+id/tv_email"
@@ -30,7 +30,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:textFontWeight="600"
-        android:text="@string/password" />
+        android:text="@string/account_field_password" />
 
     <TextView
         android:id="@+id/tv_password"

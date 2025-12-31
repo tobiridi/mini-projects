@@ -1,6 +1,8 @@
 package be.tobiridi.passwordsecurity;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.PowerManager;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -54,6 +56,15 @@ public class MainActivity extends AppCompatActivity {
 
         this.initFragmentManager();
         this.initListeners();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        PowerManager manager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
+        //occurred when lock the device
+        if (!manager.isInteractive())
+            this.finishAffinity();
     }
 
     private void initFragmentManager() {

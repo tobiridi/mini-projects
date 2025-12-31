@@ -1,20 +1,18 @@
 package be.tobiridi.passwordsecurity.ui.home;
 
-import androidx.lifecycle.Observer;
-import androidx.lifecycle.ViewModelProvider;
-
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
@@ -26,7 +24,7 @@ public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private SearchView searchView;
     private RecyclerView recyclerView;
-    private Observer<List<Account>> obAccounts;
+    private Observer<List<Account>> obSourceAccounts;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -51,22 +49,23 @@ public class HomeFragment extends Fragment {
         this.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         this.initObservers();
-        this.homeViewModel.getMutableSourceAccounts().observe(this.getViewLifecycleOwner(), this.obAccounts);
+        this.homeViewModel.getMutableSourceAccounts().observe(this.getViewLifecycleOwner(), this.obSourceAccounts);
 
         this.initListeners();
     }
 
     private void initObservers() {
-        this.obAccounts = new Observer<List<Account>>() {
+        this.obSourceAccounts = new Observer<List<Account>>() {
             @Override
-            public void onChanged(List<Account> mutableAccounts) {
+            public void onChanged(List<Account> accounts) {
                 HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
                 if (adapter == null) {
                     //init adapter when activity creation
-                    recyclerView.setAdapter(new HomeAdapter(mutableAccounts, homeViewModel));
+                    adapter = new HomeAdapter(accounts, homeViewModel);
+                    recyclerView.setAdapter(adapter);
                 }
                 else {
-                    adapter.updateAccounts();
+                    adapter.sourceAccountsChanged(accounts);
                 }
             }
         };
@@ -85,7 +84,7 @@ public class HomeFragment extends Fragment {
                 if (adapter != null) {
                     adapter.getFilter().filter(newText.toLowerCase());
                 }
-                return false;
+                return true;
             }
         });
     }

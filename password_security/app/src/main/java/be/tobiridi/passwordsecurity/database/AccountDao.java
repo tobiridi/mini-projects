@@ -23,6 +23,9 @@ public interface AccountDao {
     @Delete
     int deleteAccount(Account account);
 
+    @Query("DELETE FROM accounts")
+    int deleteAllAccounts();
+
     @Transaction
     @Query("SELECT id, encrypted_account, created, updated FROM accounts")
     LiveData<List<Account>> getAllAccounts();

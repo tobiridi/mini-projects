@@ -11,10 +11,9 @@ import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.crypto.BadPaddingException;
 
 import be.tobiridi.passwordsecurity.data.Account;
 import be.tobiridi.passwordsecurity.data.AccountDataSource;
@@ -39,14 +38,11 @@ public class HomeViewModel extends ViewModel {
     private LiveData<List<Account>> sourceAccountsLiveData;
     private Observer<List<Account>> obDecryptSourceAccounts;
     private MutableLiveData<List<Account>> mutableSourceAccounts;
-    private List<Account> sourceAccounts;
 
     public HomeViewModel(Context context) {
         this._accountDataSource = AccountDataSource.getInstance(context);
         this.sourceAccountsLiveData = this._accountDataSource.getAllAccounts();
-        this.sourceAccounts = new ArrayList<>();
-        this.mutableSourceAccounts = new MutableLiveData<>();
-
+        this.mutableSourceAccounts = new MutableLiveData<>(new ArrayList<>());
         this.initObservers();
         this.sourceAccountsLiveData.observeForever(this.obDecryptSourceAccounts);
     }
@@ -60,19 +56,51 @@ public class HomeViewModel extends ViewModel {
     private void initObservers() {
         this.obDecryptSourceAccounts = new Observer<List<Account>>() {
             @Override
-            public void onChanged(List<Account> accounts) {
-                //DB accounts changed, get all or add new account
-                if (sourceAccounts.isEmpty() || sourceAccounts.size() < accounts.size()) {
-                    accounts.forEach(HomeViewModel.this::decryptAccount);
-                    updateMutableSourceAccounts(sourceAccounts);
+            public void onChanged(List<Account> dbAccounts) {
+                //DB accounts changed, update source accounts list
+                //if all DB accounts has been cleared
+                if (dbAccounts.isEmpty()) {
+                    mutableSourceAccounts.setValue(dbAccounts);
+                    return;
                 }
+
+                List<Account> mutableAccounts = mutableSourceAccounts.getValue();
+                //GET ALL or ADD new accounts created
+                if (mutableAccounts.size() < dbAccounts.size()) {
+                    dbAccounts.forEach((account) -> {
+                        HomeViewModel.this.decryptAccount(account);
+                        if (account.getState().equals(Account.EncryptionState.DECRYPTED)) {
+                            mutableAccounts.add(account);
+                        }
+                    });
+                }
+                //DELETE
+                else if (mutableAccounts.size() > dbAccounts.size()) {
+                    mutableAccounts.removeIf(mutAcc -> !dbAccounts.contains(mutAcc));
+                }
+                //UPDATE, lists size are the same
+                else {
+                    int index = 0;
+                    for (Account updatedAccount: mutableAccounts) {
+                        Account dbAcc = dbAccounts.get(index);
+                        if (dbAcc.getUpdated().isAfter(updatedAccount.getUpdated())) {
+                            //change the id to indicate a different object
+                            updatedAccount.setId(-1);
+                            HomeViewModel.this.decryptAccount(dbAcc);
+                            mutableAccounts.set(index, dbAcc);
+                        }
+                        index++;
+                    }
+                }
+                mutableSourceAccounts.setValue(mutableAccounts);
             }
         };
     }
 
     private void decryptAccount(Account newAccount) {
-        //decrypt only new account
-        if (this.sourceAccounts.stream().noneMatch(a -> a.equals(newAccount))) {
+        //decrypt only if new account
+        var sourceAccounts = mutableSourceAccounts.getValue();
+        if (sourceAccounts.stream().noneMatch(a -> a.equals(newAccount))) {
             try {
                 byte[] masterPassword = UserPreferencesDataSource.getAuthenticatedMasterPassword();
                 String decryptedCompactData = AESManager.decryptToString(masterPassword, newAccount.getCompactAccount());
@@ -80,12 +108,15 @@ public class HomeViewModel extends ViewModel {
                 newAccount.setState(Account.EncryptionState.DECRYPTED);
                 newAccount.unPackAccountData(decryptedCompactData);
 
-                this.sourceAccounts.add(newAccount);
-            } catch (BadPaddingException e) {
-                //TODO: manage exception
+            } catch (GeneralSecurityException e) {
+                //the master key used is not the same when encryption of the account data
                 throw new RuntimeException(e);
             }
         }
+    }
+
+    public boolean deleteAccount(Account deletedAccount) {
+        return this._accountDataSource.deleteAccount(deletedAccount) > 0;
     }
 
     /****************************/
@@ -98,26 +129,5 @@ public class HomeViewModel extends ViewModel {
      */
     public LiveData<List<Account>> getMutableSourceAccounts() {
         return this.mutableSourceAccounts;
-    }
-
-    public void updateMutableSourceAccounts(List<Account> accounts) {
-//        if (this.mutableAccounts.isInitialized()) {
-//            List<Account> current = this.editableAccounts.getValue();
-//            if (!current.isEmpty()) {
-//                current.clear();
-//            }
-//            current.addAll(accounts);
-//        }
-        this.mutableSourceAccounts.setValue(accounts);
-    }
-
-    public boolean deleteAccount(Account deletedAccount) {
-        if (this._accountDataSource.deleteAccount(deletedAccount) > 0) {
-            //account deleted from DB
-            this.sourceAccounts.remove(deletedAccount);
-            this.updateMutableSourceAccounts(this.sourceAccounts);
-            return true;
-        }
-        return false;
     }
 }

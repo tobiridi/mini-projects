@@ -1,18 +1,13 @@
-package be.tobiridi.passwordsecurity.ui.addAccount;
+package be.tobiridi.passwordsecurity.ui.updateAccount;
 
-import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
-
-import android.app.Application;
 import android.content.Context;
 import android.content.res.Resources;
 import android.util.Patterns;
 
 import androidx.lifecycle.ViewModel;
-import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -22,38 +17,47 @@ import be.tobiridi.passwordsecurity.component.accountField.AccountField;
 import be.tobiridi.passwordsecurity.data.Account;
 import be.tobiridi.passwordsecurity.data.AccountDataSource;
 
-public class AddAccountViewModel extends ViewModel {
+public class UpdateAccountViewModel extends ViewModel {
+    private AccountDataSource accountDataSource;
+    private Resources resources;
+    private Account updatableAccount;
+
+    public UpdateAccountViewModel() {}
+
     /*********************/
-    /* ViewModel Factory */
+    /** Builder methods **/
     /*********************/
-    public static final ViewModelInitializer<AddAccountViewModel> initializer = new ViewModelInitializer<>(
-            AddAccountViewModel.class,
-            creationExtras -> {
-                Application app = creationExtras.get(APPLICATION_KEY);
-                assert app != null;
 
-                return new AddAccountViewModel(app.getApplicationContext());
-            }
-    );
-
-    private final AccountDataSource _accountDataSource;
-    private final Resources _resources;
-
-    public AddAccountViewModel(Context context) {
-        this._accountDataSource = AccountDataSource.getInstance(context);
-        this._resources = context.getResources();
+    /**
+     * Builder method.
+     * @param ctx {@link Context}.
+     * @return The same reference.
+     */
+    public UpdateAccountViewModel setContext(Context ctx) {
+        this.resources = ctx.getResources();
+        this.accountDataSource = AccountDataSource.getInstance(ctx);
+        return this;
     }
 
     /**
-     * Attempt to save the new account in the database.
-     *
+     * Builder method.
+     * @param updatableAccount The updatable {@link Account}.
+     * @return The same reference.
+     */
+    public UpdateAccountViewModel setUpdatableAccount(Account updatableAccount) {
+        this.updatableAccount = updatableAccount;
+        return this;
+    }
+
+    /**
+     * Attempt to update the {@link Account} and save it in the database.
      * @param inputAccountFields All account fields input.
-     * @param accountFields All fields used to create an {@link Account}.
+     * @param accountFields All fields used to update an {@link Account}.
      * @return {@code true} is the account has been save in the database, {@code false} if an error has occurred.
      * @throws IllegalArgumentException If the number of elements present in each parameter is not the same.
      */
-    public boolean createAccount(List<TextInputLayout> inputAccountFields, EnumSet<AccountField> accountFields) throws IllegalArgumentException {
-        long[] idResults = {};
+    public boolean updateAccount(List<TextInputLayout> inputAccountFields, EnumSet<AccountField> accountFields) throws IllegalArgumentException {
+        int rowsUpdated = 0;
         HashMap<String, String> accountData = new HashMap<>(accountFields.size());
 
         // normally never throw except if forget to add one or more AccountField in the EnumSet
@@ -94,22 +98,20 @@ public class AddAccountViewModel extends ViewModel {
                         break;
                 }
             }
-            // FIXME: 26/06/2025 throw an error if (input == null) ???
+            // FIXME: 27/06/2025 throw an error if (input == null) ???
         }
 
         if (errors == 0) {
-            String accName = accountData.get("name");
-            String accPassword = accountData.get("password");
-            String accEmail = accountData.get("email");
-            String accUsername = accountData.get("username");
-            String accNote = accountData.get("note");
-            LocalDateTime created = LocalDateTime.now();
+            this.updatableAccount.setName(accountData.get("name"));
+            this.updatableAccount.setEmail(accountData.get("email"));
+            this.updatableAccount.setPassword(accountData.get("password"));
+            this.updatableAccount.setUsername(accountData.get("username"));
+            this.updatableAccount.setNote(accountData.get("note"));
+            this.updatableAccount.packAccountData();
 
-            Account a = new Account(accName, accPassword, created, created, accEmail, accUsername, accNote);
-            idResults = this._accountDataSource.saveAccounts(a);
+            rowsUpdated = this.accountDataSource.updateAccount(this.updatableAccount);
         }
-
-        return idResults.length > 0;
+        return rowsUpdated > 0;
     }
 
     /******************/
@@ -127,7 +129,7 @@ public class AddAccountViewModel extends ViewModel {
         String txt = nameInput.getEditText().getText().toString();
 
         if (txt.trim().isEmpty()) {
-            nameInput.setError(this._resources.getString(R.string.error_account_name_empty));
+            nameInput.setError(this.resources.getString(R.string.error_account_name_empty));
             return false;
         }
         return true;
@@ -143,7 +145,7 @@ public class AddAccountViewModel extends ViewModel {
         String txt = passwordInput.getEditText().getText().toString();
 
         if (txt.trim().isEmpty()) {
-            passwordInput.setError(this._resources.getString(R.string.error_account_password_empty));
+            passwordInput.setError(this.resources.getString(R.string.error_account_password_empty));
             return false;
         }
         return true;
@@ -159,10 +161,10 @@ public class AddAccountViewModel extends ViewModel {
         String txt = emailInput.getEditText().getText().toString();
 
         if (txt.trim().isEmpty()) {
-            emailInput.setError(this._resources.getString(R.string.error_account_email_empty));
+            emailInput.setError(this.resources.getString(R.string.error_account_email_empty));
             return false;
         } else if (!Patterns.EMAIL_ADDRESS.matcher(txt).matches()) {
-            emailInput.setError(this._resources.getString(R.string.error_account_email_format));
+            emailInput.setError(this.resources.getString(R.string.error_account_email_format));
             return false;
         }
         return true;
@@ -178,7 +180,7 @@ public class AddAccountViewModel extends ViewModel {
         String txt = usernameInput.getEditText().getText().toString();
 
         if (txt.trim().isEmpty()) {
-            usernameInput.setError(this._resources.getString(R.string.error_account_username_empty));
+            usernameInput.setError(this.resources.getString(R.string.error_account_username_empty));
             return false;
         }
         return true;
@@ -194,7 +196,7 @@ public class AddAccountViewModel extends ViewModel {
         String txt = noteInput.getEditText().getText().toString();
 
         if (txt.trim().isEmpty()) {
-            noteInput.setError(this._resources.getString(R.string.error_account_note_empty));
+            noteInput.setError(this.resources.getString(R.string.error_account_note_empty));
             return false;
         }
         return true;
