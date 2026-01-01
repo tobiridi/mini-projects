@@ -169,6 +169,13 @@ public final class AESManager {
     }
 
     /**
+     * @see AESManager#encryptToStringBase64(byte[], byte[])
+     */
+    public static String encryptToStringBase64(byte[] key, String plainData) throws GeneralSecurityException {
+        return AESManager.encryptToStringBase64(key, plainData.getBytes(StandardCharsets.UTF_8));
+    }
+
+    /**
      * Decrypt the encrypted data in AES-256 format.
      * Using a custom secret key created by the user.
      * If you need more security prefer to use {@link AESManager#getSecretKeyFromAndroidKeyStore()}.
