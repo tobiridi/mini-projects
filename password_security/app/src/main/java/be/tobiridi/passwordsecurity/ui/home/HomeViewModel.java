@@ -18,7 +18,6 @@ import java.util.List;
 import be.tobiridi.passwordsecurity.data.Account;
 import be.tobiridi.passwordsecurity.data.AccountDataSource;
 import be.tobiridi.passwordsecurity.data.UserPreferencesDataSource;
-import be.tobiridi.passwordsecurity.security.AESManager;
 
 public class HomeViewModel extends ViewModel {
     /*********************/
@@ -69,7 +68,7 @@ public class HomeViewModel extends ViewModel {
                 if (mutableAccounts.size() < dbAccounts.size()) {
                     dbAccounts.forEach((account) -> {
                         HomeViewModel.this.decryptAccount(account);
-                        if (account.getState().equals(Account.EncryptionState.DECRYPTED)) {
+                        if (!account.isEncrypted()) {
                             mutableAccounts.add(account);
                         }
                     });
@@ -103,10 +102,7 @@ public class HomeViewModel extends ViewModel {
         if (sourceAccounts.stream().noneMatch(a -> a.equals(newAccount))) {
             try {
                 byte[] masterPassword = UserPreferencesDataSource.getAuthenticatedMasterPassword();
-                String decryptedCompactData = AESManager.decryptToString(masterPassword, newAccount.getCompactAccount());
-
-                newAccount.setState(Account.EncryptionState.DECRYPTED);
-                newAccount.unPackAccountData(decryptedCompactData);
+                newAccount.decrypt(masterPassword);
 
             } catch (GeneralSecurityException e) {
                 //the master key used is not the same when encryption of the account data

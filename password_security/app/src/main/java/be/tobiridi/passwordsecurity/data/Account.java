@@ -7,15 +7,19 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.io.Serializable;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Objects;
 import java.util.StringJoiner;
 
+import be.tobiridi.passwordsecurity.security.AESManager;
+
 @Entity(tableName = "accounts")
 public class Account implements Serializable {
     private static final long serialVersionUID = 42263247523547L;
-    public enum EncryptionState {
+
+    private enum EncryptionState {
         ENCRYPTED,
         DECRYPTED
     }
@@ -23,6 +27,13 @@ public class Account implements Serializable {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
+    /**
+     * The data about this {@link Account} combined and stored in a {@code String}, used to encrypt and decrypt one field.
+     * @see Account#encrypt(byte[])
+     * @see Account#decrypt(byte[])
+     * @see Account#packAccountData()  
+     * @see Account#unPackAccountData()
+     */
     @ColumnInfo(name = "encrypted_account")
     private String compactAccount;
 
@@ -122,18 +133,14 @@ public class Account implements Serializable {
         this.updated = updated;
     }
 
-    public EncryptionState getState() {
-        return this.state;
-    }
-
-    public void setState(EncryptionState state) {
-        this.state = state;
+    public boolean isEncrypted() {
+        return this.state.equals(EncryptionState.ENCRYPTED);
     }
 
     /**
      * Separator to combine all account data in one field.
      */
-    private static final String ACCOUNT_SEPARATOR = "&SEP;";
+    private static final String ACCOUNT_DATA_SEPARATOR = "&SEP;";
 
     /**
      * Constructor for {@link androidx.room.RoomDatabase} only,
@@ -148,12 +155,12 @@ public class Account implements Serializable {
     }
 
     @Ignore
-    public Account(@NonNull String name, @NonNull String password, @NonNull LocalDateTime created, @NonNull LocalDateTime updated,
-                   String email, String username, String note) {
+    public Account(@NonNull String name, @NonNull String password, String email, String username, String note) {
+        LocalDateTime now = LocalDateTime.now();
         this.name = name;
         this.password = password;
-        this.created = created;
-        this.updated = updated;
+        this.created = now;
+        this.updated = now;
         this.email = email;
         this.username = username;
         this.note = note;
@@ -191,20 +198,50 @@ public class Account implements Serializable {
         return Objects.hash(this.id, this.name, this.created, this.updated);
     }
 
+    // TODO: 19/01/2026 don't use the data source directly in view model, centralize in some "Service" where viewmodel has "LiveData" to the data
+    // TODO: 19/01/2026 move "Entity class" files in "data" folder to "entity" folder
+    // TODO: 19/01/2026 move "DataSource" files in "data" folder to "datasource" folder
+    // TODO: 19/01/2026 rename project package in plurals format (entity : entities, component : components, service : services)
+
     /**
-     * Restore the values of the account once the account has been decrypted.
+     * @param encryptionKey The key used to encrypt the account.
+     * @return {@code true} If the account has been encrypted, {@code false} otherwise.
+     * @throws GeneralSecurityException If the {@code encryptionKey} is invalid for encryption.
+     */
+    public boolean encrypt(byte[] encryptionKey) throws GeneralSecurityException {
+        if(!this.isEncrypted()) {
+            this.compactAccount = AESManager.encryptToStringBase64(encryptionKey, this.compactAccount);
+            this.state = EncryptionState.ENCRYPTED;
+        }
+        return this.isEncrypted();
+    }
+
+    /**
+     * @param decryptionKey The key used to decrypt the account.
+     * @return {@code true} If the account has been decrypted, {@code false} otherwise.
+     * @throws GeneralSecurityException If the {@code decryptionKey} is invalid for decryption.
+     */
+    public boolean decrypt(byte[] decryptionKey) throws GeneralSecurityException {
+        if(this.isEncrypted()) {
+            this.compactAccount = AESManager.decryptToString(decryptionKey, this.compactAccount);
+            this.state = EncryptionState.DECRYPTED;
+            this.unPackAccountData();
+        }
+        return !this.isEncrypted();
+    }
+
+    /**
+     * Reassign all fields about this {@link Account}, respecting the same order when {@link Account#packAccountData()}.
      * <br/>
      * If the account state is not {@link EncryptionState#DECRYPTED}, call this method will produce nothing.
-     * @param compactAccount The compacted and decrypted account data.
      * @see Account#packAccountData()
+     * @see Account#compactAccount
      */
-    public void unPackAccountData(String compactAccount) {
-        if (this.state.equals(EncryptionState.DECRYPTED)) {
-            String[] values = compactAccount.split(ACCOUNT_SEPARATOR);
-
+    private void unPackAccountData() {
+        if (!this.isEncrypted()) {
             // some member variables are optionals, see how the data are compacted
             // affect null reference and not a "null" string value
-            values = Arrays.stream(values)
+            String[] values = Arrays.stream(this.compactAccount.split(ACCOUNT_DATA_SEPARATOR))
                     .map(v -> v.equals("null") ? null : v)
                     .toArray(String[]::new);
 
@@ -214,21 +251,19 @@ public class Account implements Serializable {
             this.password = values[2];
             this.username = values[3];
             this.note = values[4];
-            this.compactAccount = compactAccount;
         }
     }
 
     /**
-     * Update the compact account data with its new values.
-     * <br/>
-     * Should be call only if the data about this account has been updated.
+     * Order and compact all fields of this {@link Account}.
      * <br/>
      * If the account state is not {@link EncryptionState#DECRYPTED}, call this method will produce nothing.
-     * @see Account#unPackAccountData(String)
+     * @see Account#unPackAccountData()
+     * @see Account#compactAccount
      */
     public void packAccountData() {
-        if (this.state.equals(EncryptionState.DECRYPTED)) {
-            StringJoiner joiner = new StringJoiner(ACCOUNT_SEPARATOR);
+        if (!this.isEncrypted()) {
+            StringJoiner joiner = new StringJoiner(ACCOUNT_DATA_SEPARATOR);
 
             // the order used to compact the account, ORDER IMPORTANT
             joiner.add(this.name);

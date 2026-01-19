@@ -12,7 +12,6 @@ import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.time.LocalDateTime;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
@@ -103,9 +102,8 @@ public class AddAccountViewModel extends ViewModel {
             String accEmail = accountData.get("email");
             String accUsername = accountData.get("username");
             String accNote = accountData.get("note");
-            LocalDateTime created = LocalDateTime.now();
 
-            Account a = new Account(accName, accPassword, created, created, accEmail, accUsername, accNote);
+            Account a = new Account(accName, accPassword, accEmail, accUsername, accNote);
             idResults = this._accountDataSource.saveAccounts(a);
         }
 
