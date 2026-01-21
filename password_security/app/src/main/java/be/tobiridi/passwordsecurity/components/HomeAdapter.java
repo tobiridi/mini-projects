@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.component;
+package be.tobiridi.passwordsecurity.components;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.data.Account;
+import be.tobiridi.passwordsecurity.entities.Account;
 import be.tobiridi.passwordsecurity.ui.home.HomeViewModel;
 
 /**

@@ -25,9 +25,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.component.TextWatcherResetError;
-import be.tobiridi.passwordsecurity.component.accountField.AccountField;
-import be.tobiridi.passwordsecurity.component.accountField.AccountFieldInputLayout;
+import be.tobiridi.passwordsecurity.components.TextWatcherResetError;
+import be.tobiridi.passwordsecurity.components.accountField.AccountField;
+import be.tobiridi.passwordsecurity.components.accountField.AccountFieldInputLayout;
 
 public class AddAccountFragment extends Fragment {
     private AddAccountViewModel addAccountViewModel;

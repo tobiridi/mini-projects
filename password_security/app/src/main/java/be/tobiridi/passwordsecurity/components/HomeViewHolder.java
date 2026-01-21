@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.component;
+package be.tobiridi.passwordsecurity.components;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.data.Account;
+import be.tobiridi.passwordsecurity.entities.Account;
 import be.tobiridi.passwordsecurity.ui.updateAccount.UpdateAccountActivity;
 
 /**

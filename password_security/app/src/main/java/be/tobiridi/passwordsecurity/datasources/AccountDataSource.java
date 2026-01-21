@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.data;
+package be.tobiridi.passwordsecurity.datasources;
 
 import android.content.Context;
 
@@ -8,6 +8,8 @@ import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import be.tobiridi.passwordsecurity.entities.Account;
 
 /**
  * Can be constructed using one of the getInstance class methods of this class.

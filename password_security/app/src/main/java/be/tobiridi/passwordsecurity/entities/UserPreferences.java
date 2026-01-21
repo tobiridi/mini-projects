@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.data;
+package be.tobiridi.passwordsecurity.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

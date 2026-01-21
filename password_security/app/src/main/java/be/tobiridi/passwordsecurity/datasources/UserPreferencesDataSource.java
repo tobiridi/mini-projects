@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.data;
+package be.tobiridi.passwordsecurity.datasources;
 
 import android.content.Context;
 import android.util.Base64;
@@ -8,6 +8,7 @@ import java.util.concurrent.Callable;
 
 import javax.crypto.BadPaddingException;
 
+import be.tobiridi.passwordsecurity.entities.UserPreferences;
 import be.tobiridi.passwordsecurity.security.AESManager;
 import be.tobiridi.passwordsecurity.security.HashManager;
 

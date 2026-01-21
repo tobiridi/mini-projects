@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.database;
+package be.tobiridi.passwordsecurity.database.Dao;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
 
-import be.tobiridi.passwordsecurity.data.UserPreferences;
+import be.tobiridi.passwordsecurity.entities.UserPreferences;
 
 @Dao
 public interface UserPreferencesDao {

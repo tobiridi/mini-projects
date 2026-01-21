@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.component.accountField;
+package be.tobiridi.passwordsecurity.components.accountField;
 
 import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
@@ -9,7 +9,7 @@ import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
 
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.data.Account;
+import be.tobiridi.passwordsecurity.entities.Account;
 
 /**
  * Custom field as a data for an {@link Account}, should be used with a {@link TextInputLayout}.

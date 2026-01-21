@@ -17,9 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.component.accountField.AccountField;
-import be.tobiridi.passwordsecurity.data.Account;
-import be.tobiridi.passwordsecurity.data.AccountDataSource;
+import be.tobiridi.passwordsecurity.components.accountField.AccountField;
+import be.tobiridi.passwordsecurity.entities.Account;
+import be.tobiridi.passwordsecurity.datasources.AccountDataSource;
 
 public class AddAccountViewModel extends ViewModel {
     /*********************/

@@ -23,10 +23,10 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.component.TextWatcherResetError;
-import be.tobiridi.passwordsecurity.component.accountField.AccountField;
-import be.tobiridi.passwordsecurity.component.accountField.AccountFieldInputLayout;
-import be.tobiridi.passwordsecurity.data.Account;
+import be.tobiridi.passwordsecurity.components.TextWatcherResetError;
+import be.tobiridi.passwordsecurity.components.accountField.AccountField;
+import be.tobiridi.passwordsecurity.components.accountField.AccountFieldInputLayout;
+import be.tobiridi.passwordsecurity.entities.Account;
 
 public class UpdateAccountActivity extends AppCompatActivity {
     private UpdateAccountViewModel updateAccountViewModel;

@@ -17,8 +17,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.component.HomeAdapter;
-import be.tobiridi.passwordsecurity.data.Account;
+import be.tobiridi.passwordsecurity.components.HomeAdapter;
+import be.tobiridi.passwordsecurity.entities.Account;
 
 public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;

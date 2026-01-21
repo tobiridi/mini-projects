@@ -7,8 +7,10 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
-import be.tobiridi.passwordsecurity.data.Account;
-import be.tobiridi.passwordsecurity.data.UserPreferences;
+import be.tobiridi.passwordsecurity.database.Dao.AccountDao;
+import be.tobiridi.passwordsecurity.database.Dao.UserPreferencesDao;
+import be.tobiridi.passwordsecurity.entities.Account;
+import be.tobiridi.passwordsecurity.entities.UserPreferences;
 import be.tobiridi.passwordsecurity.database.converters.DateTimeConverters;
 
 @Database(version = 1,

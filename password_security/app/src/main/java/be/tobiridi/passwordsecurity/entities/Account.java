@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.data;
+package be.tobiridi.passwordsecurity.entities;
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -198,10 +198,7 @@ public class Account implements Serializable {
         return Objects.hash(this.id, this.name, this.created, this.updated);
     }
 
-    // TODO: 19/01/2026 don't use the data source directly in view model, centralize in some "Service" where viewmodel has "LiveData" to the data
-    // TODO: 19/01/2026 move "Entity class" files in "data" folder to "entity" folder
-    // TODO: 19/01/2026 move "DataSource" files in "data" folder to "datasource" folder
-    // TODO: 19/01/2026 rename project package in plurals format (entity : entities, component : components, service : services)
+    // TODO: 19/01/2026 don't use the data source directly in view model, centralize in some "Service" where viewmodel use the service to interact with the database
 
     /**
      * @param encryptionKey The key used to encrypt the account.

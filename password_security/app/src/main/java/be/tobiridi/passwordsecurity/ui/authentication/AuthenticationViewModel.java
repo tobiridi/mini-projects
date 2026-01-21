@@ -10,7 +10,7 @@ import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 import androidx.preference.PreferenceManager;
 
-import be.tobiridi.passwordsecurity.data.UserPreferencesDataSource;
+import be.tobiridi.passwordsecurity.datasources.UserPreferencesDataSource;
 
 public class AuthenticationViewModel extends ViewModel {
     /*********************/

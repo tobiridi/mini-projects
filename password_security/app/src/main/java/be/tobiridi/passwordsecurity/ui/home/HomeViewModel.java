@@ -15,9 +15,9 @@ import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 
-import be.tobiridi.passwordsecurity.data.Account;
-import be.tobiridi.passwordsecurity.data.AccountDataSource;
-import be.tobiridi.passwordsecurity.data.UserPreferencesDataSource;
+import be.tobiridi.passwordsecurity.entities.Account;
+import be.tobiridi.passwordsecurity.datasources.AccountDataSource;
+import be.tobiridi.passwordsecurity.datasources.UserPreferencesDataSource;
 
 public class HomeViewModel extends ViewModel {
     /*********************/

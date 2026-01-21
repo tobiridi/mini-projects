@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.component;
+package be.tobiridi.passwordsecurity.components;
 
 import android.text.Editable;
 import android.text.TextWatcher;

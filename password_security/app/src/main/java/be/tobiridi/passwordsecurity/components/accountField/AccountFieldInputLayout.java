@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.component.accountField;
+package be.tobiridi.passwordsecurity.components.accountField;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -13,8 +13,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.component.TextWatcherResetError;
-import be.tobiridi.passwordsecurity.data.Account;
+import be.tobiridi.passwordsecurity.components.TextWatcherResetError;
+import be.tobiridi.passwordsecurity.entities.Account;
 
 /**
  * Main class for all dynamic custom {@link TextInputLayout} associated to an {@link Account}.

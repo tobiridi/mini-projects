@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.database;
+package be.tobiridi.passwordsecurity.database.Dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -10,7 +10,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
-import be.tobiridi.passwordsecurity.data.Account;
+import be.tobiridi.passwordsecurity.entities.Account;
 
 @Dao
 public interface AccountDao {

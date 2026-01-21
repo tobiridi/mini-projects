@@ -1,4 +1,4 @@
-package be.tobiridi.passwordsecurity.data;
+package be.tobiridi.passwordsecurity.datasources;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -10,9 +10,9 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
-import be.tobiridi.passwordsecurity.database.AccountDao;
+import be.tobiridi.passwordsecurity.database.Dao.AccountDao;
 import be.tobiridi.passwordsecurity.database.AppDatabase;
-import be.tobiridi.passwordsecurity.database.UserPreferencesDao;
+import be.tobiridi.passwordsecurity.database.Dao.UserPreferencesDao;
 
 /**
  * The common class to interact with {@link AppDatabase}.

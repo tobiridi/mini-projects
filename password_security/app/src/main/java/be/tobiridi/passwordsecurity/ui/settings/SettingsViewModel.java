@@ -16,8 +16,8 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import be.tobiridi.passwordsecurity.data.AccountDataSource;
-import be.tobiridi.passwordsecurity.data.DatabaseDataSource;
+import be.tobiridi.passwordsecurity.datasources.AccountDataSource;
+import be.tobiridi.passwordsecurity.datasources.DatabaseDataSource;
 import be.tobiridi.passwordsecurity.database.AppDatabase;
 
 public class SettingsViewModel extends ViewModel {
