@@ -14,10 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Passwordsecurity">
         <activity
-            android:name=".ui.updateAccount.UpdateAccountActivity"
+            android:name=".ui.activities.updateAccount.UpdateAccountActivity"
             android:exported="false" />
         <activity
-            android:name=".ui.authentication.AuthenticationActivity"
+            android:name=".ui.activities.authentication.AuthenticationActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -26,7 +26,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:exported="false" />
     </application>
 

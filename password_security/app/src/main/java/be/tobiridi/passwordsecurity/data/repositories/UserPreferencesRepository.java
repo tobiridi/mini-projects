@@ -1,0 +1,135 @@
+<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/datasources/UserPreferencesDataSource.java
+package be.tobiridi.passwordsecurity.datasources;
+========
+package be.tobiridi.passwordsecurity.data.repositories;
+>>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/repositories/UserPreferencesRepository.java
+
+import android.content.Context;
+import android.util.Base64;
+
+import java.util.Arrays;
+import java.util.concurrent.Callable;
+
+import javax.crypto.BadPaddingException;
+
+<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/datasources/UserPreferencesDataSource.java
+import be.tobiridi.passwordsecurity.entities.UserPreferences;
+import be.tobiridi.passwordsecurity.security.AESManager;
+import be.tobiridi.passwordsecurity.security.HashManager;
+========
+import be.tobiridi.passwordsecurity.data.datasources.DatabaseDataSource;
+import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
+import be.tobiridi.passwordsecurity.data.security.AESManager;
+import be.tobiridi.passwordsecurity.data.security.HashManager;
+>>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/repositories/UserPreferencesRepository.java
+
+/**
+ * Can be constructed using one of the getInstance class methods of this class.
+ */
+public class UserPreferencesRepository extends DatabaseDataSource {
+    private static UserPreferencesRepository INSTANCE;
+    private static byte[] AUTH_MASTER_PASSWORD;
+
+    public static UserPreferencesRepository getInstance(Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = new UserPreferencesRepository(context);
+        }
+        return INSTANCE;
+    }
+
+    private UserPreferencesRepository(Context context) {
+        super(context);
+        AUTH_MASTER_PASSWORD = new byte[0];
+    }
+
+    public static void resetInstance() {
+        INSTANCE.clearAuthenticatedMasterPassword();
+        INSTANCE = null;
+    }
+
+    /**
+     * Get the master password to access at the app.
+     * @return The master password to encrypt and decrypt data.
+     */
+    public static byte[] getAuthenticatedMasterPassword() {
+        return AUTH_MASTER_PASSWORD;
+    }
+
+    /**
+     * Clear the master password from the memory.
+     */
+    private void clearAuthenticatedMasterPassword() {
+        Arrays.fill(AUTH_MASTER_PASSWORD, (byte) 0);
+        AUTH_MASTER_PASSWORD = new byte[0];
+    }
+
+    /**
+     * Attempt to authenticate the user with the provided password.
+     * @param userPassword The user password.
+     * @return {@code true} If the password matches {@code false} otherwise.
+     */
+    public boolean authenticateUser(String userPassword) {
+        Callable<Boolean> callable = () -> {
+            byte[] masterPassword = HashManager.hashStringToBytes(userPassword);
+            String encryptedMasterPassword = this.userPreferencesDao.getMasterPassword();
+
+            try {
+                String decryptedMasterPassword = AESManager.decryptToStringBase64(masterPassword, encryptedMasterPassword);
+                boolean isAuthenticated = Base64.encodeToString(masterPassword, Base64.DEFAULT).equals(decryptedMasterPassword);
+
+                if (isAuthenticated) {
+                    //save the master password for reuse it in the app
+                    AUTH_MASTER_PASSWORD = masterPassword;
+                }
+                return isAuthenticated;
+
+            } catch (BadPaddingException e) {
+                //the password is wrong
+                return false;
+            }
+        };
+        return this.executeCallable(callable);
+    }
+
+    /**
+     * Check if the master password of the app exists.
+     * @return {@code true} If the master password exists, {@code false} if the master password does not exist.
+     */
+    public boolean hasMasterPassword() {
+        Callable<Boolean> callable = () -> {
+            //return null if not found
+            return this.userPreferencesDao.getMasterPassword() != null;
+        };
+        return this.executeCallable(callable);
+    }
+
+    /**
+     * Save a new master password to authenticate the user.
+     * <br/>
+     * It will be replace if the master password already exists.
+     * @param newMasterPassword The user master password.
+     * @return {@code true} if the master password has been save.
+     */
+    public boolean saveMasterPassword(String newMasterPassword) {
+        Callable<Long> callable = () -> {
+            byte[] masterPassword = HashManager.hashStringToBytes(newMasterPassword);
+            String encryptedMasterPassword = AESManager.encryptToStringBase64(masterPassword, masterPassword);
+
+            //save the master password for reuse it in the app
+            AUTH_MASTER_PASSWORD = masterPassword;
+
+            UserPreferences pref = new UserPreferences(encryptedMasterPassword);
+            return this.userPreferencesDao.saveMasterPassword(pref);
+        };
+        return this.executeCallable(callable) > 0;
+    }
+
+    /**
+     * This method will clear all tables present in the database.
+     * <br/>
+     * <b>Please be careful when you use this method !</b>
+     */
+    public void destroyAllData() {
+        this.executeRunnable(this::clearAllTables);
+    }
+}

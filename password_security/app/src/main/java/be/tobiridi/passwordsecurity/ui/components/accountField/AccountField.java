@@ -1,0 +1,69 @@
+<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/accountField/AccountField.java
+package be.tobiridi.passwordsecurity.components.accountField;
+========
+package be.tobiridi.passwordsecurity.ui.components.accountField;
+>>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/accountField/AccountField.java
+
+import android.text.InputType;
+import android.view.inputmethod.EditorInfo;
+
+import androidx.annotation.IdRes;
+import androidx.annotation.StringRes;
+
+import com.google.android.material.textfield.TextInputLayout;
+
+import be.tobiridi.passwordsecurity.R;
+<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/accountField/AccountField.java
+import be.tobiridi.passwordsecurity.entities.Account;
+========
+import be.tobiridi.passwordsecurity.data.entities.Account;
+>>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/accountField/AccountField.java
+
+/**
+ * Custom field as a data for an {@link Account}, should be used with a {@link TextInputLayout}.
+ * @see AccountFieldInputLayout
+ */
+public enum AccountField {
+    NAME(R.id.accountField_name, R.string.account_field_name, InputType.TYPE_TEXT_FLAG_CAP_WORDS | InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE, R.string.hint_account_name),
+    PASSWORD(R.id.accountField_password, R.string.account_field_password, InputType.TYPE_TEXT_VARIATION_PASSWORD, R.string.hint_password),
+    EMAIL(R.id.accountField_email, R.string.account_field_email, InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS, R.string.hint_email_example),
+    USERNAME(R.id.accountField_username, R.string.account_field_username, InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE, R.string.hint_username_example),
+    NOTE(R.id.accountField_note, R.string.account_field_note, InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_MULTI_LINE, R.string.hint_note);
+
+    @IdRes
+    private final int id;
+    @StringRes
+    private final int label;
+    /**
+     * constant as defined for {@link EditorInfo#inputType}.
+     */
+    private final int inputType;
+    @StringRes
+    private final int hintText;
+
+    private AccountField(@IdRes int id, @StringRes int label, int inputType, @StringRes int hintText) {
+        this.id = id;
+        this.label = label;
+        this.inputType = inputType;
+        this.hintText = hintText;
+    }
+
+    @IdRes
+    public int getId() {
+        return this.id;
+    }
+
+    @StringRes
+    public int getLabel() {
+        return this.label;
+    }
+
+    public int getInputType() {
+        return this.inputType;
+    }
+
+    @StringRes
+    public int getHintText() {
+        return this.hintText;
+    }
+}

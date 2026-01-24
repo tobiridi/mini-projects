@@ -1,0 +1,129 @@
+package be.tobiridi.passwordsecurity.ui.fragments.home;
+
+import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
+
+import android.app.Application;
+import android.content.Context;
+
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.viewmodel.ViewModelInitializer;
+
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
+import java.util.List;
+
+import be.tobiridi.passwordsecurity.data.entities.Account;
+import be.tobiridi.passwordsecurity.data.repositories.AccountRepository;
+import be.tobiridi.passwordsecurity.data.repositories.UserPreferencesRepository;
+
+public class HomeViewModel extends ViewModel {
+    /*********************/
+    /* ViewModel Factory */
+    /*********************/
+    public static final ViewModelInitializer<HomeViewModel> initializer = new ViewModelInitializer<>(
+            HomeViewModel.class,
+            creationExtras -> {
+                Application app = creationExtras.get(APPLICATION_KEY);
+                assert app != null;
+
+                return new HomeViewModel(app.getApplicationContext());
+            }
+    );
+
+    private final AccountRepository _accountRepository;
+    private LiveData<List<Account>> sourceAccountsLiveData;
+    private Observer<List<Account>> obDecryptSourceAccounts;
+    private MutableLiveData<List<Account>> mutableSourceAccounts;
+
+    public HomeViewModel(Context context) {
+        this._accountRepository = AccountRepository.getInstance(context);
+        this.sourceAccountsLiveData = this._accountRepository.getAllAccounts();
+        this.mutableSourceAccounts = new MutableLiveData<>(new ArrayList<>());
+        this.initObservers();
+        this.sourceAccountsLiveData.observeForever(this.obDecryptSourceAccounts);
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        this.sourceAccountsLiveData.removeObserver(this.obDecryptSourceAccounts);
+    }
+
+    private void initObservers() {
+        this.obDecryptSourceAccounts = new Observer<List<Account>>() {
+            @Override
+            public void onChanged(List<Account> dbAccounts) {
+                //DB accounts changed, update source accounts list
+                //if all DB accounts has been cleared
+                if (dbAccounts.isEmpty()) {
+                    mutableSourceAccounts.setValue(dbAccounts);
+                    return;
+                }
+
+                List<Account> mutableAccounts = mutableSourceAccounts.getValue();
+                //GET ALL or ADD new accounts created
+                if (mutableAccounts.size() < dbAccounts.size()) {
+                    dbAccounts.forEach((account) -> {
+                        HomeViewModel.this.decryptAccount(account);
+                        if (!account.isEncrypted()) {
+                            mutableAccounts.add(account);
+                        }
+                    });
+                }
+                //DELETE
+                else if (mutableAccounts.size() > dbAccounts.size()) {
+                    mutableAccounts.removeIf(mutAcc -> !dbAccounts.contains(mutAcc));
+                }
+                //UPDATE, lists size are the same
+                else {
+                    int index = 0;
+                    for (Account updatedAccount: mutableAccounts) {
+                        Account dbAcc = dbAccounts.get(index);
+                        if (dbAcc.getUpdated().isAfter(updatedAccount.getUpdated())) {
+                            //change the id to indicate a different object
+                            updatedAccount.setId(-1);
+                            HomeViewModel.this.decryptAccount(dbAcc);
+                            mutableAccounts.set(index, dbAcc);
+                        }
+                        index++;
+                    }
+                }
+                mutableSourceAccounts.setValue(mutableAccounts);
+            }
+        };
+    }
+
+    private void decryptAccount(Account newAccount) {
+        //decrypt only if new account
+        var sourceAccounts = mutableSourceAccounts.getValue();
+        if (sourceAccounts.stream().noneMatch(a -> a.equals(newAccount))) {
+            try {
+                byte[] masterPassword = UserPreferencesRepository.getAuthenticatedMasterPassword();
+                newAccount.decrypt(masterPassword);
+
+            } catch (GeneralSecurityException e) {
+                //the master key used is not the same when encryption of the account data
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public boolean deleteAccount(Account deletedAccount) {
+        return this._accountRepository.deleteAccount(deletedAccount) > 0;
+    }
+
+    /****************************/
+    /* Mutable accounts methods */
+    /****************************/
+
+    /**
+     * Get the current source accounts.
+     * @return The current decrypted source accounts data.
+     */
+    public LiveData<List<Account>> getMutableSourceAccounts() {
+        return this.mutableSourceAccounts;
+    }
+}

@@ -1,0 +1,138 @@
+package be.tobiridi.passwordsecurity.ui.fragments.settings;
+
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.widget.Toast;
+
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.SeekBarPreference;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import be.tobiridi.passwordsecurity.R;
+import be.tobiridi.passwordsecurity.ui.activities.authentication.AuthenticationActivity;
+
+public class SettingsFragment extends PreferenceFragmentCompat {
+    private SettingsViewModel settingsViewModel;
+    private Preference importPreference;
+    private Preference exportPreference;
+    private SeekBarPreference attemptsPreference;
+    private ListPreference deleteAllAccountsPreference;
+    private ActivityResultLauncher<String> exportFileLauncher;
+    private ActivityResultLauncher<String[]> importFileLauncher;
+
+    public static SettingsFragment newInstance() { return new SettingsFragment(); }
+
+    @Override
+    public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
+        setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+        this.settingsViewModel = new ViewModelProvider(this).get(SettingsViewModel.class);
+
+        //get preferences
+        this.importPreference = findPreference("import_database");
+        this.exportPreference = findPreference("export_database");
+        this.attemptsPreference = findPreference("attempts");
+        this.deleteAllAccountsPreference = findPreference("delete_all_accounts");
+
+        //configure ActivityResultLauncher
+        this.exportFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.CreateDocument(settingsViewModel.SQLITE_MIME_TYPE), new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri o) {
+                        //null if the user does not create the document
+                        if (o != null) {
+                            String toastText = "";
+                            Context ctx = requireContext().getApplicationContext();
+                            //Android 12 does not support SQLite MIME type
+                            //the MIME type is recognize as "application/octet-stream"
+                            if (settingsViewModel.createBackup(ctx, o)) {
+                                toastText = getResources().getString(R.string.msg_backup_export_success);
+                            }
+                            else {
+                                //error create backup
+                                toastText = getResources().getString(R.string.msg_backup_export_fail);
+                            }
+                            Toast.makeText(getContext(), toastText, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+        this.importFileLauncher = registerForActivityResult(
+                new ActivityResultContracts.OpenDocument(), new ActivityResultCallback<Uri>() {
+                    @Override
+                    public void onActivityResult(Uri o) {
+                        //null if the user does not open a document
+                        if (o != null) {
+                            Context ctx = requireContext().getApplicationContext();
+                            if (settingsViewModel.importBackup(ctx, o)) {
+                                Toast.makeText(getContext(), getResources().getString(R.string.msg_backup_import_success), Toast.LENGTH_SHORT).show();
+
+                                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(getContext());
+                                builder.setCancelable(false);
+                                builder.setTitle(R.string.alert_relaunch_app_title);
+                                builder.setMessage(R.string.alert_relaunch_app_msg);
+                                builder.setPositiveButton(requireContext().getResources().getString(R.string.ok), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        //relaunch the app, after rewrite the database file
+                                        SettingsFragment.this.requireActivity().finishAffinity();
+                                        Intent authIntent = new Intent(getContext(), AuthenticationActivity.class);
+                                        startActivity(authIntent);
+                                    }
+                                });
+                                builder.show();
+                            }
+                            else {
+                                //error import backup
+                                Toast.makeText(getContext(), getResources().getString(R.string.msg_backup_import_fail), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }
+                });
+
+        this.initListeners();
+    }
+
+    private void initListeners() {
+        this.exportPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(@NonNull Preference preference) {
+                exportFileLauncher.launch(settingsViewModel.BACKUP_FILE_NAME);
+                return true;
+            }
+        });
+
+        this.importPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(@NonNull Preference preference) {
+                importFileLauncher.launch(settingsViewModel.OPEN_DOCUMENT_MIME_TYPE);
+                return true;
+            }
+        });
+
+        this.deleteAllAccountsPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
+                String val = String.valueOf(newValue);
+                //first value should be positive entry !
+                CharSequence positiveEntry = deleteAllAccountsPreference.getEntries()[0];
+                if (val.equalsIgnoreCase(positiveEntry.toString())) {
+                    settingsViewModel.deleteAllAccounts(getContext());
+                }
+                return false;
+            }
+        });
+    }
+}

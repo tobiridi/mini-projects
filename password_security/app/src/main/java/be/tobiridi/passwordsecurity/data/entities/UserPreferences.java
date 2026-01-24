@@ -1,0 +1,65 @@
+<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/entities/UserPreferences.java
+package be.tobiridi.passwordsecurity.entities;
+========
+package be.tobiridi.passwordsecurity.data.entities;
+>>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/entities/UserPreferences.java
+
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
+import java.util.Objects;
+
+@Entity(tableName = "user_preferences")
+public class UserPreferences {
+    @PrimaryKey(autoGenerate = false)
+    @ColumnInfo(name = "user_pref_id")
+    private int userPrefId;
+
+    @ColumnInfo(name = "master_password")
+    @NonNull
+    private String masterPassword;
+
+    public int getUserPrefId() {
+        return userPrefId;
+    }
+
+    public void setUserPrefId(int userPrefId) {
+        this.userPrefId = userPrefId;
+    }
+
+    @NonNull
+    public String getMasterPassword() {
+        return masterPassword;
+    }
+
+    public void setMasterPassword(String masterPassword) {
+        this.masterPassword = masterPassword;
+    }
+
+    public UserPreferences() {
+        //Always use the "primary key = 1" to oblige to have only one row in the table
+        this.userPrefId = 1;
+    }
+
+    @Ignore
+    public UserPreferences(@NonNull String masterPassword) {
+        this();
+        this.masterPassword = masterPassword;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof UserPreferences)) return false;
+        UserPreferences that = (UserPreferences) o;
+        return Objects.equals(this.masterPassword, that.masterPassword);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(this.userPrefId, this.masterPassword);
+    }
+}

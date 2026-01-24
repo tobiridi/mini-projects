@@ -5,7 +5,7 @@
     android:id="@+id/layout_updateAccount"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.updateAccount.UpdateAccountActivity"
+    tools:context=".ui.activities.updateAccount.UpdateAccountActivity"
     android:layout_marginHorizontal="16dp">
 
 <!--    TODO: add new field button inside of toolbar -->
