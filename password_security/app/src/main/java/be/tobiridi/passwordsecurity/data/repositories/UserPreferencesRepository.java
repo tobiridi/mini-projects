@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/datasources/UserPreferencesDataSource.java
-package be.tobiridi.passwordsecurity.datasources;
-========
 package be.tobiridi.passwordsecurity.data.repositories;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/repositories/UserPreferencesRepository.java
 
 import android.content.Context;
 import android.util.Base64;
@@ -12,16 +8,10 @@ import java.util.concurrent.Callable;
 
 import javax.crypto.BadPaddingException;
 
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/datasources/UserPreferencesDataSource.java
-import be.tobiridi.passwordsecurity.entities.UserPreferences;
-import be.tobiridi.passwordsecurity.security.AESManager;
-import be.tobiridi.passwordsecurity.security.HashManager;
-========
 import be.tobiridi.passwordsecurity.data.datasources.DatabaseDataSource;
 import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
 import be.tobiridi.passwordsecurity.data.security.AESManager;
 import be.tobiridi.passwordsecurity.data.security.HashManager;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/repositories/UserPreferencesRepository.java
 
 /**
  * Can be constructed using one of the getInstance class methods of this class.

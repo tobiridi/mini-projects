@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/datasources/AccountDataSource.java
-package be.tobiridi.passwordsecurity.datasources;
-========
 package be.tobiridi.passwordsecurity.data.repositories;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/repositories/AccountRepository.java
 
 import android.content.Context;
 
@@ -13,12 +9,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/datasources/AccountDataSource.java
-import be.tobiridi.passwordsecurity.entities.Account;
-========
 import be.tobiridi.passwordsecurity.data.datasources.DatabaseDataSource;
 import be.tobiridi.passwordsecurity.data.entities.Account;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/repositories/AccountRepository.java
 
 /**
  * Can be constructed using one of the getInstance class methods of this class.

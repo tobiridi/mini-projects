@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/entities/Account.java
-package be.tobiridi.passwordsecurity.entities;
-========
 package be.tobiridi.passwordsecurity.data.entities;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/entities/Account.java
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
@@ -202,11 +198,7 @@ public class Account implements Serializable {
         return Objects.hash(this.id, this.name, this.created, this.updated);
     }
 
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/entities/Account.java
-    // TODO: 19/01/2026 don't use the data source directly in view model, centralize in some "Service" where viewmodel use the service to interact with the database
-========
     // TODO: 19/01/2026 don't use the data source directly in view model, centralize in some "Service" where viewmodel has "LiveData" to the data
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/entities/Account.java
 
     /**
      * @param encryptionKey The key used to encrypt the account.

@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/database/Dao/AccountDao.java
-package be.tobiridi.passwordsecurity.database.Dao;
-========
 package be.tobiridi.passwordsecurity.data.database.Dao;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/database/Dao/AccountDao.java
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -14,11 +10,7 @@ import androidx.room.Update;
 
 import java.util.List;
 
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/database/Dao/AccountDao.java
-import be.tobiridi.passwordsecurity.entities.Account;
-========
 import be.tobiridi.passwordsecurity.data.entities.Account;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/database/Dao/AccountDao.java
 
 @Dao
 public interface AccountDao {

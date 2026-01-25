@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/entities/UserPreferences.java
-package be.tobiridi.passwordsecurity.entities;
-========
 package be.tobiridi.passwordsecurity.data.entities;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/entities/UserPreferences.java
 
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;

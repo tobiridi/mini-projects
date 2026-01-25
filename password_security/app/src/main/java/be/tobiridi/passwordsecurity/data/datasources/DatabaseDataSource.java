@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/datasources/DatabaseDataSource.java
-package be.tobiridi.passwordsecurity.datasources;
-========
 package be.tobiridi.passwordsecurity.data.datasources;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/datasources/DatabaseDataSource.java
 
 import android.content.Context;
 import android.database.Cursor;
@@ -14,17 +10,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionException;
 
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/datasources/DatabaseDataSource.java
-import be.tobiridi.passwordsecurity.database.Dao.AccountDao;
-import be.tobiridi.passwordsecurity.database.AppDatabase;
-import be.tobiridi.passwordsecurity.database.Dao.UserPreferencesDao;
-========
 import be.tobiridi.passwordsecurity.data.repositories.AccountRepository;
 import be.tobiridi.passwordsecurity.data.repositories.UserPreferencesRepository;
 import be.tobiridi.passwordsecurity.data.database.Dao.AccountDao;
 import be.tobiridi.passwordsecurity.data.database.AppDatabase;
 import be.tobiridi.passwordsecurity.data.database.Dao.UserPreferencesDao;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/data/datasources/DatabaseDataSource.java
 
 /**
  * The data source class to interact with {@link AppDatabase}.
