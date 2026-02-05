@@ -22,7 +22,7 @@
         app:title="@string/pref_header_security">
 
         <SeekBarPreference
-            app:key="attempts"
+            app:key="maxAuthAttempts"
             app:title="@string/pref_attempts"
             app:summary="@string/pref_attempts_summary"
             app:showSeekBarValue="true"

@@ -1,6 +1,7 @@
 package be.tobiridi.passwordsecurity.data.database;
 
 import android.content.Context;
+import android.database.Cursor;
 
 import androidx.room.Database;
 import androidx.room.Room;
@@ -35,12 +36,37 @@ public abstract class AppDatabase extends RoomDatabase {
     }
 
     /**
-     * Close the database connection and set the instance references to {@code null}.
+     * Close the database connection if not already closed and set the instance references to {@code null}.
      */
-    @Override
-    public void close() {
-        super.close();
-        INSTANCE = null;
+    public static void closeDatabase() {
+        if(INSTANCE != null) {
+            INSTANCE.close();
+            INSTANCE = null;
+        }
+    }
+
+    // TODO: 25/01/2026 how implement close connection to database ???
+    /**
+     * Close and Free all resources used for interact with {@link AppDatabase}.
+     * <br/>
+     * If the resources are already freed, call this method will produce nothing.
+     */
+//    public void close() {
+//        if (!dbExecutorService.isShutdown()) {
+//            dbExecutorService.shutdown();
+//            this.accountDao = null;
+//        }
+//    }
+
+    /**
+     * Make a checkpoint for SQLite {@code .wal} file and apply all modifications in the database file.
+     * </br>
+     * Use the {@code PRAGMA wal_checkpoint(TRUNCATE);} SQLite statement.
+     */
+    public void makeWalCheckpoint() {
+        Cursor cursor = this.getOpenHelper().getWritableDatabase().query("PRAGMA wal_checkpoint(TRUNCATE);");
+        cursor.moveToNext();
+        cursor.close();
     }
 
     //DAO class
