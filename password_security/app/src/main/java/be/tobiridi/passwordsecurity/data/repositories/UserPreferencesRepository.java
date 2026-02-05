@@ -1,125 +1,68 @@
 package be.tobiridi.passwordsecurity.data.repositories;
 
-import android.content.Context;
-import android.util.Base64;
+import androidx.lifecycle.Observer;
 
-import java.util.Arrays;
-import java.util.concurrent.Callable;
-
-import javax.crypto.BadPaddingException;
-
-import be.tobiridi.passwordsecurity.data.datasources.DatabaseDataSource;
+import be.tobiridi.passwordsecurity.data.datasources.local.AuthenticationLocalDataSource;
 import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
-import be.tobiridi.passwordsecurity.data.security.AESManager;
-import be.tobiridi.passwordsecurity.data.security.HashManager;
 
 /**
- * Can be constructed using one of the getInstance class methods of this class.
+ * Centralize for the ui layer how {@link UserPreferences} entity can be manipulate.
  */
-public class UserPreferencesRepository extends DatabaseDataSource {
-    private static UserPreferencesRepository INSTANCE;
+public class UserPreferencesRepository {
+    private static AuthenticationLocalDataSource authDataSource;
     private static byte[] AUTH_MASTER_PASSWORD;
+    private static Observer<byte[]> observerMasterPassword;
 
-    public static UserPreferencesRepository getInstance(Context context) {
-        if (INSTANCE == null) {
-            INSTANCE = new UserPreferencesRepository(context);
+    private UserPreferencesRepository(AuthenticationLocalDataSource dataSource) {
+        if(authDataSource == null) {
+            authDataSource = dataSource;
+            this.initObservers();
+            authDataSource.getMasterPassword().observeForever(observerMasterPassword);
         }
-        return INSTANCE;
     }
 
-    private UserPreferencesRepository(Context context) {
-        super(context);
-        AUTH_MASTER_PASSWORD = new byte[0];
+    private void initObservers() {
+        observerMasterPassword = (byte[] bytes) -> AUTH_MASTER_PASSWORD = bytes;
     }
 
-    public static void resetInstance() {
-        INSTANCE.clearAuthenticatedMasterPassword();
-        INSTANCE = null;
+    private void removeAllObservers() {
+        authDataSource.getMasterPassword().removeObserver(observerMasterPassword);
     }
 
     /**
      * Get the master password to access at the app.
-     * @return The master password to encrypt and decrypt data.
+     * @return The master password if the user is authenticate, an empty array otherwise.
+     * @see #authenticateUser(String)
      */
-    public static byte[] getAuthenticatedMasterPassword() {
-        return AUTH_MASTER_PASSWORD;
+    public byte[] getMasterPassword() {
+        if (authDataSource.isUserAuthenticate()) {
+            return AUTH_MASTER_PASSWORD;
+        }
+        return new byte[0];
     }
 
     /**
-     * Clear the master password from the memory.
+     * Determine if a master password has already set to access at the app.
+     * @return {@code true} If already set, {@code false} otherwise.
      */
-    private void clearAuthenticatedMasterPassword() {
-        Arrays.fill(AUTH_MASTER_PASSWORD, (byte) 0);
-        AUTH_MASTER_PASSWORD = new byte[0];
+    public boolean isMasterPasswordAlreadySet() {
+        return authDataSource.hasMasterPassword();
     }
 
-    /**
-     * Attempt to authenticate the user with the provided password.
-     * @param userPassword The user password.
-     * @return {@code true} If the password matches {@code false} otherwise.
-     */
-    public boolean authenticateUser(String userPassword) {
-        Callable<Boolean> callable = () -> {
-            byte[] masterPassword = HashManager.hashStringToBytes(userPassword);
-            String encryptedMasterPassword = this.userPreferencesDao.getMasterPassword();
+    public boolean saveMasterPassword(String newMasterPwd) {
+        if (newMasterPwd.trim().isEmpty())
+            return false;
 
-            try {
-                String decryptedMasterPassword = AESManager.decryptToStringBase64(masterPassword, encryptedMasterPassword);
-                boolean isAuthenticated = Base64.encodeToString(masterPassword, Base64.DEFAULT).equals(decryptedMasterPassword);
-
-                if (isAuthenticated) {
-                    //save the master password for reuse it in the app
-                    AUTH_MASTER_PASSWORD = masterPassword;
-                }
-                return isAuthenticated;
-
-            } catch (BadPaddingException e) {
-                //the password is wrong
-                return false;
-            }
-        };
-        return this.executeCallable(callable);
+        return authDataSource.saveMasterPassword(newMasterPwd) > 0;
     }
 
-    /**
-     * Check if the master password of the app exists.
-     * @return {@code true} If the master password exists, {@code false} if the master password does not exist.
-     */
-    public boolean hasMasterPassword() {
-        Callable<Boolean> callable = () -> {
-            //return null if not found
-            return this.userPreferencesDao.getMasterPassword() != null;
-        };
-        return this.executeCallable(callable);
-    }
+    public boolean authenticateUser(String masterPwd) {
+        if (masterPwd.trim().isEmpty())
+            return false;
 
-    /**
-     * Save a new master password to authenticate the user.
-     * <br/>
-     * It will be replace if the master password already exists.
-     * @param newMasterPassword The user master password.
-     * @return {@code true} if the master password has been save.
-     */
-    public boolean saveMasterPassword(String newMasterPassword) {
-        Callable<Long> callable = () -> {
-            byte[] masterPassword = HashManager.hashStringToBytes(newMasterPassword);
-            String encryptedMasterPassword = AESManager.encryptToStringBase64(masterPassword, masterPassword);
+        if (authDataSource.isUserAuthenticate())
+            return true;
 
-            //save the master password for reuse it in the app
-            AUTH_MASTER_PASSWORD = masterPassword;
-
-            UserPreferences pref = new UserPreferences(encryptedMasterPassword);
-            return this.userPreferencesDao.saveMasterPassword(pref);
-        };
-        return this.executeCallable(callable) > 0;
-    }
-
-    /**
-     * This method will clear all tables present in the database.
-     * <br/>
-     * <b>Please be careful when you use this method !</b>
-     */
-    public void destroyAllData() {
-        this.executeRunnable(this::clearAllTables);
+        return authDataSource.authenticateUser(masterPwd);
     }
 }

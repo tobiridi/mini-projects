@@ -1,106 +1,61 @@
 package be.tobiridi.passwordsecurity.data.repositories;
 
-import android.content.Context;
-
 import androidx.lifecycle.LiveData;
 
-import java.security.GeneralSecurityException;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.concurrent.Callable;
 
-import be.tobiridi.passwordsecurity.data.datasources.DatabaseDataSource;
+import be.tobiridi.passwordsecurity.data.datasources.local.AccountLocalDataSource;
 import be.tobiridi.passwordsecurity.data.entities.Account;
 
 /**
- * Can be constructed using one of the getInstance class methods of this class.
+ * Centralize for the ui layer how {@link Account} entity can be manipulate.
  */
-public class AccountRepository extends DatabaseDataSource {
-    private static AccountRepository INSTANCE;
+public class AccountRepository {
+    private static AccountLocalDataSource accountDataSource;
 
-    public static AccountRepository getInstance(Context context) {
-        if (INSTANCE == null) {
-            INSTANCE = new AccountRepository(context);
+    public AccountRepository (AccountLocalDataSource dataSource) {
+        if(accountDataSource == null) {
+            accountDataSource = dataSource;
         }
-        return INSTANCE;
-    }
-
-    private AccountRepository(Context context) {
-        super(context);
-    }
-
-    // TODO: 31/12/2025 do a better implementation
-    public static void resetInstance() {
-        INSTANCE = null;
     }
 
     public LiveData<List<Account>> getAllAccounts() {
-        Callable<LiveData<List<Account>>> callable = () -> {
-            return this.accountDao.getAllAccounts();
-        };
-        return this.executeCallable(callable);
+        return accountDataSource.getAllAccounts();
     }
 
-    /**
-     * Save the new accounts.
-     * @param accounts All accounts should be saved.
-     * @return An array of rowId of each account saved.
-     */
-    public long[] saveAccounts(Account... accounts) {
-        Callable<long[]> callable = () -> {
-            byte[] masterKey = UserPreferencesRepository.getAuthenticatedMasterPassword();
+    public boolean addAccounts(byte[] encryptionKey, Account... accounts) {
+        //ensure valid account
+        for (Account acc: accounts) {
+            if (acc.isEncrypted())
+                return false;
+            if (acc.getName().trim().isEmpty() || acc.getPassword().trim().isEmpty())
+                return false;
+        }
 
-            for (Account a: accounts) {
-                try {
-                    a.encrypt(masterKey);
-                }
-                catch (GeneralSecurityException e) {
-                    //the master key is wrong
-                    return new long[0];
-                }
-            }
-
-            return this.accountDao.insertAccount(accounts);
-        };
-        return this.executeCallable(callable);
+        return accountDataSource.saveAccounts(encryptionKey, accounts).length > 0 ;
     }
 
-    /**
-     * Update the existing accounts.
-     * @param accounts An array of updated {@link Account}.
-     * @return The number of row updated.
-     */
-    public int updateAccount(Account... accounts) {
-        Callable<Integer> callable = () -> {
-            byte[] masterKey = UserPreferencesRepository.getAuthenticatedMasterPassword();
-            LocalDateTime updateDate = LocalDateTime.now();
+    public boolean deleteAccount(Account account) {
+        if(account.getId() < 1)
+            return false;
 
-            for (Account a: accounts) {
-                try {
-                    a.encrypt(masterKey);
-                    a.setUpdated(updateDate);
-                }
-                catch (GeneralSecurityException e) {
-                    //the master key is wrong
-                    return 0;
-                }
-            }
-            return this.accountDao.updateAccount(accounts);
-        };
-        return this.executeCallable(callable);
+        return accountDataSource.deleteAccount(account) > 0;
     }
 
-    public int deleteAccount(Account account) {
-        Callable<Integer> callable = () -> {
-            return this.accountDao.deleteAccount(account);
-        };
-        return this.executeCallable(callable);
+    public boolean updateAccounts(byte[] encryptionKey, Account... accounts) {
+        //ensure valid account
+        for (Account acc: accounts) {
+            if (acc.getId() < 1 || acc.isEncrypted())
+                return false;
+            if (acc.getName().trim().isEmpty() || acc.getPassword().trim().isEmpty())
+                return false;
+        }
+
+        return accountDataSource.updateAccount(encryptionKey, accounts) > 0;
     }
 
-    public int deleteAllAccounts() {
-        Callable<Integer> callable = () -> {
-            return this.accountDao.deleteAllAccounts();
-        };
-        return this.executeCallable(callable);
+    public boolean deleteAllAccounts() {
+        return accountDataSource.deleteAllAccounts() > 0;
     }
+
 }

@@ -38,35 +38,35 @@ public abstract class AppDatabase extends RoomDatabase {
     /**
      * Close the database connection if not already closed and set the instance references to {@code null}.
      */
-    public static void closeDatabase() {
+    public static boolean closeDatabase() {
         if(INSTANCE != null) {
             INSTANCE.close();
             INSTANCE = null;
         }
+        return true;
     }
 
-    // TODO: 25/01/2026 how implement close connection to database ???
-    /**
-     * Close and Free all resources used for interact with {@link AppDatabase}.
-     * <br/>
-     * If the resources are already freed, call this method will produce nothing.
-     */
-//    public void close() {
-//        if (!dbExecutorService.isShutdown()) {
-//            dbExecutorService.shutdown();
-//            this.accountDao = null;
-//        }
-//    }
+    public static boolean clearAllTablesFromDatabase() {
+        if(INSTANCE != null) {
+            INSTANCE.clearAllTables();
+            return true;
+        }
+        return false;
+    }
 
     /**
      * Make a checkpoint for SQLite {@code .wal} file and apply all modifications in the database file.
      * </br>
      * Use the {@code PRAGMA wal_checkpoint(TRUNCATE);} SQLite statement.
      */
-    public void makeWalCheckpoint() {
-        Cursor cursor = this.getOpenHelper().getWritableDatabase().query("PRAGMA wal_checkpoint(TRUNCATE);");
-        cursor.moveToNext();
-        cursor.close();
+    public static boolean makeWalCheckpoint() {
+        if (INSTANCE != null) {
+            Cursor cursor = INSTANCE.getOpenHelper().getWritableDatabase().query("PRAGMA wal_checkpoint(TRUNCATE);");
+            cursor.moveToNext();
+            cursor.close();
+            return true;
+        }
+        return false;
     }
 
     //DAO class

@@ -30,7 +30,7 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
     private static ExecutorService executorService;
     private final SharedPreferences sharedPreferences;
     private final UserPreferencesDao userPreferencesDao;
-    private final MutableLiveData<Byte> mutableMaxAuthAttempts;
+    private byte maxAuthAttempts;
     private final MutableLiveData<byte[]> mutableMasterPassword;
     private boolean isAuthenticate;
 
@@ -44,8 +44,7 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
 
         this.isAuthenticate = false;
 
-        byte maxAuthAttempts = (byte) sharedPref.getInt(MAX_AUTH_ATTEMPTS_KEY, DEFAULT_MAX_AUTH_ATTEMPTS);
-        this.mutableMaxAuthAttempts = new MutableLiveData<>(maxAuthAttempts);
+        this.maxAuthAttempts = (byte) sharedPref.getInt(MAX_AUTH_ATTEMPTS_KEY, DEFAULT_MAX_AUTH_ATTEMPTS);
         this.mutableMasterPassword = new MutableLiveData<>(new byte[0]);
 
         this.initListeners();
@@ -55,9 +54,7 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
         this.sharedPreferences.registerOnSharedPreferenceChangeListener((SharedPreferences prefs, @Nullable String key) -> {
             if (key != null) {
                 if(key.equalsIgnoreCase(MAX_AUTH_ATTEMPTS_KEY)) {
-                    byte authAttempts = (byte) prefs.getInt(MAX_AUTH_ATTEMPTS_KEY, DEFAULT_MAX_AUTH_ATTEMPTS);
-                    //this.mutableMaxAuthAttempts.postValue(authAttempts);   //if in background
-                    this.mutableMaxAuthAttempts.setValue(authAttempts);      //if in main thread
+                    this.maxAuthAttempts = (byte) prefs.getInt(MAX_AUTH_ATTEMPTS_KEY, DEFAULT_MAX_AUTH_ATTEMPTS);
                 }
             }
         });
@@ -67,8 +64,8 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
         return this.isAuthenticate;
     }
 
-    public LiveData<Byte> getMaxAuthAttempts() {
-        return this.mutableMaxAuthAttempts;
+    public byte getMaxAuthAttempts() {
+        return this.maxAuthAttempts;
     }
 
     /**
@@ -96,7 +93,7 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
      * <br/>
      * It will be replace if the master password already exists.
      * @param newMasterPassword The user master password.
-     * @return The number of rows affected.
+     * @return The rowId of new row saved.
      */
     public long saveMasterPassword(String newMasterPassword) {
         Callable<Long> callable = () -> {
@@ -110,15 +107,6 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
             return this.userPreferencesDao.saveMasterPassword(pref);
         };
         return ExecutorServiceUtils.executeCallable(executorService, callable);
-    }
-
-    /**
-     * Clear the master password from the memory.
-     */
-    public void clearMasterPasswordFromMemory() {
-        Arrays.fill(this.mutableMasterPassword.getValue(), (byte) 0);
-        this.mutableMasterPassword.setValue(new byte[0]);
-        this.isAuthenticate = false;
     }
 
     /**
@@ -147,5 +135,16 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
             }
         };
         return ExecutorServiceUtils.executeCallable(executorService, callable);
+    }
+
+    public void clearAllData() {
+        this.sharedPreferences.edit()
+                .clear()
+                .apply();
+        AppDatabase.clearAllTablesFromDatabase();
+        Arrays.fill(this.mutableMasterPassword.getValue(), (byte) 0);
+        this.mutableMasterPassword.setValue(new byte[0]);
+        this.isAuthenticate = false;
+        this.maxAuthAttempts = DEFAULT_MAX_AUTH_ATTEMPTS;
     }
 }

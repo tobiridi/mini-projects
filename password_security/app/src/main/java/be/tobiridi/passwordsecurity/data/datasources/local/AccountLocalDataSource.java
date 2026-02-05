@@ -82,6 +82,11 @@ public final class AccountLocalDataSource implements LocalDataSource {
         return ExecutorServiceUtils.executeCallable(executorService, callable);
     }
 
+    /**
+     * Delete an account.
+     * @param account The account to remove.
+     * @return The number of row deleted.
+     */
     public int deleteAccount(Account account) {
         Callable<Integer> callable = () -> {
             return this.accountDao.deleteAccount(account);
@@ -89,6 +94,10 @@ public final class AccountLocalDataSource implements LocalDataSource {
         return ExecutorServiceUtils.executeCallable(executorService, callable);
     }
 
+    /**
+     * Delete all {@link Account} from data source.
+     * @return The number of row deleted.
+     */
     public int deleteAllAccounts() {
         Callable<Integer> callable = this.accountDao::deleteAllAccounts;
         return ExecutorServiceUtils.executeCallable(executorService, callable);
