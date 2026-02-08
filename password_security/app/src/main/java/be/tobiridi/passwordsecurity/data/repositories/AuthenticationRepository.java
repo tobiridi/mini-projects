@@ -27,4 +27,14 @@ public class AuthenticationRepository {
     public void destroyAllData() {
         authDataSource.clearAllData();
     }
+
+    public boolean authenticateUser(String masterPwd) {
+        if (masterPwd.trim().isEmpty())
+            return false;
+
+        if (authDataSource.isUserAuthenticate())
+            return true;
+
+        return authDataSource.authenticateUser(masterPwd);
+    }
 }

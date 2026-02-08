@@ -1,7 +1,5 @@
 package be.tobiridi.passwordsecurity.data.repositories;
 
-import androidx.lifecycle.Observer;
-
 import be.tobiridi.passwordsecurity.data.datasources.local.AuthenticationLocalDataSource;
 import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
 
@@ -10,33 +8,20 @@ import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
  */
 public class UserPreferencesRepository {
     private static AuthenticationLocalDataSource authDataSource;
-    private static byte[] AUTH_MASTER_PASSWORD;
-    private static Observer<byte[]> observerMasterPassword;
 
-    private UserPreferencesRepository(AuthenticationLocalDataSource dataSource) {
+    public UserPreferencesRepository(AuthenticationLocalDataSource dataSource) {
         if(authDataSource == null) {
             authDataSource = dataSource;
-            this.initObservers();
-            authDataSource.getMasterPassword().observeForever(observerMasterPassword);
         }
-    }
-
-    private void initObservers() {
-        observerMasterPassword = (byte[] bytes) -> AUTH_MASTER_PASSWORD = bytes;
-    }
-
-    private void removeAllObservers() {
-        authDataSource.getMasterPassword().removeObserver(observerMasterPassword);
     }
 
     /**
      * Get the master password to access at the app.
      * @return The master password if the user is authenticate, an empty array otherwise.
-     * @see #authenticateUser(String)
      */
     public byte[] getMasterPassword() {
         if (authDataSource.isUserAuthenticate()) {
-            return AUTH_MASTER_PASSWORD;
+            return authDataSource.getMasterPassword();
         }
         return new byte[0];
     }
@@ -50,19 +35,9 @@ public class UserPreferencesRepository {
     }
 
     public boolean saveMasterPassword(String newMasterPwd) {
-        if (newMasterPwd.trim().isEmpty())
+        if (newMasterPwd.isBlank())
             return false;
 
         return authDataSource.saveMasterPassword(newMasterPwd) > 0;
-    }
-
-    public boolean authenticateUser(String masterPwd) {
-        if (masterPwd.trim().isEmpty())
-            return false;
-
-        if (authDataSource.isUserAuthenticate())
-            return true;
-
-        return authDataSource.authenticateUser(masterPwd);
     }
 }

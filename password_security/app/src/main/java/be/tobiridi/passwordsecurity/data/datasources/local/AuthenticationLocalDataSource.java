@@ -4,13 +4,9 @@ import android.content.SharedPreferences;
 import android.util.Base64;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
+import java.security.GeneralSecurityException;
 import java.util.Arrays;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import javax.crypto.BadPaddingException;
 
@@ -19,7 +15,6 @@ import be.tobiridi.passwordsecurity.data.database.Dao.UserPreferencesDao;
 import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
 import be.tobiridi.passwordsecurity.data.security.AESManager;
 import be.tobiridi.passwordsecurity.data.security.HashManager;
-import be.tobiridi.passwordsecurity.data.utils.ExecutorServiceUtils;
 
 /**
  * The local data source class for manipulate the authentication of the user.
@@ -27,25 +22,20 @@ import be.tobiridi.passwordsecurity.data.utils.ExecutorServiceUtils;
 public final class AuthenticationLocalDataSource implements LocalDataSource {
     private static final byte DEFAULT_MAX_AUTH_ATTEMPTS = 3;
     public static final String MAX_AUTH_ATTEMPTS_KEY = "maxAuthAttempts";
-    private static ExecutorService executorService;
     private final SharedPreferences sharedPreferences;
     private final UserPreferencesDao userPreferencesDao;
     private byte maxAuthAttempts;
-    private final MutableLiveData<byte[]> mutableMasterPassword;
+    private byte[] masterPassword;
     private boolean isAuthenticate;
 
     public AuthenticationLocalDataSource(SharedPreferences sharedPref, AppDatabase appDatabase) {
-        if(executorService == null || executorService.isShutdown()) {
-            executorService = Executors.newSingleThreadExecutor();
-        }
-
         this.sharedPreferences = sharedPref;
         this.userPreferencesDao = appDatabase.getUserPreferencesDao();
 
         this.isAuthenticate = false;
 
         this.maxAuthAttempts = (byte) sharedPref.getInt(MAX_AUTH_ATTEMPTS_KEY, DEFAULT_MAX_AUTH_ATTEMPTS);
-        this.mutableMasterPassword = new MutableLiveData<>(new byte[0]);
+        this.masterPassword = new byte[0];
 
         this.initListeners();
     }
@@ -72,8 +62,8 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
      * Get the master password to access at the app.
      * @return The master password to encrypt and decrypt data.
      */
-    public LiveData<byte[]> getMasterPassword() {
-        return this.mutableMasterPassword;
+    public byte[] getMasterPassword() {
+        return this.masterPassword;
     }
 
     /**
@@ -81,11 +71,8 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
      * @return {@code true} If the master password exists, {@code false} if the master password does not exist.
      */
     public boolean hasMasterPassword() {
-        Callable<Boolean> callable = () -> {
-            //return null if not found
-            return this.userPreferencesDao.getMasterPassword() != null;
-        };
-        return ExecutorServiceUtils.executeCallable(executorService, callable);
+        //return null if not found
+        return this.userPreferencesDao.getMasterPassword() != null;
     }
 
     /**
@@ -96,17 +83,21 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
      * @return The rowId of new row saved.
      */
     public long saveMasterPassword(String newMasterPassword) {
-        Callable<Long> callable = () -> {
-            byte[] masterPassword = HashManager.hashStringToBytes(newMasterPassword);
+        byte[] masterPassword = HashManager.hashStringToBytes(newMasterPassword);
+
+        try {
             String encryptedMasterPassword = AESManager.encryptToStringBase64(masterPassword, masterPassword);
 
             //save the master password for reuse it in the app
-            this.mutableMasterPassword.postValue(masterPassword);
+            this.masterPassword = masterPassword;
 
             UserPreferences pref = new UserPreferences(encryptedMasterPassword);
             return this.userPreferencesDao.saveMasterPassword(pref);
-        };
-        return ExecutorServiceUtils.executeCallable(executorService, callable);
+
+        } catch (GeneralSecurityException e) {
+            //never happened because encrypt the key with the same key
+            return 0L;
+        }
     }
 
     /**
@@ -115,7 +106,6 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
      * @return {@code true} If the password matches {@code false} otherwise.
      */
     public boolean authenticateUser(String userPassword) {
-        Callable<Boolean> callable = () -> {
             byte[] masterPassword = HashManager.hashStringToBytes(userPassword);
             String encryptedMasterPassword = this.userPreferencesDao.getMasterPassword();
 
@@ -125,16 +115,17 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
 
                 if (this.isAuthenticate) {
                     //save the master password for reuse it in the app
-                    this.mutableMasterPassword.postValue(masterPassword);
+                    this.masterPassword = masterPassword;
                 }
                 return this.isAuthenticate;
 
             } catch (BadPaddingException e) {
                 //the user password is wrong
                 return false;
+            } catch (GeneralSecurityException e) {
+                //the key used for decryption is different than encryption
+                return false;
             }
-        };
-        return ExecutorServiceUtils.executeCallable(executorService, callable);
     }
 
     public void clearAllData() {
@@ -142,8 +133,8 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
                 .clear()
                 .apply();
         AppDatabase.clearAllTablesFromDatabase();
-        Arrays.fill(this.mutableMasterPassword.getValue(), (byte) 0);
-        this.mutableMasterPassword.setValue(new byte[0]);
+        Arrays.fill(this.masterPassword, (byte) 0);
+        this.masterPassword = new byte[0];
         this.isAuthenticate = false;
         this.maxAuthAttempts = DEFAULT_MAX_AUTH_ATTEMPTS;
     }

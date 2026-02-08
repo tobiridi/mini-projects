@@ -1,6 +1,7 @@
 package be.tobiridi.passwordsecurity.ui.activities.authentication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -10,14 +11,20 @@ import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
+import be.tobiridi.passwordsecurity.data.database.AppDatabase;
+import be.tobiridi.passwordsecurity.data.datasources.DataSourceProvider;
+import be.tobiridi.passwordsecurity.data.datasources.local.AccountLocalDataSource;
+import be.tobiridi.passwordsecurity.data.datasources.local.AuthenticationLocalDataSource;
 import be.tobiridi.passwordsecurity.ui.activities.MainActivity;
 import be.tobiridi.passwordsecurity.R;
 
@@ -25,6 +32,100 @@ public class AuthenticationActivity extends AppCompatActivity {
     private AuthenticationViewModel authViewModel;
     private Button validateBtn;
     private TextInputLayout masterPasswordInputLayout, confirmMasterPasswordInputLayout;
+    private ConstraintLayout authLayout;
+
+    /*************/
+    /* Listeners */
+    /*************/
+    private final View.OnClickListener validateAuthenticationListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String password = masterPasswordInputLayout.getEditText().getText().toString();
+
+            if (!authViewModel.login(password)) {
+                String error = v.getResources().getString(R.string.error_password_not_same);
+                masterPasswordInputLayout.setError(error);
+            }
+        }
+    };
+
+    private final View.OnClickListener validateAuthenticationCreationListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            String password = masterPasswordInputLayout.getEditText().getText().toString();
+            String confirmPassword = confirmMasterPasswordInputLayout.getEditText().getText().toString();
+            masterPasswordInputLayout.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
+            confirmMasterPasswordInputLayout.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
+
+            if (!confirmPassword.equals(password)) {
+                String error = v.getResources().getString(R.string.error_password_not_same);
+                confirmMasterPasswordInputLayout.setError(error);
+                return;
+            }
+
+            authViewModel.createMasterPassword(password);
+        }
+    };
+
+    /***************/
+    /* TextWatcher */
+    /***************/
+    private final TextWatcher passwordWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            //do nothing
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            //do nothing
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            //null if the master password exists, because layout changed to "login"
+            if (confirmMasterPasswordInputLayout != null) {
+                String confirmPwd = confirmMasterPasswordInputLayout.getEditText().getText().toString();
+
+                if (!s.toString().equals(confirmPwd)) {
+                    String error = AuthenticationActivity.this.getResources().getString(R.string.error_password_not_same);
+                    confirmMasterPasswordInputLayout.setError(error);
+                }
+                else {
+                    confirmMasterPasswordInputLayout.setError(null);
+                }
+
+                return;
+            }
+
+            masterPasswordInputLayout.setError(null);
+        }
+    };
+
+    private final TextWatcher confirmPasswordWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            //do nothing
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            //do nothing
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            String password = masterPasswordInputLayout.getEditText().getText().toString();
+
+            if (password.equals(s.toString())) {
+                confirmMasterPasswordInputLayout.setError(null);
+            }
+            else {
+                String error = AuthenticationActivity.this.getResources().getString(R.string.error_password_not_same);
+                confirmMasterPasswordInputLayout.setError(error);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +142,7 @@ public class AuthenticationActivity extends AppCompatActivity {
             setContentView(R.layout.activity_authentication_creation);
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.auth_layout), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -49,134 +150,55 @@ public class AuthenticationActivity extends AppCompatActivity {
 
         //get views id
         this.validateBtn = this.findViewById(R.id.btn_validate);
+        this.authLayout = this.findViewById(R.id.auth_layout);
         this.masterPasswordInputLayout = this.findViewById(R.id.inputLayout_masterPassword);
         this.confirmMasterPasswordInputLayout = this.findViewById(R.id.inputLayout_confirmMasterPassword);
 
+        this.initObservers();
         this.initListeners();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.authViewModel.getAuthUiState().removeObservers(this);
+    }
+
+    private void initObservers() {
+        this.authViewModel.getAuthUiState().observe(this, (AuthenticationUiState uiState) -> {
+            if (uiState.isMaxAuthAttemptsReached()) {
+                authViewModel.destroyAllData();
+                AuthenticationActivity.this.finish();
+            }
+            else if(uiState.isLogin()) {
+                Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
+                startActivity(intent);
+                AuthenticationActivity.this.finish();
+            }
+            else {
+                this.masterPasswordInputLayout.getEditText().setText(uiState.getUserPassword());
+                //can be null if load the layout to authenticate the user
+                if(this.confirmMasterPasswordInputLayout != null) {
+                    this.confirmMasterPasswordInputLayout.getEditText().setText(uiState.getUserConfirmPassword());
+                }
+
+                if (uiState.hasErrors()) {
+                    Snackbar.make(this.authLayout, this.getString(uiState.getErrorMessage()), Snackbar.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     private void initListeners() {
         //reuse the same button with different actions
         if (this.authViewModel.isMasterPasswordExists()) {
-            this.validateBtn.setOnClickListener(this.validateAuthenticationListener());
+            this.validateBtn.setOnClickListener(this.validateAuthenticationListener);
         }
         else {
-            this.validateBtn.setOnClickListener(this.validateAuthenticationCreationListener());
-            this.confirmMasterPasswordInputLayout.getEditText().addTextChangedListener(this.confirmPasswordWatcher());
+            this.validateBtn.setOnClickListener(this.validateAuthenticationCreationListener);
+            this.confirmMasterPasswordInputLayout.getEditText().addTextChangedListener(this.confirmPasswordWatcher);
         }
 
-        this.masterPasswordInputLayout.getEditText().addTextChangedListener(this.passwordWatcher());
-    }
-
-    private View.OnClickListener validateAuthenticationListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String password = masterPasswordInputLayout.getEditText().getText().toString();
-                if (authViewModel.confirmPassword(password)) {
-                    Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    AuthenticationActivity.this.finish();
-                }
-                else {
-                    String error = v.getResources().getString(R.string.error_password_not_same);
-                    masterPasswordInputLayout.setError(error);
-
-                    //destroy all data if max attempts is reached
-                    if (authViewModel.isMaxAuthAttemptReached()) {
-                        authViewModel.destroyAllData();
-                        AuthenticationActivity.this.finish();
-                    }
-                }
-            }
-        };
-    }
-
-    private View.OnClickListener validateAuthenticationCreationListener() {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String password = masterPasswordInputLayout.getEditText().getText().toString();
-                String confirmPassword = confirmMasterPasswordInputLayout.getEditText().getText().toString();
-
-                if (!authViewModel.isPasswordEqualsConfirmPassword(password, confirmPassword)) {
-                    String error = v.getResources().getString(R.string.error_password_not_same);
-                    confirmMasterPasswordInputLayout.setError(error);
-                    return;
-                }
-
-                if (authViewModel.createMasterPassword(password)) {
-                    Intent intent = new Intent(AuthenticationActivity.this, MainActivity.class);
-                    startActivity(intent);
-                    AuthenticationActivity.this.finish();
-                }
-                else {
-                    masterPasswordInputLayout.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
-                    confirmMasterPasswordInputLayout.getEditText().onEditorAction(EditorInfo.IME_ACTION_DONE);
-                    String error = v.getResources().getString(R.string.error_master_password_creation);
-                    Snackbar.make(v, error, Snackbar.LENGTH_LONG).show();
-                }
-            }
-        };
-    }
-
-    private TextWatcher passwordWatcher() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //do nothing
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                //null if the master password exists, because layout changed to "login"
-                if (confirmMasterPasswordInputLayout != null) {
-                    String confirmPwd = confirmMasterPasswordInputLayout.getEditText().getText().toString();
-                    if (!authViewModel.isPasswordEqualsConfirmPassword(s.toString(), confirmPwd)) {
-                        String error = AuthenticationActivity.this.getResources().getString(R.string.error_password_not_same);
-                        confirmMasterPasswordInputLayout.setError(error);
-                    }
-                    else {
-                        confirmMasterPasswordInputLayout.setError(null);
-                    }
-
-                    return;
-                }
-
-                masterPasswordInputLayout.setError(null);
-            }
-        };
-    }
-
-    private TextWatcher confirmPasswordWatcher() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //do nothing
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String password = masterPasswordInputLayout.getEditText().getText().toString();
-
-                if (authViewModel.isPasswordEqualsConfirmPassword(password, s.toString())) {
-                    confirmMasterPasswordInputLayout.setError(null);
-                }
-                else {
-                    String error = AuthenticationActivity.this.getResources().getString(R.string.error_password_not_same);
-                    confirmMasterPasswordInputLayout.setError(error);
-                }
-            }
-        };
+        this.masterPasswordInputLayout.getEditText().addTextChangedListener(this.passwordWatcher);
     }
 }
