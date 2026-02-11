@@ -14,7 +14,6 @@ public final class AuthenticationUiState {
     private final boolean hasErrors;
     @StringRes
     private final Integer errorMessage;
-
     private final boolean maxAuthAttemptsReached;
 
     public AuthenticationUiState(String userPassword, String userConfirmPassword, boolean isLogin, @StringRes Integer errorMessage, boolean maxAuthAttemptsReached) {

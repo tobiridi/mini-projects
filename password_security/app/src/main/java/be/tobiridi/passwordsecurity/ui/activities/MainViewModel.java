@@ -3,13 +3,12 @@ package be.tobiridi.passwordsecurity.ui.activities;
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
 import android.app.Application;
-import android.content.Context;
 
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
-
-import java.util.HashMap;
 
 public class MainViewModel extends ViewModel {
     /*********************/
@@ -21,33 +20,27 @@ public class MainViewModel extends ViewModel {
                 Application app = creationExtras.get(APPLICATION_KEY);
                 assert app != null;
 
-                return new MainViewModel(app.getApplicationContext());
+                return new MainViewModel();
             }
     );
 
-    //TODO: make a better implementation for switch between fragment correctly
-    private final HashMap<Integer, Fragment> _fragments;
-    private Fragment currentFragDisplay;
+    private final MutableLiveData<MainUiState> mutableMainUiState;
 
-    public MainViewModel(Context context) {
-        this._fragments = new HashMap<>();
-        this.currentFragDisplay = null;
+    public MainViewModel() {
+        MainUiState uiState = new MainUiState(null, null, false);
+        this.mutableMainUiState = new MutableLiveData<>(uiState);
     }
 
-    public Fragment getCurrentFragDisplay() {
-        return this.currentFragDisplay;
+    public LiveData<MainUiState> getMainUiState() {
+        return this.mutableMainUiState;
     }
 
-    public void setCurrentFragDisplay(Fragment currentFragDisplay) {
-        this.currentFragDisplay = currentFragDisplay;
+    /**
+     * Update the fragment to display.
+     */
+    public void updateDisplayFragment(Fragment fragment) {
+        MainUiState oldUiState = this.mutableMainUiState.getValue();
+        MainUiState uiState = new MainUiState(oldUiState.getCurrentFragDisplay(), fragment, true);
+        this.mutableMainUiState.setValue(uiState);
     }
-
-    public void putFragment(int resourceId, Fragment fragment) {
-        this._fragments.put(resourceId, fragment);
-    }
-
-    public Fragment getFragment(int resourceId) {
-        return this._fragments.get(resourceId);
-    }
-
 }

@@ -142,7 +142,7 @@ public class AuthenticationActivity extends AppCompatActivity {
             setContentView(R.layout.activity_authentication_creation);
         }
 
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.auth_layout), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.layout_auth), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
@@ -150,7 +150,7 @@ public class AuthenticationActivity extends AppCompatActivity {
 
         //get views id
         this.validateBtn = this.findViewById(R.id.btn_validate);
-        this.authLayout = this.findViewById(R.id.auth_layout);
+        this.authLayout = this.findViewById(R.id.layout_auth);
         this.masterPasswordInputLayout = this.findViewById(R.id.inputLayout_masterPassword);
         this.confirmMasterPasswordInputLayout = this.findViewById(R.id.inputLayout_confirmMasterPassword);
 

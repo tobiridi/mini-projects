@@ -64,7 +64,6 @@ public class AuthenticationViewModel extends ViewModel {
         AuthenticationUiState uiState = new AuthenticationUiState(null, null, false, null,false);
         this.mutableAuthUiState = new MutableLiveData<>(uiState);
         this.authAttempts = 0;
-        System.out.println("max auth attempts : " + this.maxAuthAttempts);
     }
 
     @Override

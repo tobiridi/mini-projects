@@ -13,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -26,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private MainViewModel mainViewModel;
     private FragmentContainerView fragmentContainer;
     private BottomNavigationView bottomNavigation;
-    private final FragmentManager _manager = getSupportFragmentManager();
+    private final FragmentManager _fragmentManager = getSupportFragmentManager();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         WindowCompat.setDecorFitsSystemWindows(getWindow(), false);
 
         //set status bar padding on layout
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.layout_main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, 0);
             return insets;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         this.fragmentContainer = findViewById(R.id.fragmentContainerView);
         this.bottomNavigation = findViewById(R.id.bottomNavigationView);
 
-        this.initFragmentManager();
+        this.initObservers();
         this.initListeners();
     }
 
@@ -68,37 +69,67 @@ public class MainActivity extends AppCompatActivity {
             this.finishAffinity();
     }
 
-    private void initFragmentManager() {
-        HomeFragment homeFrag = HomeFragment.newInstance();
-        AddAccountFragment addAccountFrag = AddAccountFragment.newInstance();
-        SettingsFragment settingsFrag = SettingsFragment.newInstance();
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        this.mainViewModel.getMainUiState().removeObservers(this);
+    }
 
-        this._manager.beginTransaction()
-                .add(this.fragmentContainer.getId(), homeFrag, "HOME")
-                .add(this.fragmentContainer.getId(), addAccountFrag, "ADD_ACCOUNT")
-                .add(this.fragmentContainer.getId(), settingsFrag, "SETTINGS")
-                .hide(addAccountFrag)
-                .hide(settingsFrag)
-                .commit();
+    private void initObservers() {
+        this.mainViewModel.getMainUiState().observe(this, (MainUiState uiState) -> {
+            if(!uiState.isFragManagerInit()) {
+                //set the fragments to fragment manager
+                int fragContainerId = this.fragmentContainer.getId();
+                HomeFragment homeFrag = HomeFragment.newInstance();
+                AddAccountFragment addAccountFrag = AddAccountFragment.newInstance();
+                SettingsFragment settingsFrag = SettingsFragment.newInstance();
 
-        this.mainViewModel.putFragment(R.id.nav_home, homeFrag);
-        this.mainViewModel.putFragment(R.id.nav_add, addAccountFrag);
-        this.mainViewModel.putFragment(R.id.nav_settings, settingsFrag);
+                this._fragmentManager.beginTransaction()
+                        .add(fragContainerId, homeFrag, "FRAGMENT_HOME")
+                        .add(fragContainerId, addAccountFrag, "FRAGMENT_ADD_ACCOUNT")
+                        .add(fragContainerId, settingsFrag, "FRAGMENT_SETTINGS")
+                        .hide(homeFrag)
+                        .hide(addAccountFrag)
+                        .hide(settingsFrag)
+                        .commit();
 
-        this.mainViewModel.setCurrentFragDisplay(homeFrag);
+                //update the UI to display a fragment otherwise everything is hidden
+                this.mainViewModel.updateDisplayFragment(homeFrag);
+            }
+            else {
+                FragmentTransaction transaction = this._fragmentManager.beginTransaction();
+                Fragment previous = uiState.getPreviousFragDisplay();
+                //can be null if the first fragment to display
+                if (previous != null) {
+                    transaction.hide(previous);
+                }
+                transaction.show(uiState.getCurrentFragDisplay());
+                transaction.commit();
+            }
+        });
     }
 
     private void initListeners() {
         this.bottomNavigation.setOnItemSelectedListener(item -> {
-            Fragment selectedFrag = mainViewModel.getFragment(item.getItemId());
+            int itemId = item.getItemId();
+            String tag = null;
 
-            this._manager.beginTransaction()
-                    .hide(mainViewModel.getCurrentFragDisplay())
-                    .show(selectedFrag)
-                    .commit();
+            if (itemId == R.id.nav_home) {
+                tag = "FRAGMENT_HOME";
+            }
+            else if (itemId == R.id.nav_add) {
+                tag = "FRAGMENT_ADD_ACCOUNT";
+            }
+            else if (itemId == R.id.nav_settings) {
+                tag = "FRAGMENT_SETTINGS";
+            }
 
-            mainViewModel.setCurrentFragDisplay(selectedFrag);
-            return true;
+            if (tag != null) {
+                Fragment fragment = this._fragmentManager.findFragmentByTag(tag);
+                mainViewModel.updateDisplayFragment(fragment);
+                return true;
+            }
+            return false;
         });
     }
 }
