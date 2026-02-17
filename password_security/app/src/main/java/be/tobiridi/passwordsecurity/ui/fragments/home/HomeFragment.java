@@ -1,15 +1,18 @@
 package be.tobiridi.passwordsecurity.ui.fragments.home;
 
+import static android.view.View.GONE;
+import static android.view.View.VISIBLE;
+
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,14 +20,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 import be.tobiridi.passwordsecurity.R;
-import be.tobiridi.passwordsecurity.ui.components.HomeAdapter;
 import be.tobiridi.passwordsecurity.data.entities.Account;
+import be.tobiridi.passwordsecurity.ui.components.HomeAdapter;
 
 public class HomeFragment extends Fragment {
     private HomeViewModel homeViewModel;
     private SearchView searchView;
     private RecyclerView recyclerView;
-    private Observer<List<Account>> obSourceAccounts;
+    private ProgressBar progressBar;
 
     public static HomeFragment newInstance() {
         return new HomeFragment();
@@ -44,31 +47,42 @@ public class HomeFragment extends Fragment {
         //get views id
         this.recyclerView = view.findViewById(R.id.recyclerView);
         this.searchView = view.findViewById(R.id.searchView);
+        this.progressBar = view.findViewById(R.id.progressBar);
 
         //set RecyclerView
         this.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        this.initObservers();
-        this.homeViewModel.getMutableSourceAccounts().observe(this.getViewLifecycleOwner(), this.obSourceAccounts);
+        this.homeViewModel.getHomeUiState().observe(this.getViewLifecycleOwner(), (HomeUiState uiState) -> {
+            int progBarVisibility = uiState.isLoading() ? VISIBLE : GONE;
+            this.progressBar.setVisibility(progBarVisibility);
+
+            // TODO: 16/02/2026 check if integration of ui state works properly
+            List<Account> displayedAccounts = uiState.getDecryptedAccounts();
+            if (!displayedAccounts.isEmpty()) {
+                HomeAdapter adapter = (HomeAdapter) this.recyclerView.getAdapter();
+                if (adapter == null) {
+                    //init adapter when activity creation
+                    adapter = new HomeAdapter(displayedAccounts, this.homeViewModel);
+                    this.recyclerView.setAdapter(adapter);
+                }
+                else {
+                    //don't update the data source of adapter if just filtering data, "optimisation"
+                    if (!uiState.isFiltering()) {
+                        adapter.sourceAccountsChanged(displayedAccounts);
+                    }
+                    String searchText = uiState.getSearchText();
+                    adapter.getFilter().filter(searchText.toLowerCase());
+                }
+            }
+        });
 
         this.initListeners();
     }
 
-    private void initObservers() {
-        this.obSourceAccounts = new Observer<List<Account>>() {
-            @Override
-            public void onChanged(List<Account> accounts) {
-                HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
-                if (adapter == null) {
-                    //init adapter when activity creation
-                    adapter = new HomeAdapter(accounts, homeViewModel);
-                    recyclerView.setAdapter(adapter);
-                }
-                else {
-                    adapter.sourceAccountsChanged(accounts);
-                }
-            }
-        };
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        this.homeViewModel.getHomeUiState().removeObservers(this);
     }
 
     private void initListeners() {
@@ -80,10 +94,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                HomeAdapter adapter = (HomeAdapter) recyclerView.getAdapter();
-                if (adapter != null) {
-                    adapter.getFilter().filter(newText.toLowerCase());
-                }
+                homeViewModel.updateSearchText(newText);
                 return true;
             }
         });

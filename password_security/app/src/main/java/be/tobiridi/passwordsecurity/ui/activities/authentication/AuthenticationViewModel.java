@@ -64,6 +64,8 @@ public class AuthenticationViewModel extends ViewModel {
         AuthenticationUiState uiState = new AuthenticationUiState(null, null, false, null,false);
         this.mutableAuthUiState = new MutableLiveData<>(uiState);
         this.authAttempts = 0;
+        // FIXME: 16/02/2026 it's not reload when no more activity is shown but the process is running
+        System.out.println("max auth attempts : " + this.maxAuthAttempts);
     }
 
     @Override

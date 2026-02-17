@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/HomeViewHolder.java
-package be.tobiridi.passwordsecurity.components;
-========
 package be.tobiridi.passwordsecurity.ui.components;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/HomeViewHolder.java
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,13 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import be.tobiridi.passwordsecurity.R;
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/HomeViewHolder.java
-import be.tobiridi.passwordsecurity.entities.Account;
-import be.tobiridi.passwordsecurity.ui.updateAccount.UpdateAccountActivity;
-========
 import be.tobiridi.passwordsecurity.data.entities.Account;
 import be.tobiridi.passwordsecurity.ui.activities.updateAccount.UpdateAccountActivity;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/HomeViewHolder.java
 
 /**
  * Provide a view for the {@link HomeAdapter} which used as an item.

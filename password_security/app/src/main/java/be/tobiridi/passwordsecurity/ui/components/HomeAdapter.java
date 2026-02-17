@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/HomeAdapter.java
-package be.tobiridi.passwordsecurity.components;
-========
 package be.tobiridi.passwordsecurity.ui.components;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/HomeAdapter.java
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,13 +14,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import be.tobiridi.passwordsecurity.R;
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/HomeAdapter.java
-import be.tobiridi.passwordsecurity.entities.Account;
-import be.tobiridi.passwordsecurity.ui.home.HomeViewModel;
-========
 import be.tobiridi.passwordsecurity.data.entities.Account;
 import be.tobiridi.passwordsecurity.ui.fragments.home.HomeViewModel;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/HomeAdapter.java
 
 /**
  * Link the {@link HomeViewHolder} to the {@link RecyclerView}.
