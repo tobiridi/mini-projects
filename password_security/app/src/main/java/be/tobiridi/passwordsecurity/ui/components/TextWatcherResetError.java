@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/TextWatcherResetError.java
-package be.tobiridi.passwordsecurity.components;
-========
 package be.tobiridi.passwordsecurity.ui.components;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/TextWatcherResetError.java
 
 import android.text.Editable;
 import android.text.TextWatcher;

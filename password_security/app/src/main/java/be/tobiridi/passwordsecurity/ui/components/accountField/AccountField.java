@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/accountField/AccountField.java
-package be.tobiridi.passwordsecurity.components.accountField;
-========
 package be.tobiridi.passwordsecurity.ui.components.accountField;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/accountField/AccountField.java
 
 import android.text.InputType;
 import android.view.inputmethod.EditorInfo;
@@ -13,11 +9,7 @@ import androidx.annotation.StringRes;
 import com.google.android.material.textfield.TextInputLayout;
 
 import be.tobiridi.passwordsecurity.R;
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/accountField/AccountField.java
-import be.tobiridi.passwordsecurity.entities.Account;
-========
 import be.tobiridi.passwordsecurity.data.entities.Account;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/accountField/AccountField.java
 
 /**
  * Custom field as a data for an {@link Account}, should be used with a {@link TextInputLayout}.

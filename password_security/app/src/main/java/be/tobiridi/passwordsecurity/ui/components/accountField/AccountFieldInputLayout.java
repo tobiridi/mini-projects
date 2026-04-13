@@ -1,8 +1,4 @@
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/accountField/AccountFieldInputLayout.java
-package be.tobiridi.passwordsecurity.components.accountField;
-========
 package be.tobiridi.passwordsecurity.ui.components.accountField;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/accountField/AccountFieldInputLayout.java
 
 import android.content.Context;
 import android.graphics.Color;
@@ -17,13 +13,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import be.tobiridi.passwordsecurity.R;
-<<<<<<<< HEAD:password_security/app/src/main/java/be/tobiridi/passwordsecurity/components/accountField/AccountFieldInputLayout.java
-import be.tobiridi.passwordsecurity.components.TextWatcherResetError;
-import be.tobiridi.passwordsecurity.entities.Account;
-========
 import be.tobiridi.passwordsecurity.ui.components.TextWatcherResetError;
 import be.tobiridi.passwordsecurity.data.entities.Account;
->>>>>>>> 7777d5d ([FIX] reorganize project folders):password_security/app/src/main/java/be/tobiridi/passwordsecurity/ui/components/accountField/AccountFieldInputLayout.java
 
 /**
  * Main class for all dynamic custom {@link TextInputLayout} associated to an {@link Account}.
