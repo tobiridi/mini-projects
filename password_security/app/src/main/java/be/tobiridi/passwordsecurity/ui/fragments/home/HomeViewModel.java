@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.ViewModelInitializer;
 import androidx.preference.PreferenceManager;
 
 import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -68,7 +69,7 @@ public class HomeViewModel extends ViewModel {
         this._userPrefRepository = userPrefRepository;
         this.executorService = Executors.newSingleThreadExecutor();
 
-        HomeUiState uiState = new HomeUiState(List.of(), true, null, false);
+        HomeUiState uiState = new HomeUiState(new ArrayList<>(), true, null, false);
         this.mutableHomeUiState = new MutableLiveData<>(uiState);
         this.encryptedSourceAccounts = ExecutorServiceUtils.executeCallable(this.executorService, this._accountRepository::getAllAccounts);
 

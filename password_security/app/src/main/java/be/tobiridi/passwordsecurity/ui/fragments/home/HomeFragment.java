@@ -56,7 +56,6 @@ public class HomeFragment extends Fragment {
             int progBarVisibility = uiState.isLoading() ? VISIBLE : GONE;
             this.progressBar.setVisibility(progBarVisibility);
 
-            // TODO: 16/02/2026 check if integration of ui state works properly
             List<Account> displayedAccounts = uiState.getDecryptedAccounts();
             if (!displayedAccounts.isEmpty()) {
                 HomeAdapter adapter = (HomeAdapter) this.recyclerView.getAdapter();
@@ -71,7 +70,9 @@ public class HomeFragment extends Fragment {
                         adapter.sourceAccountsChanged(displayedAccounts);
                     }
                     String searchText = uiState.getSearchText();
-                    adapter.getFilter().filter(searchText.toLowerCase());
+                    if (searchText != null) {
+                        adapter.getFilter().filter(searchText.toLowerCase());
+                    }
                 }
             }
         });
