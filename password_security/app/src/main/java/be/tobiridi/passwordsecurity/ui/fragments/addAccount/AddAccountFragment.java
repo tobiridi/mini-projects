@@ -1,6 +1,7 @@
 package be.tobiridi.passwordsecurity.ui.fragments.addAccount;
 
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +20,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.Arrays;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import be.tobiridi.passwordsecurity.R;
+import be.tobiridi.passwordsecurity.data.entities.Account;
 import be.tobiridi.passwordsecurity.ui.components.TextWatcherResetError;
 import be.tobiridi.passwordsecurity.ui.components.accountField.AccountField;
 import be.tobiridi.passwordsecurity.ui.components.accountField.AccountFieldInputLayout;
@@ -34,7 +33,6 @@ public class AddAccountFragment extends Fragment {
     private TextInputLayout accountNameInputLayout, accountPasswordInputLayout;
     private Button resetBtn, validateBtn;
     private FloatingActionButton addFieldFloatBtn;
-    private EnumSet<AccountField> addedFields;
     private ConstraintLayout addAccountLayout;
 
     public static AddAccountFragment newInstance() {
@@ -50,8 +48,6 @@ public class AddAccountFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        //if TextInputLayout fields are present in the layout, add them to init the EnumSet
-        this.addedFields = EnumSet.of(AccountField.NAME, AccountField.PASSWORD);
 
         //get views id
         this.accountNameInputLayout = view.findViewById(R.id.accountField_name);
@@ -62,19 +58,41 @@ public class AddAccountFragment extends Fragment {
         this.addAccountLayout = view.findViewById(R.id.layout_addAccount);
 
         this.addAccountViewModel = new ViewModelProvider(this, ViewModelProvider.Factory.from(AddAccountViewModel.initializer)).get(AddAccountViewModel.class);
+
+        this.addAccountViewModel.getAddAccountUiState().observe(this.getViewLifecycleOwner(), (AddAccountUiState uiState) -> {
+            uiState.getDisplayAccountFields().stream()
+                    .filter(af -> this.addAccountLayout.findViewById(af.getId()) == null)
+                    .forEach(this::addDynamicField);
+
+            if (uiState.isResetForm()) {
+                this.resetUiForm(uiState.getDisplayAccountFields());
+            }
+            //common statement between created and hasErrors
+            else if (uiState.isAccountCreated() || uiState.hasErrors()) {
+                Snackbar.make(this.requireContext(), this.requireView(), this.getString(uiState.getMessage()), Snackbar.LENGTH_SHORT)
+                        .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
+                        .setAnchorView(R.id.bottomNavigationView)
+                        .show();
+            }
+
+            if (uiState.isAccountCreated()) {
+                this.resetBtn.callOnClick();
+            }
+        });
+
         this.initListeners();
     }
 
     private void initListeners() {
-        this.resetBtn.setOnClickListener(v -> resetForm());
-        this.validateBtn.setOnClickListener(v -> validateForm());
+        this.resetBtn.setOnClickListener(v -> this.addAccountViewModel.resetForm());
+        this.validateBtn.setOnClickListener(v -> this.validateUiForm());
         this.addFieldFloatBtn.setOnClickListener(v -> showFieldSelectionDialog());
         this.accountNameInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountNameInputLayout));
         this.accountPasswordInputLayout.getEditText().addTextChangedListener(new TextWatcherResetError(this.accountPasswordInputLayout));
     }
 
-    private void resetForm() {
-        this.addedFields.forEach(f -> {
+    private void resetUiForm(Iterable<AccountField> accountFields) {
+        accountFields.forEach(f -> {
             TextInputLayout input = this.addAccountLayout.findViewById(f.getId());
             input.setError(null);
             input.getEditText().getText().clear();
@@ -83,32 +101,144 @@ public class AddAccountFragment extends Fragment {
         });
     }
 
-    private void validateForm() {
-        String msg = "";
+    private void validateUiForm() {
+        //check if all input layout are valid
+        int errors = 0;
+        if(!this.isUiNameValid())
+            errors++;
+        if(!this.isUiPasswordValid())
+            errors++;
+        if(!this.isUiEmailValid())
+            errors++;
+        if(!this.isUiUsernameValid())
+            errors++;
+        if(!this.isUiNoteValid())
+            errors++;
 
-        // TextInputLayout used to create the account
-        List<TextInputLayout> inputFields = this.addedFields.stream()
-                .map(f -> (TextInputLayout) this.addAccountLayout.findViewById(f.getId()))
-                .collect(Collectors.toList());
+        if (errors == 0) {
+            TextInputLayout inputName = this.addAccountLayout.findViewById(AccountField.NAME.getId());
+            TextInputLayout inputPwd = this.addAccountLayout.findViewById(AccountField.PASSWORD.getId());
+            TextInputLayout inputEmail = this.addAccountLayout.findViewById(AccountField.EMAIL.getId());
+            TextInputLayout inputUsername = this.addAccountLayout.findViewById(AccountField.USERNAME.getId());
+            TextInputLayout inputNote = this.addAccountLayout.findViewById(AccountField.NOTE.getId());
 
-        if (addAccountViewModel.createAccount(inputFields, this.addedFields)) {
-            this.resetBtn.callOnClick();
-            msg = this.getResources().getString(R.string.msg_add_account_success);
+            String name = inputName.getEditText().getText().toString();
+            String password = inputPwd.getEditText().getText().toString();
+            //optional inputs
+            String email = inputEmail == null ? null : inputEmail.getEditText().getText().toString();
+            String username = inputUsername == null ? null : inputUsername.getEditText().getText().toString();
+            String note = inputNote == null ? null : inputNote.getEditText().getText().toString();
+
+            Account createAccount = new Account(name, password, email, username, note);
+            this.addAccountViewModel.createAccount(createAccount);
         }
-        else {
-            msg = this.getResources().getString(R.string.msg_add_account_fail);
+    }
+
+    /******************/
+    /** Account Fields
+     validations  **/
+    /******************/
+
+    /**
+     * Check if the account name is in the right format.
+     *
+     * @return {@code true} if the account name has a valid format.
+     */
+    private boolean isUiNameValid() {
+        TextInputLayout input = this.addAccountLayout.findViewById(AccountField.NAME.getId());
+        if (input == null) {
+            return true;
         }
 
-        Snackbar.make(this.requireContext(), this.requireView(), msg, Snackbar.LENGTH_SHORT)
-                .setAnimationMode(Snackbar.ANIMATION_MODE_FADE)
-                .setAnchorView(R.id.bottomNavigationView)
-                .show();
+        String txt = input.getEditText().getText().toString();
+        if (txt.isBlank()) {
+            input.setError(this.getResources().getString(R.string.error_account_name_empty));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if the account password input is in the right format.
+     *
+     * @return {@code true} if the account password has a valid format.
+     */
+    private boolean isUiPasswordValid() {
+        TextInputLayout input = this.addAccountLayout.findViewById(AccountField.PASSWORD.getId());
+        if (input == null) {
+            return true;
+        }
+
+        String txt = input.getEditText().getText().toString();
+        if (txt.isBlank()) {
+            input.setError(this.getResources().getString(R.string.error_account_password_empty));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if the account email is in the right format.
+     *
+     * @return {@code true} if the account email has a valid format.
+     */
+    private boolean isUiEmailValid() {
+        TextInputLayout input = this.addAccountLayout.findViewById(AccountField.EMAIL.getId());
+        if (input == null) {
+            return true;
+        }
+
+        String txt = input.getEditText().getText().toString();
+        if (txt.isBlank()) {
+            input.setError(this.getResources().getString(R.string.error_account_email_empty));
+            return false;
+        } else if (!Patterns.EMAIL_ADDRESS.matcher(txt).matches()) {
+            input.setError(this.getResources().getString(R.string.error_account_email_format));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if the account username is in the right format.
+     *
+     * @return {@code true} if the account username has a valid format.
+     */
+    private boolean isUiUsernameValid() {
+        TextInputLayout input = this.addAccountLayout.findViewById(AccountField.USERNAME.getId());
+        if (input == null) {
+            return true;
+        }
+
+        String txt = input.getEditText().getText().toString();
+        if (txt.isBlank()) {
+            input.setError(this.getResources().getString(R.string.error_account_username_empty));
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Check if the account note is in the right format.
+     *
+     * @return {@code true} if the account note has a valid format.
+     */
+    private boolean isUiNoteValid() {
+        TextInputLayout input = this.addAccountLayout.findViewById(AccountField.NOTE.getId());
+        if (input == null) {
+            return true;
+        }
+
+        String txt = input.getEditText().getText().toString();
+        if (txt.isBlank()) {
+            input.setError(this.getResources().getString(R.string.error_account_note_empty));
+            return false;
+        }
+        return true;
     }
 
     private void showFieldSelectionDialog() {
-        List<AccountField> remainingFields = Arrays.stream(AccountField.values())
-                .filter(f -> !this.addedFields.contains(f))
-                .collect(Collectors.toList());
+        List<AccountField> remainingFields = this.addAccountViewModel.getRemainingFields();
 
         String[] items = remainingFields.stream()
                 .map(field -> getResources().getString(field.getLabel()))
@@ -122,8 +252,7 @@ public class AddAccountFragment extends Fragment {
                     if (remainingFields.size() == 1) {
                         this.addFieldFloatBtn.setEnabled(false);
                     }
-                    this.addedFields.add(selected);
-                    this.addDynamicField(selected);
+                    this.addAccountViewModel.addAccountField(selected);
                 })
                 .show();
     }
@@ -145,13 +274,13 @@ public class AddAccountFragment extends Fragment {
             params.endToEnd = ConstraintLayout.LayoutParams.PARENT_ID;
         }
 
-        customInputLayout.getDeleteButton().setOnClickListener(v -> this.deleteInputField(customInputLayout, field));
+        customInputLayout.getDeleteButton().setOnClickListener(v -> this.removeDynamicField(customInputLayout, field));
 
         //position the custom TextInputLayout below the last TextInputLayout
         this.addAccountLayout.addView(customInputLayout.getParentLayout(), lastInputChildIndex + 1);
     }
 
-    private void deleteInputField(AccountFieldInputLayout customInputLayout, AccountField field) {
+    private void removeDynamicField(AccountFieldInputLayout customInputLayout, AccountField field) {
         int removeIndex = this.addAccountLayout.indexOfChild(customInputLayout.getParentLayout());
         // update the next custom view position
         // change the condition if the layout associates to this fragment changed
@@ -169,7 +298,7 @@ public class AddAccountFragment extends Fragment {
         // don't move the next view because you delete the last custom view
         // the previous view is a XML hardcoded TextInputLayout
         this.addAccountLayout.removeViewAt(removeIndex);
-        this.addedFields.remove(field);
+        this.addAccountViewModel.removeAccountField(field);
         this.addFieldFloatBtn.setEnabled(true);
     }
 }
