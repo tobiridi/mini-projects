@@ -57,6 +57,7 @@ public class HomeFragment extends Fragment {
             this.progressBar.setVisibility(progBarVisibility);
 
             List<Account> displayedAccounts = uiState.getDecryptedAccounts();
+            // FIXME: 23/04/2026 when displayedAccounts.isEmpty() should remove all views from adapter
             if (!displayedAccounts.isEmpty()) {
                 HomeAdapter adapter = (HomeAdapter) this.recyclerView.getAdapter();
                 if (adapter == null) {

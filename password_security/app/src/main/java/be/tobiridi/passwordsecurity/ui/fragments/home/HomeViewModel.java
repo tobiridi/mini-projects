@@ -71,7 +71,7 @@ public class HomeViewModel extends ViewModel {
 
         HomeUiState uiState = new HomeUiState(new ArrayList<>(), true, null, false);
         this.mutableHomeUiState = new MutableLiveData<>(uiState);
-        this.encryptedSourceAccounts = ExecutorServiceUtils.executeCallable(this.executorService, this._accountRepository::getAllAccounts);
+        this.encryptedSourceAccounts = ExecutorServiceUtils.executeCallable(this.executorService, this._accountRepository::getLiveAllAccounts);
 
         this.initObservers();
         this.encryptedSourceAccounts.observeForever(this.obDecryptSourceAccounts);
@@ -96,7 +96,7 @@ public class HomeViewModel extends ViewModel {
             //if all DB accounts has been cleared
             if (dbAccounts.isEmpty()) {
                 HomeUiState newUiState = new HomeUiState(dbAccounts, false, oldUiState.getSearchText(), oldUiState.isFiltering());
-                this.mutableHomeUiState.postValue(newUiState);
+                this.mutableHomeUiState.setValue(newUiState);
                 return;
             }
 

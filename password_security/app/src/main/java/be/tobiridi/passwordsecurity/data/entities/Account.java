@@ -198,8 +198,6 @@ public class Account implements Serializable {
         return Objects.hash(this.id, this.name, this.created, this.updated);
     }
 
-    // TODO: 19/01/2026 don't use the data source directly in view model, centralize in some "Service" where viewmodel has "LiveData" to the data
-
     /**
      * @param encryptionKey The key used to encrypt the account.
      * @return {@code true} If the account has been encrypted, {@code false} otherwise.

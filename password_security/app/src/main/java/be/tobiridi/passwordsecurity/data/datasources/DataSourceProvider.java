@@ -53,4 +53,8 @@ public final class DataSourceProvider {
     public Iterable<LocalDataSource> getAllLocalDataSources() {
         return new ArrayList<>(this.localDataSources);
     }
+
+    public void clearAllDataSources() {
+        this.localDataSources.clear();
+    }
 }

@@ -19,7 +19,11 @@ public class AccountRepository {
         }
     }
 
-    public LiveData<List<Account>> getAllAccounts() {
+    public LiveData<List<Account>> getLiveAllAccounts() {
+        return accountDataSource.getLiveAllAccounts();
+    }
+
+    public List<Account> getAllAccounts() {
         return accountDataSource.getAllAccounts();
     }
 

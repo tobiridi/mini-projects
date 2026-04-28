@@ -28,5 +28,8 @@ public interface AccountDao {
 
     @Transaction
     @Query("SELECT id, encrypted_account, created, updated FROM accounts")
-    LiveData<List<Account>> getAllAccounts();
+    LiveData<List<Account>> getLiveAllAccounts();
+
+    @Query("SELECT id, encrypted_account, created, updated FROM accounts")
+    List<Account> getAllAccounts();
 }

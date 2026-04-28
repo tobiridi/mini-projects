@@ -29,6 +29,8 @@
     <string name="msg_backup_export_fail">Backup file not created</string>
     <string name="msg_backup_import_success">Import successful</string>
     <string name="msg_backup_import_fail">Import failed</string>
+    <string name="msg_new_master_password_set">New master password defined</string>
+    <string name="msg_all_accounts_deleted">All accounts has been delete</string>
     <!-- AlertDialog -->
     <string name="alert_account_change_title">Do you want to modify or delete this account ?</string>
     <string name="alert_relaunch_app_title">Relaunch the app</string>
@@ -64,12 +66,26 @@
         * Android Preference *
     -->
     <!-- Preference titles -->
-    <string name="pref_header_database">Database</string>
+    <string name="pref_header_data">Data</string>
     <string name="pref_header_security">Security</string>
-    <!-- Database preferences -->
+    <string name="pref_header_automation">Automation</string>
+    <string name="pref_header_notification" translatable="false">Notification</string>
+    <!-- Data preferences -->
     <!-- Security preferences -->
     <string name="pref_attempts">Attempts</string>
-    <string name="pref_attempts_summary">The number of attempts before delete all accounts stored in the app when enter master password, set to 0 = unlimited</string>
+    <string name="pref_master_password">Master password</string>
+    <string name="pref_master_password_summary">Redefine the master password to access at the app</string>
+    <string name="pref_attempts_summary">The number of attempts before delete all accounts stored in the app when enter master password, 0 = unlimited</string>
     <string name="pref_export_summary">Export the encrypted database to make a backup</string>
     <string name="pref_import_summary">Import a backup of an encrypted database</string>
+    <!-- Automation preferences -->
+    <string name="pref_enable_automation">Enable automation</string>
+    <string name="pref_auto_closing">Auto closing</string>
+    <string name="pref_auto_disconnect">Auto disconnect</string>
+    <string name="pref_auto_closing_summary">Set the time in “seconds” before auto remove the app in background, 0 = never</string>
+    <string name="pref_auto_disconnect_summary">Set the time in “seconds” before re-authenticate, 0 = never</string>
+    <!-- Notification preferences -->
+    <string name="pref_enable_notif">Enable Notification</string>
+    <string name="pref_notif_backup">Backup</string>
+    <string name="pref_notif_backup_summary">The number of days to wait before receive a notification to remind to make a backup</string>
 </resources>

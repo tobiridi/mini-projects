@@ -1,11 +1,11 @@
 <resources>
-    <!-- Database Preference -->
+    <!-- Preference -->
     <string-array name="delete_all_accounts_entries">
         <item>@string/yes</item>
         <item>@string/no</item>
     </string-array>
 
-    <!-- Database Preference -->
+    <!-- Preference -->
     <string-array name="delete_all_accounts_values">
         <item>yes</item>
         <item>no</item>

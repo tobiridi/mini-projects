@@ -15,13 +15,14 @@ import be.tobiridi.passwordsecurity.data.database.Dao.UserPreferencesDao;
 import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
 import be.tobiridi.passwordsecurity.data.security.AESManager;
 import be.tobiridi.passwordsecurity.data.security.HashManager;
+import be.tobiridi.passwordsecurity.ui.fragments.settings.SettingsPreferenceKey;
 
 /**
  * The local data source class for manipulate the authentication of the user.
  */
 public final class AuthenticationLocalDataSource implements LocalDataSource {
     private static final byte DEFAULT_MAX_AUTH_ATTEMPTS = 3;
-    public static final String MAX_AUTH_ATTEMPTS_KEY = "maxAuthAttempts";
+    private static final String MAX_AUTH_ATTEMPTS_KEY = SettingsPreferenceKey.MAX_AUTH_ATTEMPTS;
     private final SharedPreferences sharedPreferences;
     private final UserPreferencesDao userPreferencesDao;
     private byte maxAuthAttempts;

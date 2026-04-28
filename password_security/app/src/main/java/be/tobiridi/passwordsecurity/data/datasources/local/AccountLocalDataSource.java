@@ -20,7 +20,11 @@ public final class AccountLocalDataSource implements LocalDataSource {
         this.accountDao = appDatabase.getAccountDao();
     }
 
-    public LiveData<List<Account>> getAllAccounts() {
+    public LiveData<List<Account>> getLiveAllAccounts() {
+        return this.accountDao.getLiveAllAccounts();
+    }
+
+    public List<Account> getAllAccounts() {
         return this.accountDao.getAllAccounts();
     }
 

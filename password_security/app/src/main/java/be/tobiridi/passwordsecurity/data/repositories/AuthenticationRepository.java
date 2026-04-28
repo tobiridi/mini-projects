@@ -32,9 +32,6 @@ public class AuthenticationRepository {
         if (masterPwd.trim().isEmpty())
             return false;
 
-        if (authDataSource.isUserAuthenticate())
-            return true;
-
         return authDataSource.authenticateUser(masterPwd);
     }
 }
