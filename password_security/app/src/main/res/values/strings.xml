@@ -62,6 +62,9 @@
     <string name="btn_desc_clear" translatable="false">Clear</string>
     <string name="btn_desc_validate" translatable="false">Validate</string>
     <string name="btn_desc_delete_field">Delete this field</string>
+    <!-- Notification -->
+    <string name="notif_title_backup">Make a backup of your accounts</string>
+    <string name="notif_text_backup">The last backup was on</string>
     <!--
         * Android Preference *
     -->

@@ -35,7 +35,7 @@ public class UpdateAccountViewModel extends ViewModel {
      */
     public UpdateAccountViewModel setContext(Context ctx) {
         this.resources = ctx.getResources();
-        this.accountRepository = AccountRepository.getInstance(ctx);
+        //this.accountRepository = AccountRepository.getInstance(ctx);
         return this;
     }
 
@@ -109,7 +109,7 @@ public class UpdateAccountViewModel extends ViewModel {
             this.updatableAccount.setNote(accountData.get("note"));
             this.updatableAccount.packAccountData();
 
-            rowsUpdated = this.accountRepository.updateAccount(this.updatableAccount);
+            //rowsUpdated = this.accountRepository.updateAccount(this.updatableAccount);
         }
         return rowsUpdated > 0;
     }

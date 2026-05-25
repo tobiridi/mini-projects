@@ -1,11 +1,18 @@
 package be.tobiridi.passwordsecurity.ui.fragments.settings;
 
+import android.Manifest;
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultCallback;
@@ -13,6 +20,9 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
@@ -24,6 +34,8 @@ import androidx.preference.SwitchPreferenceCompat;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.data.database.AppDatabase;
@@ -59,12 +71,13 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         this.notifBackupPreference = findPreference(SettingsPreferenceKey.NOTIF_BACKUP);
 
         this.settingsViewModel.getSettingsUiState().observe(this, (SettingsUiState uiState) -> {
-//            if (uiState.isNotificationActive) {
-//                NotificationManager notifManager = requireContext().getSystemService(NotificationManager.class);
-//                if(!notifManager.areNotificationsEnabled()) {
-//                }
-//            }
-//
+            if (uiState.isNotificationActive()) {
+                this.showBackupNotification();
+            }
+            else {
+                Toast.makeText(getContext(), "notif disable", Toast.LENGTH_SHORT).show();
+            }
+
 //            if (uiState.isAutomationActive) {
 //                // TODO: 23/04/2026 add automation settings
 //            }
@@ -131,17 +144,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                     }
                 });
 
-//        this.requestPermissionLauncher = registerForActivityResult(
-//                new ActivityResultContracts.RequestPermission(), isGranted -> {
-//                    if (isGranted) {
-//
-//                    }
-//                    else {
-//
-//                    }
-//                    settingsViewModel.updateNotifPref(isGranted);
-//                }
-//        );
+        this.requestPermissionLauncher = registerForActivityResult(
+                new ActivityResultContracts.RequestPermission(),
+                isGranted -> {
+                    this.settingsViewModel.updateNotifPref(isGranted);
+                }
+        );
     }
 
     private void initListeners() {
@@ -189,10 +197,47 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             }
         });
 
-//        this.enableNotificationPreference.setOnPreferenceChangeListener((Preference pref, Object newValue) -> {
-//            boolean val = (boolean) newValue;
-//
-//            return true;
-//        });
+        this.enableNotificationPreference.setOnPreferenceChangeListener((Preference pref, Object newValue) -> {
+            boolean val = (boolean) newValue;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                NotificationManager notifManager = requireContext().getSystemService(NotificationManager.class);
+                if(notifManager.areNotificationsEnabled()) {
+                    this.settingsViewModel.updateNotifPref(val);
+                }
+                else {
+                    if(ActivityCompat.checkSelfPermission(this.requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                        this.requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
+                        return false;
+                    }
+                }
+            }
+            else {
+                this.settingsViewModel.updateNotifPref(val);
+            }
+            return true;
+        });
+    }
+
+    private void showBackupNotification() {
+        // TODO: 11/05/2026 add notification when backup date is reached
+        // TODO: 12/05/2026 store in user preferences data source last exportation
+        
+        LocalDateTime now = LocalDateTime.now();
+        NotificationChannel backupNotifCl = new NotificationChannel("ch_backup", "backup", NotificationManager.IMPORTANCE_DEFAULT);
+
+        String notifText = this.getString(R.string.notif_text_backup) + " : " + now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+
+        Notification backupNotif = new NotificationCompat.Builder(this.requireContext(), "ch_backup")
+                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setContentTitle(this.getString(R.string.notif_title_backup))
+                .setContentText(notifText)
+                .setAutoCancel(true)
+                .build();
+
+
+        NotificationManager notifManager = requireContext().getSystemService(NotificationManager.class);
+        notifManager.createNotificationChannel(backupNotifCl);
+        notifManager.notify(100, backupNotif);
     }
 }

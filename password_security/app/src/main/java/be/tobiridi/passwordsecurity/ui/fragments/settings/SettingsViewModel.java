@@ -3,6 +3,8 @@ package be.tobiridi.passwordsecurity.ui.fragments.settings;
 import static androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.APPLICATION_KEY;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.ContentResolver;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -77,6 +79,7 @@ public class SettingsViewModel extends ViewModel {
     private final AccountRepository _accountRepository;
     private final ExecutorService executorService;
     private final MutableLiveData<SettingsUiState> mutableSettingsUiState;
+    private NotificationChannel backupNotifChannel;
 
     public SettingsViewModel(UserPreferencesRepository userPrefRepository, AccountRepository accountRepository, SharedPreferences preferences) {
         this.executorService = Executors.newSingleThreadExecutor();
@@ -88,6 +91,8 @@ public class SettingsViewModel extends ViewModel {
         boolean enNotif = this.preferences.getBoolean(SettingsPreferenceKey.EN_NOTIF, false);
         SettingsUiState uiState = new SettingsUiState(enAuto, enNotif);
         this.mutableSettingsUiState = new MutableLiveData<>(uiState);
+
+        this.backupNotifChannel = new NotificationChannel("ch_", "", NotificationManager.IMPORTANCE_DEFAULT);
     }
 
     @Override
@@ -172,13 +177,13 @@ public class SettingsViewModel extends ViewModel {
 
     public void updateAutomationPref(boolean value) {
         SettingsUiState oldState = this.mutableSettingsUiState.getValue();
-        SettingsUiState uiState = new SettingsUiState(value, oldState.isNotificationActive);
+        SettingsUiState uiState = new SettingsUiState(value, oldState.isNotificationActive());
         this.mutableSettingsUiState.setValue(uiState);
     }
 
     public void updateNotifPref(boolean value) {
         SettingsUiState oldState = this.mutableSettingsUiState.getValue();
-        SettingsUiState uiState = new SettingsUiState(oldState.isAutomationActive, value);
+        SettingsUiState uiState = new SettingsUiState(oldState.isAutomationActive(), value);
         this.mutableSettingsUiState.setValue(uiState);
     }
 }

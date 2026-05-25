@@ -32,11 +32,12 @@
     <string name="hint_account_name">Mon premier compte</string>
     <string name="hint_password">Mot de passe</string>
     <string name="btn_desc_delete_field">Supprimer ce champ</string>
+    <string name="notif_text_backup">La dernière sauvegarde était</string>
     <string name="pref_header_data">Données</string>
     <string name="pref_header_security">Sécurité</string>
     <string name="yes">Oui</string>
     <string name="pref_attempts">Tentatives</string>
-    <string name="pref_master_password_summary">Redéfinir le mot de passe mâitre pour accéder à l\'application</string>
+    <string name="pref_master_password_summary">Redéfinir le mot de passe maître pour accéder à l\'application</string>
     <string name="pref_attempts_summary">Le nombre de tentatives avant de supprimer tous les comptes stockés dans l\'application lors de la saisie du mot de passe maître, 0 = illimité</string>
     <string name="pref_export_summary">Exporter la base de données chiffrée pour faire une sauvegarde</string>
     <string name="pref_import_summary">Importer une sauvegarde d\'une base de données chiffrée</string>
@@ -62,5 +63,6 @@
     <string name="pref_auto_disconnect_summary">Le temps en \"secondes\" avant de devoir se réauthentifier, 0 = jamais</string>
     <string name="pref_enable_notif">Activer les notifications</string>
     <string name="pref_notif_backup">Sauvegarde</string>
-    <string name="pref_notif_backup_summary">Le nombre de jours à attendre avant de recevoir une notification pour penser à faire un backup</string>
+    <string name="pref_notif_backup_summary">Le nombre de jours à attendre avant de recevoir une notification pour penser à faire une sauvegarde</string>
+    <string name="notif_title_backup">Faire une sauvegarde de vos comptes</string>
 </resources>

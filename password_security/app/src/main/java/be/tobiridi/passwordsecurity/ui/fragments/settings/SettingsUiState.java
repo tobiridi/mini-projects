@@ -6,8 +6,8 @@ package be.tobiridi.passwordsecurity.ui.fragments.settings;
  * @see SettingsViewModel
  */
 public final class SettingsUiState {
-    boolean isAutomationActive;
-    boolean isNotificationActive;
+    private boolean isAutomationActive;
+    private boolean isNotificationActive;
 
     public SettingsUiState(boolean isAutomationActive, boolean isNotificationActive) {
         this.isAutomationActive = isAutomationActive;
