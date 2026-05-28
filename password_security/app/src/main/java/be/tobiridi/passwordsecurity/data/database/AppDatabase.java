@@ -3,25 +3,30 @@ package be.tobiridi.passwordsecurity.data.database;
 import android.content.Context;
 import android.database.Cursor;
 
+import androidx.room.AutoMigration;
 import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+import be.tobiridi.passwordsecurity.data.database.converters.DateConverters;
 import be.tobiridi.passwordsecurity.data.entities.Account;
 import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
 import be.tobiridi.passwordsecurity.data.database.Dao.AccountDao;
 import be.tobiridi.passwordsecurity.data.database.Dao.UserPreferencesDao;
 import be.tobiridi.passwordsecurity.data.database.converters.DateTimeConverters;
 
-@Database(version = 1,
+@Database(version = 2,
         entities = {
             Account.class,
             UserPreferences.class,
         },
+        autoMigrations = {
+            @AutoMigration(from = 1, to = 2),
+        },
         exportSchema = true
 )
-@TypeConverters({DateTimeConverters.class})
+@TypeConverters({DateTimeConverters.class, DateConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
     public static final String DB_NAME = "appDatabase.db";
     private static AppDatabase INSTANCE;

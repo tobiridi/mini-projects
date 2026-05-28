@@ -17,6 +17,7 @@ import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.data.database.AppDatabase;
 import be.tobiridi.passwordsecurity.data.datasources.DataSourceProvider;
 import be.tobiridi.passwordsecurity.data.datasources.local.AuthenticationLocalDataSource;
+import be.tobiridi.passwordsecurity.data.datasources.local.UserPreferencesLocalDataSource;
 import be.tobiridi.passwordsecurity.data.repositories.AuthenticationRepository;
 import be.tobiridi.passwordsecurity.data.repositories.UserPreferencesRepository;
 import be.tobiridi.passwordsecurity.data.utils.ExecutorServiceUtils;
@@ -33,13 +34,19 @@ public class AuthenticationViewModel extends ViewModel {
 
                 DataSourceProvider provider = DataSourceProvider.getProvider();
                 AuthenticationLocalDataSource authDataSource = provider.getLocalDataSource(AuthenticationLocalDataSource.class);
+                UserPreferencesLocalDataSource userPrefsDataSource = provider.getLocalDataSource(UserPreferencesLocalDataSource.class);
                 if (authDataSource == null) {
                     AppDatabase db = AppDatabase.getInstance(app);
                     authDataSource = new AuthenticationLocalDataSource(PreferenceManager.getDefaultSharedPreferences(app), db);
                     provider.addDataSource(authDataSource);
                 }
+                if (userPrefsDataSource == null) {
+                    AppDatabase db = AppDatabase.getInstance(app);
+                    userPrefsDataSource = new UserPreferencesLocalDataSource(db);
+                    provider.addDataSource(userPrefsDataSource);
+                }
 
-                UserPreferencesRepository userPrefRepo = new UserPreferencesRepository(authDataSource);
+                UserPreferencesRepository userPrefRepo = new UserPreferencesRepository(authDataSource, userPrefsDataSource);
                 AuthenticationRepository authRepo = new AuthenticationRepository(authDataSource);
                 return new AuthenticationViewModel(userPrefRepo, authRepo);
             }

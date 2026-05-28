@@ -3,8 +3,6 @@ package be.tobiridi.passwordsecurity.data.datasources.local;
 import android.content.SharedPreferences;
 import android.util.Base64;
 
-import androidx.annotation.Nullable;
-
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 
@@ -21,11 +19,9 @@ import be.tobiridi.passwordsecurity.ui.fragments.settings.SettingsPreferenceKey;
  * The local data source class for manipulate the authentication of the user.
  */
 public final class AuthenticationLocalDataSource implements LocalDataSource {
-    private static final byte DEFAULT_MAX_AUTH_ATTEMPTS = 3;
-    private static final String MAX_AUTH_ATTEMPTS_KEY = SettingsPreferenceKey.MAX_AUTH_ATTEMPTS;
+    //private static final byte DEFAULT_MAX_AUTH_ATTEMPTS = 3;
     private final SharedPreferences sharedPreferences;
     private final UserPreferencesDao userPreferencesDao;
-    private byte maxAuthAttempts;
     private byte[] masterPassword;
     private boolean isAuthenticate;
 
@@ -34,21 +30,7 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
         this.userPreferencesDao = appDatabase.getUserPreferencesDao();
 
         this.isAuthenticate = false;
-
-        this.maxAuthAttempts = (byte) sharedPref.getInt(MAX_AUTH_ATTEMPTS_KEY, DEFAULT_MAX_AUTH_ATTEMPTS);
         this.masterPassword = new byte[0];
-
-        this.initListeners();
-    }
-
-    private void initListeners() {
-        this.sharedPreferences.registerOnSharedPreferenceChangeListener((SharedPreferences prefs, @Nullable String key) -> {
-            if (key != null) {
-                if(key.equalsIgnoreCase(MAX_AUTH_ATTEMPTS_KEY)) {
-                    this.maxAuthAttempts = (byte) prefs.getInt(MAX_AUTH_ATTEMPTS_KEY, DEFAULT_MAX_AUTH_ATTEMPTS);
-                }
-            }
-        });
     }
 
     public boolean isUserAuthenticate() {
@@ -56,7 +38,7 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
     }
 
     public byte getMaxAuthAttempts() {
-        return this.maxAuthAttempts;
+        return (byte) sharedPreferences.getInt(SettingsPreferenceKey.MAX_AUTH_ATTEMPTS, 3);
     }
 
     /**
@@ -92,8 +74,13 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
             //save the master password for reuse it in the app
             this.masterPassword = masterPassword;
 
-            UserPreferences pref = new UserPreferences(encryptedMasterPassword);
-            return this.userPreferencesDao.saveMasterPassword(pref);
+            UserPreferences pref = new UserPreferences();
+            pref.setMasterPassword(encryptedMasterPassword);
+            //if no master password is set then create a new one, otherwise update the master password
+            if (this.hasMasterPassword())
+                return this.userPreferencesDao.updateUserPreferences(pref);
+            else
+                return this.userPreferencesDao.insertUserPreferences(pref);
 
         } catch (GeneralSecurityException e) {
             //never happened because encrypt the key with the same key
@@ -137,6 +124,5 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
         Arrays.fill(this.masterPassword, (byte) 0);
         this.masterPassword = new byte[0];
         this.isAuthenticate = false;
-        this.maxAuthAttempts = DEFAULT_MAX_AUTH_ATTEMPTS;
     }
 }

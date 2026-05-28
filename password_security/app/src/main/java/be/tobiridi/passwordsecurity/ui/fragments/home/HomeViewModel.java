@@ -21,6 +21,7 @@ import be.tobiridi.passwordsecurity.data.database.AppDatabase;
 import be.tobiridi.passwordsecurity.data.datasources.DataSourceProvider;
 import be.tobiridi.passwordsecurity.data.datasources.local.AccountLocalDataSource;
 import be.tobiridi.passwordsecurity.data.datasources.local.AuthenticationLocalDataSource;
+import be.tobiridi.passwordsecurity.data.datasources.local.UserPreferencesLocalDataSource;
 import be.tobiridi.passwordsecurity.data.entities.Account;
 import be.tobiridi.passwordsecurity.data.repositories.AccountRepository;
 import be.tobiridi.passwordsecurity.data.repositories.UserPreferencesRepository;
@@ -39,6 +40,7 @@ public class HomeViewModel extends ViewModel {
                 DataSourceProvider provider = DataSourceProvider.getProvider();
                 AccountLocalDataSource accDataSource = provider.getLocalDataSource(AccountLocalDataSource.class);
                 AuthenticationLocalDataSource authDataSource = provider.getLocalDataSource(AuthenticationLocalDataSource.class);
+                UserPreferencesLocalDataSource userPrefsDataSource = provider.getLocalDataSource(UserPreferencesLocalDataSource.class);
                 if (accDataSource == null) {
                     AppDatabase db = AppDatabase.getInstance(app);
                     accDataSource = new AccountLocalDataSource(db);
@@ -49,9 +51,14 @@ public class HomeViewModel extends ViewModel {
                     authDataSource = new AuthenticationLocalDataSource(PreferenceManager.getDefaultSharedPreferences(app), db);
                     provider.addDataSource(authDataSource);
                 }
+                if (userPrefsDataSource == null) {
+                    AppDatabase db = AppDatabase.getInstance(app);
+                    userPrefsDataSource = new UserPreferencesLocalDataSource(db);
+                    provider.addDataSource(userPrefsDataSource);
+                }
 
                 AccountRepository accRepo = new AccountRepository(accDataSource);
-                UserPreferencesRepository userPrefRepo = new UserPreferencesRepository(authDataSource);
+                UserPreferencesRepository userPrefRepo = new UserPreferencesRepository(authDataSource, userPrefsDataSource);
 
                 return new HomeViewModel(accRepo, userPrefRepo);
             }

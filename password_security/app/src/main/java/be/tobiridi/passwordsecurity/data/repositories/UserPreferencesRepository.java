@@ -1,6 +1,7 @@
 package be.tobiridi.passwordsecurity.data.repositories;
 
 import be.tobiridi.passwordsecurity.data.datasources.local.AuthenticationLocalDataSource;
+import be.tobiridi.passwordsecurity.data.datasources.local.UserPreferencesLocalDataSource;
 import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
 
 /**
@@ -8,10 +9,14 @@ import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
  */
 public class UserPreferencesRepository {
     private static AuthenticationLocalDataSource authDataSource;
+    private static UserPreferencesLocalDataSource userPrefsDataSource;
 
-    public UserPreferencesRepository(AuthenticationLocalDataSource dataSource) {
+    public UserPreferencesRepository(AuthenticationLocalDataSource dataSource, UserPreferencesLocalDataSource dataSource2) {
         if(authDataSource == null) {
             authDataSource = dataSource;
+        }
+        if (userPrefsDataSource == null) {
+            userPrefsDataSource = dataSource2;
         }
     }
 
@@ -39,5 +44,13 @@ public class UserPreferencesRepository {
             return false;
 
         return authDataSource.saveMasterPassword(newMasterPwd) > 0;
+    }
+
+    public UserPreferences getUserPreferences() {
+        return userPrefsDataSource.getUserPreferences();
+    }
+
+    public int updateUserPreferences(UserPreferences prefs) {
+        return userPrefsDataSource.updateUserPreferences(prefs);
     }
 }
