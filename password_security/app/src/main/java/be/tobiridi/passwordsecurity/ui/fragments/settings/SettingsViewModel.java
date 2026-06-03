@@ -21,6 +21,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -35,8 +36,12 @@ import be.tobiridi.passwordsecurity.data.database.AppDatabase;
 import be.tobiridi.passwordsecurity.data.datasources.DataSourceProvider;
 import be.tobiridi.passwordsecurity.data.datasources.local.AccountLocalDataSource;
 import be.tobiridi.passwordsecurity.data.datasources.local.AuthenticationLocalDataSource;
+import be.tobiridi.passwordsecurity.data.datasources.local.SettingsLocalDataSource;
+import be.tobiridi.passwordsecurity.data.datasources.local.UserPreferencesLocalDataSource;
 import be.tobiridi.passwordsecurity.data.entities.Account;
+import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
 import be.tobiridi.passwordsecurity.data.repositories.AccountRepository;
+import be.tobiridi.passwordsecurity.data.repositories.SettingsRepository;
 import be.tobiridi.passwordsecurity.data.repositories.UserPreferencesRepository;
 import be.tobiridi.passwordsecurity.data.utils.ExecutorServiceUtils;
 
@@ -53,6 +58,8 @@ public class SettingsViewModel extends ViewModel {
                 DataSourceProvider provider = DataSourceProvider.getProvider();
                 AccountLocalDataSource accDataSource = provider.getLocalDataSource(AccountLocalDataSource.class);
                 AuthenticationLocalDataSource authDataSource = provider.getLocalDataSource(AuthenticationLocalDataSource.class);
+                SettingsLocalDataSource settingDataSource = provider.getLocalDataSource(SettingsLocalDataSource.class);
+                UserPreferencesLocalDataSource userPrefsDataSource = provider.getLocalDataSource(UserPreferencesLocalDataSource.class);
                 if (accDataSource == null) {
                     AppDatabase db = AppDatabase.getInstance(app);
                     accDataSource = new AccountLocalDataSource(db);
@@ -63,36 +70,43 @@ public class SettingsViewModel extends ViewModel {
                     authDataSource = new AuthenticationLocalDataSource(PreferenceManager.getDefaultSharedPreferences(app), db);
                     provider.addDataSource(authDataSource);
                 }
+                if (settingDataSource == null) {
+                    settingDataSource = new SettingsLocalDataSource(PreferenceManager.getDefaultSharedPreferences(app));
+                    provider.addDataSource(settingDataSource);
+                }
+                if (userPrefsDataSource == null) {
+                    AppDatabase db = AppDatabase.getInstance(app);
+                    userPrefsDataSource = new UserPreferencesLocalDataSource(db);
+                    provider.addDataSource(userPrefsDataSource);
+                }
 
                 AccountRepository accRepo = new AccountRepository(accDataSource);
-                UserPreferencesRepository userPrefRepo = new UserPreferencesRepository(authDataSource);
+                UserPreferencesRepository userPrefRepo = new UserPreferencesRepository(authDataSource, userPrefsDataSource);
+                SettingsRepository settingsRepository = new SettingsRepository(settingDataSource);
 
-                return new SettingsViewModel(userPrefRepo, accRepo, PreferenceManager.getDefaultSharedPreferences(app));
+                return new SettingsViewModel(userPrefRepo, accRepo, settingsRepository);
             }
     );
 
     /** 2018 - new SQLite MIME type */
     public final String SQLITE_MIME_TYPE = "application/vnd.sqlite3";
     public final String[] OPEN_DOCUMENT_MIME_TYPE = {SQLITE_MIME_TYPE, "application/octet-stream"};
-    private SharedPreferences preferences;
     private final UserPreferencesRepository _userPrefRepository;
     private final AccountRepository _accountRepository;
+    private final SettingsRepository _settingsRepository;
     private final ExecutorService executorService;
     private final MutableLiveData<SettingsUiState> mutableSettingsUiState;
-    private NotificationChannel backupNotifChannel;
 
-    public SettingsViewModel(UserPreferencesRepository userPrefRepository, AccountRepository accountRepository, SharedPreferences preferences) {
+    public SettingsViewModel(UserPreferencesRepository userPrefRepository, AccountRepository accountRepository, SettingsRepository settingsRepository) {
         this.executorService = Executors.newSingleThreadExecutor();
         this._userPrefRepository = userPrefRepository;
         this._accountRepository = accountRepository;
-        this.preferences = preferences;
+        this._settingsRepository = settingsRepository;
 
-        boolean enAuto = this.preferences.getBoolean(SettingsPreferenceKey.EN_AUTOMATION, false);
-        boolean enNotif = this.preferences.getBoolean(SettingsPreferenceKey.EN_NOTIF, false);
+        boolean enAuto = this._settingsRepository.isAutomationEnable();
+        boolean enNotif = this._settingsRepository.isNotificationEnable();
         SettingsUiState uiState = new SettingsUiState(enAuto, enNotif);
         this.mutableSettingsUiState = new MutableLiveData<>(uiState);
-
-        this.backupNotifChannel = new NotificationChannel("ch_", "", NotificationManager.IMPORTANCE_DEFAULT);
     }
 
     @Override
@@ -185,5 +199,18 @@ public class SettingsViewModel extends ViewModel {
         SettingsUiState oldState = this.mutableSettingsUiState.getValue();
         SettingsUiState uiState = new SettingsUiState(oldState.isAutomationActive(), value);
         this.mutableSettingsUiState.setValue(uiState);
+    }
+
+    public LocalDate nextBackupDate() {
+        LocalDate lastBackup = ExecutorServiceUtils.executeCallable(this.executorService, this._userPrefRepository::getLastBackup);
+        return lastBackup.plusDays(this._settingsRepository.getNotifBackupDuration());
+    }
+
+    public LocalDate lastBackupDate() {
+        return ExecutorServiceUtils.executeCallable(this.executorService, this._userPrefRepository::getLastBackup);
+    }
+
+    public void updateBackupDate() {
+        ExecutorServiceUtils.executeCallable(this.executorService, () -> this._userPrefRepository.updateLastBackup(LocalDate.now()));
     }
 }

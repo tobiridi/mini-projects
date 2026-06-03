@@ -4,6 +4,7 @@ import android.content.SharedPreferences;
 import android.util.Base64;
 
 import java.security.GeneralSecurityException;
+import java.time.LocalDate;
 import java.util.Arrays;
 
 import javax.crypto.BadPaddingException;
@@ -74,14 +75,17 @@ public final class AuthenticationLocalDataSource implements LocalDataSource {
             //save the master password for reuse it in the app
             this.masterPassword = masterPassword;
 
-            UserPreferences pref = new UserPreferences();
-            pref.setMasterPassword(encryptedMasterPassword);
-            //if no master password is set then create a new one, otherwise update the master password
-            if (this.hasMasterPassword())
-                return this.userPreferencesDao.updateUserPreferences(pref);
-            else
+            //if no master password is set then create a new entity, otherwise update the master password
+            if (!this.hasMasterPassword()) {
+                //set default UserPreferences entity fields' value
+                UserPreferences pref = new UserPreferences(encryptedMasterPassword, LocalDate.now());
                 return this.userPreferencesDao.insertUserPreferences(pref);
-
+            }
+            else {
+                UserPreferences pref = this.userPreferencesDao.getUserPreferences();
+                pref.setMasterPassword(encryptedMasterPassword);
+                return this.userPreferencesDao.updateUserPreferences(pref);
+            }
         } catch (GeneralSecurityException e) {
             //never happened because encrypt the key with the same key
             return 0L;

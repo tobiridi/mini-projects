@@ -1,5 +1,9 @@
 package be.tobiridi.passwordsecurity.data.repositories;
 
+import androidx.annotation.NonNull;
+
+import java.time.LocalDate;
+
 import be.tobiridi.passwordsecurity.data.datasources.local.AuthenticationLocalDataSource;
 import be.tobiridi.passwordsecurity.data.datasources.local.UserPreferencesLocalDataSource;
 import be.tobiridi.passwordsecurity.data.entities.UserPreferences;
@@ -46,11 +50,11 @@ public class UserPreferencesRepository {
         return authDataSource.saveMasterPassword(newMasterPwd) > 0;
     }
 
-    public UserPreferences getUserPreferences() {
-        return userPrefsDataSource.getUserPreferences();
+    public LocalDate getLastBackup() {
+        return userPrefsDataSource.getLastBackup();
     }
 
-    public int updateUserPreferences(UserPreferences prefs) {
-        return userPrefsDataSource.updateUserPreferences(prefs);
+    public boolean updateLastBackup(@NonNull LocalDate lastBackupDate) {
+        return userPrefsDataSource.updateLastBackup(lastBackupDate);
     }
 }

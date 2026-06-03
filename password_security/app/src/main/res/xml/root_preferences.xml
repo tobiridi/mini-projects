@@ -94,7 +94,7 @@
             app:showSeekBarValue="true"
             app:seekBarIncrement="1"
             app:persistent="true"
-            android:defaultValue="1"
+            android:defaultValue="30"
             app:min="1"
             android:max="180" />
 

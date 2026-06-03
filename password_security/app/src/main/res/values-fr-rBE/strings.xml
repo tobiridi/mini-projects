@@ -32,7 +32,8 @@
     <string name="hint_account_name">Mon premier compte</string>
     <string name="hint_password">Mot de passe</string>
     <string name="btn_desc_delete_field">Supprimer ce champ</string>
-    <string name="notif_text_backup">La dernière sauvegarde était</string>
+    <string name="notif_text_backup">La dernière sauvegarde était le</string>
+    <string name="ch_name_backup">Rappel sauvegarde</string>
     <string name="pref_header_data">Données</string>
     <string name="pref_header_security">Sécurité</string>
     <string name="yes">Oui</string>

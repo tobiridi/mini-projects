@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
+import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.time.LocalDate;
@@ -20,7 +21,7 @@ public class UserPreferences {
     private String masterPassword;
 
     @ColumnInfo(name = "last_backup")
-    @Nullable
+    @NonNull
     private LocalDate lastBackup;
 
     public int getUserPrefId() {
@@ -42,17 +43,29 @@ public class UserPreferences {
         this.masterPassword = masterPassword;
     }
 
+    /**
+     * Get the last backup date is made.
+     * @return The last backup date.
+     */
+    @NonNull
     public LocalDate getLastBackup() {
         return this.lastBackup;
     }
 
-    public void setLastBackup(LocalDate lastBackup) {
+    public void setLastBackup(@NonNull LocalDate lastBackup) {
         this.lastBackup = lastBackup;
     }
 
     public UserPreferences() {
         //Always use the "primary key = 1" to oblige to have only one row in the table
         this.userPrefId = 1;
+    }
+
+    @Ignore
+    public UserPreferences(@NonNull String masterPassword, @NonNull LocalDate lastBackup) {
+        this();
+        this.masterPassword = masterPassword;
+        this.lastBackup = lastBackup;
     }
 
     @Override

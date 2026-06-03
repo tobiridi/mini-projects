@@ -16,13 +16,14 @@ import be.tobiridi.passwordsecurity.data.database.Dao.AccountDao;
 import be.tobiridi.passwordsecurity.data.database.Dao.UserPreferencesDao;
 import be.tobiridi.passwordsecurity.data.database.converters.DateTimeConverters;
 
-@Database(version = 2,
+@Database(version = 3,
         entities = {
             Account.class,
             UserPreferences.class,
         },
         autoMigrations = {
             @AutoMigration(from = 1, to = 2),
+            @AutoMigration(from = 2, to = 3),
         },
         exportSchema = true
 )

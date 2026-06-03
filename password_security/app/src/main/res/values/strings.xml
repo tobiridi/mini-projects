@@ -65,6 +65,8 @@
     <!-- Notification -->
     <string name="notif_title_backup">Make a backup of your accounts</string>
     <string name="notif_text_backup">The last backup was on</string>
+    <!-- Notification channels -->
+    <string name="ch_name_backup">Remind backup</string>
     <!--
         * Android Preference *
     -->

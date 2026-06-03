@@ -34,6 +34,7 @@ import androidx.preference.SwitchPreferenceCompat;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.io.File;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -72,15 +73,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         this.settingsViewModel.getSettingsUiState().observe(this, (SettingsUiState uiState) -> {
             if (uiState.isNotificationActive()) {
-                this.showBackupNotification();
+                LocalDate today = LocalDate.now();
+                LocalDate nextBackup = this.settingsViewModel.nextBackupDate();
+                if (nextBackup.isEqual(today) || today.isAfter(nextBackup)) {
+                    this.showBackupNotification();
+                }
             }
-            else {
-                Toast.makeText(getContext(), "notif disable", Toast.LENGTH_SHORT).show();
+            if (uiState.isAutomationActive()) {
+                // TODO: 23/04/2026 add automation settings
             }
-
-//            if (uiState.isAutomationActive) {
-//                // TODO: 23/04/2026 add automation settings
-//            }
         });
 
         this.initActivityResultLaunchers();
@@ -101,6 +102,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
                             //Android 12 does not support SQLite MIME type
                             //the MIME type is recognize as "application/octet-stream"
                             if (settingsViewModel.createBackup(dbFile, resolver, o)) {
+                                settingsViewModel.updateBackupDate();
                                 toastText = getResources().getString(R.string.msg_backup_export_success);
                             }
                             else {
@@ -173,7 +175,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceChange(@NonNull Preference preference, Object newValue) {
                 String val = String.valueOf(newValue);
-                //first value should be positive entry !
+                //first value should be positive entry!
                 CharSequence positiveEntry = deleteAllAccountsPreference.getEntries()[0];
                 if (val.equalsIgnoreCase(positiveEntry.toString())) {
                     if(settingsViewModel.deleteAllAccounts()) {
@@ -219,22 +221,18 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     }
 
     private void showBackupNotification() {
-        // TODO: 11/05/2026 add notification when backup date is reached
-        // TODO: 12/05/2026 store in user preferences data source last exportation
-        
-        LocalDateTime now = LocalDateTime.now();
-        NotificationChannel backupNotifCl = new NotificationChannel("ch_backup", "backup", NotificationManager.IMPORTANCE_DEFAULT);
+        LocalDate lastBackupDate = this.settingsViewModel.lastBackupDate();
+        String chName = this.getString(R.string.ch_name_backup);
+        NotificationChannel backupNotifCl = new NotificationChannel("ch_backup", chName, NotificationManager.IMPORTANCE_HIGH);
 
-        String notifText = this.getString(R.string.notif_text_backup) + " : " + now.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
+        String notifText = this.getString(R.string.notif_text_backup) + " " + lastBackupDate;
 
         Notification backupNotif = new NotificationCompat.Builder(this.requireContext(), "ch_backup")
-                .setSmallIcon(android.R.drawable.ic_dialog_info)
+                .setSmallIcon(android.R.drawable.ic_dialog_alert)
                 .setContentTitle(this.getString(R.string.notif_title_backup))
                 .setContentText(notifText)
                 .setAutoCancel(true)
                 .build();
-
 
         NotificationManager notifManager = requireContext().getSystemService(NotificationManager.class);
         notifManager.createNotificationChannel(backupNotifCl);
