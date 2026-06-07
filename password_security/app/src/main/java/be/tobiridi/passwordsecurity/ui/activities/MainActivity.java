@@ -1,6 +1,7 @@
 package be.tobiridi.passwordsecurity.ui.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.PowerManager;
 
@@ -18,7 +19,10 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import java.time.Instant;
+
 import be.tobiridi.passwordsecurity.R;
+import be.tobiridi.passwordsecurity.ui.activities.authentication.AuthenticationActivity;
 import be.tobiridi.passwordsecurity.ui.fragments.addAccount.AddAccountFragment;
 import be.tobiridi.passwordsecurity.ui.fragments.home.HomeFragment;
 import be.tobiridi.passwordsecurity.ui.fragments.settings.SettingsFragment;
@@ -61,12 +65,25 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestart() {
+        super.onRestart();
+        Instant start = Instant.now();
+        if (start.isAfter(this.mainViewModel.getDisconnectInstant())) {
+            this.finishAffinity();
+            Intent authIntent = new Intent(this.getApplicationContext(), AuthenticationActivity.class);
+            this.startActivity(authIntent);
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         PowerManager manager = (PowerManager) this.getSystemService(Context.POWER_SERVICE);
         //occurred when lock the device
         if (!manager.isInteractive())
             this.finishAffinity();
+
+        this.mainViewModel.setEndAutoDisconnect();
     }
 
     @Override

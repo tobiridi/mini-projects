@@ -39,7 +39,7 @@ import be.tobiridi.passwordsecurity.data.database.AppDatabase;
 public class SettingsFragment extends PreferenceFragmentCompat {
     private SettingsViewModel settingsViewModel;
     private Preference importPreference, exportPreference;
-    private SeekBarPreference attemptsPreference, autoClosingPreference, autoDisconnectPreference, notifBackupPreference;
+    private SeekBarPreference attemptsPreference, autoDisconnectPreference, notifBackupPreference;
     private EditTextPreference masterPasswordPreference;
     private SwitchPreferenceCompat enableAutomationPreference, enableNotificationPreference;
     private ListPreference deleteAllAccountsPreference;
@@ -61,7 +61,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         this.masterPasswordPreference = findPreference(SettingsPreferenceKey.MASTER_PASSWORD);
         this.deleteAllAccountsPreference = findPreference(SettingsPreferenceKey.DELETE_ALL_ACCOUNTS);
         this.enableAutomationPreference = findPreference(SettingsPreferenceKey.EN_AUTOMATION);
-        this.autoClosingPreference = findPreference(SettingsPreferenceKey.AUTO_CLOSE);
         this.autoDisconnectPreference = findPreference(SettingsPreferenceKey.AUTO_DISCONNECT);
         this.enableNotificationPreference = findPreference(SettingsPreferenceKey.EN_NOTIF);
         this.notifBackupPreference = findPreference(SettingsPreferenceKey.NOTIF_BACKUP);

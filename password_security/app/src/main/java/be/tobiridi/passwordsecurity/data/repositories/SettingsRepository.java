@@ -18,10 +18,6 @@ public class SettingsRepository {
         return settingsDataSource.isAutomationEnable();
     }
 
-    public int getAutoClosingDuration() {
-        return settingsDataSource.getAutoClosingDuration();
-    }
-
     public int getAutoDisconnectDuration() {
         return settingsDataSource.getAutoDisconnectDuration();
     }

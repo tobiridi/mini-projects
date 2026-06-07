@@ -18,12 +18,8 @@ public final class SettingsLocalDataSource implements LocalDataSource {
         return this.preferences.getBoolean(SettingsPreferenceKey.EN_AUTOMATION, false);
     }
 
-    public int getAutoClosingDuration() {
-        return this.preferences.getInt(SettingsPreferenceKey.AUTO_CLOSE, 60);
-    }
-
     public int getAutoDisconnectDuration() {
-        return this.preferences.getInt(SettingsPreferenceKey.AUTO_DISCONNECT, 30);
+        return this.preferences.getInt(SettingsPreferenceKey.AUTO_DISCONNECT, 60);
     }
 
     public boolean isNotificationEnable() {

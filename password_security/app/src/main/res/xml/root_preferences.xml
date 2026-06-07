@@ -53,18 +53,6 @@
             app:title="@string/pref_enable_automation" />
 
         <SeekBarPreference
-            app:key="auto_closing"
-            app:dependency="enable_automation"
-            app:title="@string/pref_auto_closing"
-            app:summary="@string/pref_auto_closing_summary"
-            app:showSeekBarValue="true"
-            app:seekBarIncrement="1"
-            app:persistent="true"
-            android:defaultValue="60"
-            app:min="0"
-            android:max="300" />
-
-        <SeekBarPreference
             app:key="auto_disconnect"
             app:dependency="enable_automation"
             app:title="@string/pref_auto_disconnect"
@@ -72,9 +60,9 @@
             app:showSeekBarValue="true"
             app:seekBarIncrement="1"
             app:persistent="true"
-            android:defaultValue="30"
+            android:defaultValue="60"
             app:min="0"
-            android:max="120" />
+            android:max="300" />
 
     </PreferenceCategory>
 

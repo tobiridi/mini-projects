@@ -5,14 +5,13 @@ package be.tobiridi.passwordsecurity.ui.fragments.settings;
  * @see androidx.preference.Preference
  */
 public final class SettingsPreferenceKey {
-    public static String IMPORT_DB = "import_database";
-    public static String EXPORT_DB = "export_database";
-    public static String MAX_AUTH_ATTEMPTS = "max_auth_attempts";
-    public static String MASTER_PASSWORD = "master_password";
-    public static String DELETE_ALL_ACCOUNTS = "delete_all_accounts";
-    public static String EN_AUTOMATION = "enable_automation";
-    public static String AUTO_CLOSE = "auto_closing";
-    public static String AUTO_DISCONNECT = "auto_disconnect";
-    public static String EN_NOTIF = "enable_notification";
-    public static String NOTIF_BACKUP = "notif_backup";
+    public static final String IMPORT_DB = "import_database";
+    public static final String EXPORT_DB = "export_database";
+    public static final String MAX_AUTH_ATTEMPTS = "max_auth_attempts";
+    public static final String MASTER_PASSWORD = "master_password";
+    public static final String DELETE_ALL_ACCOUNTS = "delete_all_accounts";
+    public static final String EN_AUTOMATION = "enable_automation";
+    public static final String AUTO_DISCONNECT = "auto_disconnect";
+    public static final String EN_NOTIF = "enable_notification";
+    public static final String NOTIF_BACKUP = "notif_backup";
 }
