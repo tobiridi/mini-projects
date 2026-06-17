@@ -37,7 +37,6 @@ public class AccountFieldInputLayout extends TextInputLayout {
         super(new ContextThemeWrapper(ctx, R.style.TextInputLayoutOutlinedBox));
         this.accountField = accountField;
         LinearLayout.LayoutParams inputLayoutParams = new LayoutParams(0, ViewGroup.LayoutParams.MATCH_PARENT);
-        inputLayoutParams.setMarginEnd(this.pxToDp(8));
         inputLayoutParams.weight = 1f;
         this.setLayoutParams(inputLayoutParams);
         this.setId(this.accountField.getId());
@@ -53,6 +52,7 @@ public class AccountFieldInputLayout extends TextInputLayout {
 
         this.deleteButton = new ImageButton(ctx);
         LinearLayout.LayoutParams iconLayoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        iconLayoutParams.setMarginStart(this.pxToDp(8));
         this.deleteButton.setLayoutParams(iconLayoutParams);
         this.deleteButton.setClickable(true);
         this.setContentDescription(ctx.getString(R.string.btn_desc_delete_field));

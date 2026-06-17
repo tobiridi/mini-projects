@@ -48,6 +48,7 @@
     <string name="msg_new_master_password_set">Nouveau mot de passe maître défini</string>
     <string name="msg_all_accounts_deleted">Tous les comptes ont été supprimés</string>
     <string name="alert_account_change_title">Voulez-vous modifier ou supprimer ce compte ?</string>
+    <string name="done">Fait</string>
     <string name="account_field_name">Nom</string>
     <string name="account_field_password">Mot de passe</string>
     <string name="account_field_confirm_password">Confirmer mot de passe</string>
@@ -64,4 +65,6 @@
     <string name="pref_notif_backup">Sauvegarde</string>
     <string name="pref_notif_backup_summary">Le nombre de jours à attendre avant de recevoir une notification pour penser à faire une sauvegarde</string>
     <string name="notif_title_backup">Faire une sauvegarde de vos comptes</string>
+    <string name="toolbar_title_account_details">Détails du compte</string>
+    <string name="toolbar_title_account_update">Modification du compte</string>
 </resources>

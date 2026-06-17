@@ -1,7 +1,6 @@
 package be.tobiridi.passwordsecurity.ui.activities.authentication;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,18 +14,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
-import be.tobiridi.passwordsecurity.data.database.AppDatabase;
-import be.tobiridi.passwordsecurity.data.datasources.DataSourceProvider;
-import be.tobiridi.passwordsecurity.data.datasources.local.AccountLocalDataSource;
-import be.tobiridi.passwordsecurity.data.datasources.local.AuthenticationLocalDataSource;
-import be.tobiridi.passwordsecurity.ui.activities.MainActivity;
 import be.tobiridi.passwordsecurity.R;
+import be.tobiridi.passwordsecurity.ui.activities.MainActivity;
 
 public class AuthenticationActivity extends AppCompatActivity {
     private AuthenticationViewModel authViewModel;

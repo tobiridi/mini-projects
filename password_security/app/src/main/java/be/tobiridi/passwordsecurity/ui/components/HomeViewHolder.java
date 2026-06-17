@@ -3,7 +3,6 @@ package be.tobiridi.passwordsecurity.ui.components;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +13,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import be.tobiridi.passwordsecurity.R;
 import be.tobiridi.passwordsecurity.data.entities.Account;
+import be.tobiridi.passwordsecurity.ui.activities.detailsUpdateAccount.DetailsUpdateAccountActivity;
 import be.tobiridi.passwordsecurity.ui.activities.updateAccount.UpdateAccountActivity;
 
 /**
@@ -43,27 +43,9 @@ public class HomeViewHolder extends RecyclerView.ViewHolder {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MaterialAlertDialogBuilder builder = new MaterialAlertDialogBuilder(v.getContext());
-                View dialogView = LayoutInflater.from(builder.getContext())
-                        .inflate(R.layout.dialog_account_info, null);
-
-                //get views id
-                TextView emailTextView = dialogView.findViewById(R.id.tv_email);
-                TextView passwordTextView = dialogView.findViewById(R.id.tv_password);
-
-                emailTextView.setText(account.getEmail());
-                passwordTextView.setText(account.getPassword());
-
-                builder.setTitle(account.getName());
-                builder.setView(dialogView);
-                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-
-                builder.show();
+                Intent detailsAccountIntent = new Intent(v.getContext(), DetailsUpdateAccountActivity.class);
+                detailsAccountIntent.putExtra(DetailsUpdateAccountActivity.INTENT_ACCOUNT_DETAILS, account);
+                v.getContext().startActivity(detailsAccountIntent);
             }
         };
     }

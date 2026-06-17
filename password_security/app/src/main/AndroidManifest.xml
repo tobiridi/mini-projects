@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Passwordsecurity">
         <activity
+            android:name=".ui.activities.detailsUpdateAccount.DetailsUpdateAccountActivity"
+            android:exported="false" />
+        <activity
             android:name=".ui.activities.updateAccount.UpdateAccountActivity"
             android:exported="false" />
         <activity

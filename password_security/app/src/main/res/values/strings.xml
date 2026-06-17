@@ -14,6 +14,7 @@
     <string name="no">No</string>
     <string name="add_field">Add a field</string>
     <string name="master_password_explain">Please define a master password to start using the application. This master password is used to access at the stored data. If you forgot it, you will no longer able to access to your data anymore.</string>
+    <string name="done">Done</string>
     <!-- Account fields name -->
     <string name="account_field_name">Name</string>
     <string name="account_field_email" translatable="false">Email</string>
@@ -61,6 +62,8 @@
     <string name="btn_desc_cancel" translatable="false">Cancel</string>
     <string name="btn_desc_clear" translatable="false">Clear</string>
     <string name="btn_desc_validate" translatable="false">Validate</string>
+    <string name="btn_desc_modify" translatable="false">Modify</string>
+    <string name="btn_desc_save" translatable="false">Save</string>
     <string name="btn_desc_delete_field">Delete this field</string>
     <!-- Notification -->
     <string name="notif_title_backup">Make a backup of your accounts</string>
@@ -91,4 +94,7 @@
     <string name="pref_enable_notif">Enable Notification</string>
     <string name="pref_notif_backup">Backup</string>
     <string name="pref_notif_backup_summary">The number of days to wait before receive a notification to remind to make a backup</string>
+    <!-- Toolbar title -->
+    <string name="toolbar_title_account_details">Account Details</string>
+    <string name="toolbar_title_account_update">Modify Account</string>
 </resources>
