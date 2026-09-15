@@ -11,6 +11,8 @@ const checkLowercase = document.getElementById('lowercase');
 const checkNumbers = document.getElementById('numbers');
 const checkSymbols = document.getElementById('symbols');
 const generateBtn = document.getElementById('generateBtn');
+const copyTooltip = document.getElementById('copyTooltip');
+let copyTimeout = null;
 
 generateBtn.addEventListener('click', (ev) => {
     generateNewPassword(passRange.value);
@@ -19,6 +21,20 @@ generateBtn.addEventListener('click', (ev) => {
 passRange.addEventListener('input', (ev) => {
     passStrength.textContent = passRange.value;
     generateNewPassword(passRange.value);
+});
+
+passGenerate.addEventListener("click", (ev) => {
+    navigator.clipboard.writeText(passGenerate.value)
+        .then(() => {
+            copyTooltip.textContent = "Copied!",
+            copyTooltip.classList.add('copied');
+            clearTimeout(copyTimeout);
+            copyTimeout = setTimeout((handler) =>{
+                copyTooltip.textContent = null,
+                copyTooltip.classList.remove('copied');
+            }, 1500);
+        })
+        .catch(err => console.error(err));
 });
 
 checkUppercase.addEventListener('change', (ev) => {
@@ -55,9 +71,9 @@ const generateNewPassword = (length) => {
     passGenerate.value = newPassword;
 };
 
-const isOneChecked = () => {
-    return (checkUppercase.checked || checkLowercase.checked
-            || checkNumbers.checked || checkSymbols.checked);
-};
+const isOneChecked = () => (
+    checkUppercase.checked || checkLowercase.checked || 
+    checkNumbers.checked || checkSymbols.checked
+);
 
 generateNewPassword(passRange.value);
